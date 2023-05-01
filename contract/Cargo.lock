@@ -902,7 +902,7 @@ checksum = "fc874b127765f014d792f16763a81245ab80500e2ad921ed4ee9e82481ee08fe"
 [[package]]
 name = "rmrk"
 version = "0.6.0"
-source = "git+https://github.com/rmrk-team/rmrk-ink?tag=v0.6.0#5af949391694892fb7ba6293d94b070b891274f5"
+source = "git+https://github.com/rmrk-team/rmrk-ink?branch=feature/psp34-child#edc63bbfb53e51bc1a00df4a1ebe4b98ed993a53"
 dependencies = [
  "ink",
  "openbrush",
@@ -919,7 +919,7 @@ dependencies = [
 [[package]]
 name = "rmrk_catalog"
 version = "0.6.0"
-source = "git+https://github.com/rmrk-team/rmrk-ink?tag=v0.6.0#5af949391694892fb7ba6293d94b070b891274f5"
+source = "git+https://github.com/rmrk-team/rmrk-ink?branch=feature/psp34-child#edc63bbfb53e51bc1a00df4a1ebe4b98ed993a53"
 dependencies = [
  "ink",
  "openbrush",
@@ -931,7 +931,7 @@ dependencies = [
 [[package]]
 name = "rmrk_common"
 version = "0.6.0"
-source = "git+https://github.com/rmrk-team/rmrk-ink?tag=v0.6.0#5af949391694892fb7ba6293d94b070b891274f5"
+source = "git+https://github.com/rmrk-team/rmrk-ink?branch=feature/psp34-child#edc63bbfb53e51bc1a00df4a1ebe4b98ed993a53"
 dependencies = [
  "ink",
  "openbrush",
@@ -942,7 +942,7 @@ dependencies = [
 [[package]]
 name = "rmrk_equippable"
 version = "0.6.0"
-source = "git+https://github.com/rmrk-team/rmrk-ink?tag=v0.6.0#5af949391694892fb7ba6293d94b070b891274f5"
+source = "git+https://github.com/rmrk-team/rmrk-ink?branch=feature/psp34-child#edc63bbfb53e51bc1a00df4a1ebe4b98ed993a53"
 dependencies = [
  "ink",
  "openbrush",
@@ -956,7 +956,7 @@ dependencies = [
 [[package]]
 name = "rmrk_minting"
 version = "0.6.0"
-source = "git+https://github.com/rmrk-team/rmrk-ink?tag=v0.6.0#5af949391694892fb7ba6293d94b070b891274f5"
+source = "git+https://github.com/rmrk-team/rmrk-ink?branch=feature/psp34-child#edc63bbfb53e51bc1a00df4a1ebe4b98ed993a53"
 dependencies = [
  "ink",
  "openbrush",
@@ -968,7 +968,7 @@ dependencies = [
 [[package]]
 name = "rmrk_multiasset"
 version = "0.6.0"
-source = "git+https://github.com/rmrk-team/rmrk-ink?tag=v0.6.0#5af949391694892fb7ba6293d94b070b891274f5"
+source = "git+https://github.com/rmrk-team/rmrk-ink?branch=feature/psp34-child#edc63bbfb53e51bc1a00df4a1ebe4b98ed993a53"
 dependencies = [
  "ink",
  "openbrush",
@@ -980,7 +980,7 @@ dependencies = [
 [[package]]
 name = "rmrk_nesting"
 version = "0.6.0"
-source = "git+https://github.com/rmrk-team/rmrk-ink?tag=v0.6.0#5af949391694892fb7ba6293d94b070b891274f5"
+source = "git+https://github.com/rmrk-team/rmrk-ink?branch=feature/psp34-child#edc63bbfb53e51bc1a00df4a1ebe4b98ed993a53"
 dependencies = [
  "ink",
  "openbrush",

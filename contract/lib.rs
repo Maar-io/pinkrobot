@@ -2,35 +2,21 @@
 #![feature(min_specialization)]
 
 #[openbrush::contract]
-pub mod rmrk_example_basic_child {
+pub mod rmrk_example_psp34_child_lazy {
     use ink::{
-        codegen::{
-            EmitEvent,
-            Env,
-        },
+        codegen::{EmitEvent, Env},
         prelude::vec::Vec,
     };
     use openbrush::{
         contracts::{
             access_control::*,
-            psp34::extensions::{
-                enumerable::*,
-                metadata::*,
-            },
+            psp34::extensions::{enumerable::*, metadata::*},
             reentrancy_guard::*,
         },
-        traits::{
-            Storage,
-            String,
-        },
+        traits::{Storage, String},
     };
 
-    use rmrk::{
-        config,
-        storage::*,
-        traits::*,
-        types::*,
-    };
+    use rmrk::{config, storage::*, traits::*, types::*};
 
     /// Event emitted when a token transfer occurs.
     #[ink(event)]
@@ -253,38 +239,23 @@ pub mod rmrk_example_basic_child {
 
     #[cfg(test)]
     mod tests {
-        use super::{
-            Environment,
-            Rmrk,
-        };
+        use super::{Environment, Rmrk};
 
         use openbrush::{
             contracts::{
-                access_control::{
-                    AccessControlError::*,
-                    *,
-                },
-                psp34::extensions::{
-                    enumerable::*,
-                    metadata::*,
-                },
+                access_control::{AccessControlError::*, *},
+                psp34::extensions::{enumerable::*, metadata::*},
             },
-            traits::{
-                AccountId,
-                String,
-            },
+            traits::{AccountId, String},
         };
 
-        use ink::env::test;
+        use ink::{env::test, prelude::string::String as PreludeString};
 
-        use rmrk::{
-            roles::ADMIN,
-            traits::Minting,
-            utils::Utils,
-        };
+        use rmrk::{roles::ADMIN, traits::MintingLazy, utils::Utils};
 
         const BASE_URI: &str = "ipfs://myIpfsUri/";
         const MAX_SUPPLY: u64 = 10;
+        const TOKEN_METADATA: &str = "ipfs://tokenUri/";
 
         #[ink::test]
         fn init_works() {
@@ -342,6 +313,24 @@ pub mod rmrk_example_basic_child {
             );
         }
 
+        #[ink::test]
+        fn lazy_mint_and_assign_metadata_works() {
+            let accounts = default_accounts();
+            let mut rmrk = init();
+
+            set_sender(accounts.alice);
+            let mint_res = rmrk.mint();
+
+            assert_eq!(mint_res.unwrap(), Id::U64(1));
+            assert!(rmrk
+                .assign_metadata(1, String::from(TOKEN_METADATA))
+                .is_ok());
+            assert_eq!(
+                rmrk.token_uri(1),
+                Ok(PreludeString::from(TOKEN_METADATA.to_owned()))
+            );
+        }
+
         fn default_accounts() -> test::DefaultAccounts<ink::env::DefaultEnvironment> {
             test::default_accounts::<Environment>()
         }
@@ -351,4 +340,3 @@ pub mod rmrk_example_basic_child {
         }
     }
 }
-
