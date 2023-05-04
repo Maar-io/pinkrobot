@@ -2,7 +2,7 @@
 #![feature(min_specialization)]
 
 #[openbrush::contract]
-pub mod rmrk_example_psp34_child_lazy {
+pub mod pink_robot {
     use ink::{
         codegen::{EmitEvent, Env},
         prelude::vec::Vec,
@@ -16,7 +16,7 @@ pub mod rmrk_example_psp34_child_lazy {
         traits::{Storage, String},
     };
 
-    use rmrk::{config, storage::*, traits::*, types::*};
+    use rmrk::{batch::*, config, query::*, storage::*, traits::*, types::*};
 
     /// Event emitted when a token transfer occurs.
     #[ink(event)]
@@ -39,6 +39,50 @@ pub mod rmrk_example_psp34_child_lazy {
         #[ink(topic)]
         id: Option<Id>,
         approved: bool,
+    }
+
+    /// Event emitted when a new child is added.
+    #[ink(event)]
+    pub struct ChildAdded {
+        #[ink(topic)]
+        to: Id,
+        #[ink(topic)]
+        collection: AccountId,
+        #[ink(topic)]
+        child: Id,
+    }
+
+    /// Event emitted when a child is accepted.
+    #[ink(event)]
+    pub struct ChildAccepted {
+        #[ink(topic)]
+        parent: Id,
+        #[ink(topic)]
+        collection: AccountId,
+        #[ink(topic)]
+        child: Id,
+    }
+
+    /// Event emitted when a child is removed.
+    #[ink(event)]
+    pub struct ChildRemoved {
+        #[ink(topic)]
+        parent: Id,
+        #[ink(topic)]
+        child_collection: AccountId,
+        #[ink(topic)]
+        child_token_id: Id,
+    }
+
+    /// Event emitted when a child is rejected.
+    #[ink(event)]
+    pub struct ChildRejected {
+        #[ink(topic)]
+        parent: Id,
+        #[ink(topic)]
+        child_collection: AccountId,
+        #[ink(topic)]
+        child_token_id: Id,
     }
 
     /// Event emitted when new asset is set for the collection.
@@ -94,6 +138,30 @@ pub mod rmrk_example_psp34_child_lazy {
         priorities: Vec<AssetId>,
     }
 
+    /// Event emitted when the asset is equipped.
+    #[ink(event)]
+    pub struct AssetEquipped {
+        #[ink(topic)]
+        token: Id,
+        #[ink(topic)]
+        asset: AssetId,
+        #[ink(topic)]
+        child: Id,
+        #[ink(topic)]
+        child_asset: AssetId,
+    }
+
+    /// Event emitted when the asset is un-equipped.
+    #[ink(event)]
+    pub struct AssetUnEquipped {
+        #[ink(topic)]
+        token: Id,
+        #[ink(topic)]
+        asset: AssetId,
+        #[ink(topic)]
+        slot: SlotId,
+    }
+
     /// Used to notify listeners that the assets belonging to a `equippableGroupId` have been marked as
     /// equippable into a given slot and parent
     #[ink(event)]
@@ -119,9 +187,13 @@ pub mod rmrk_example_psp34_child_lazy {
         #[storage_field]
         metadata: metadata::Data,
         #[storage_field]
+        nesting: NestingData,
+        #[storage_field]
         multiasset: MultiAssetData,
         #[storage_field]
         minting: MintingData,
+        #[storage_field]
+        equippable: EquippableData,
     }
 
     impl PSP34 for Rmrk {}
@@ -134,7 +206,15 @@ pub mod rmrk_example_psp34_child_lazy {
 
     impl Minting for Rmrk {}
 
+    impl Nesting for Rmrk {}
+
     impl MultiAsset for Rmrk {}
+
+    impl Equippable for Rmrk {}
+
+    impl Query for Rmrk {}
+
+    impl BatchCalls for Rmrk {}
 
     impl Rmrk {
         /// Instantiate new RMRK contract
@@ -180,6 +260,54 @@ pub mod rmrk_example_psp34_child_lazy {
                 to,
                 id,
                 approved,
+            });
+        }
+    }
+
+    impl NestingEvents for Rmrk {
+        /// Emit ChildAdded event
+        fn _emit_added_child_event(&self, to: &Id, collection: &AccountId, child: &Id) {
+            self.env().emit_event(ChildAdded {
+                to: to.clone(),
+                collection: *collection,
+                child: child.clone(),
+            });
+        }
+
+        /// Emit ChildAccepted event
+        fn _emit_child_accepted_event(&self, parent: &Id, collection: &AccountId, child: &Id) {
+            self.env().emit_event(ChildAccepted {
+                parent: parent.clone(),
+                collection: *collection,
+                child: child.clone(),
+            });
+        }
+
+        /// Emit ChildRemoved event
+        fn _emit_child_removed_event(
+            &self,
+            parent: &Id,
+            child_collection: &AccountId,
+            child_token_id: &Id,
+        ) {
+            self.env().emit_event(ChildRemoved {
+                parent: parent.clone(),
+                child_collection: *child_collection,
+                child_token_id: child_token_id.clone(),
+            });
+        }
+
+        /// Emit ChildRejected event
+        fn _emit_child_rejected_event(
+            &self,
+            parent: &Id,
+            child_collection: &AccountId,
+            child_token_id: &Id,
+        ) {
+            self.env().emit_event(ChildRejected {
+                parent: parent.clone(),
+                child_collection: *child_collection,
+                child_token_id: child_token_id.clone(),
             });
         }
     }
@@ -237,6 +365,54 @@ pub mod rmrk_example_psp34_child_lazy {
         }
     }
 
+    impl EquippableEvents for Rmrk {
+        /// Used to notify listeners that a child's asset has been equipped into one of its parent assets.
+        fn emit_child_asset_equipped(
+            &self,
+            token_id: Id,
+            asset_id: AssetId,
+            _slot_part_id: PartId,
+            child_nft: ChildNft,
+            child_asset_id: AssetId,
+        ) {
+            self.env().emit_event(AssetEquipped {
+                token: token_id,
+                asset: asset_id,
+                child: child_nft.1,
+                child_asset: child_asset_id,
+            });
+        }
+
+        /// Used to notify listeners that a child's asset has been un-equipped from one of its parent assets.
+        fn emit_child_asset_unequipped(
+            &self,
+            token_id: Id,
+            asset_id: AssetId,
+            slot_part_id: PartId,
+        ) {
+            self.env().emit_event(AssetUnEquipped {
+                token: token_id,
+                asset: asset_id,
+                slot: slot_part_id,
+            });
+        }
+
+        /// Used to notify listeners that the assets belonging to a `equippableGroupId` have been marked as
+        /// equippable into a given slot and parent
+        fn emit_valid_parent_equippable_group_set(
+            &self,
+            group_id: EquippableGroupId,
+            slot_part_id: PartId,
+            parent_address: AccountId,
+        ) {
+            self.env().emit_event(ParentEquippableGroupSet {
+                group: group_id,
+                slot: slot_part_id,
+                parent: parent_address,
+            });
+        }
+    }
+
     #[cfg(test)]
     mod tests {
         use super::{Environment, Rmrk};
@@ -249,13 +425,12 @@ pub mod rmrk_example_psp34_child_lazy {
             traits::{AccountId, String},
         };
 
-        use ink::{env::test, prelude::string::String as PreludeString};
+        use ink::env::test;
 
-        use rmrk::{roles::ADMIN, traits::MintingLazy, utils::Utils};
+        use rmrk::{roles::ADMIN, traits::Minting, utils::Utils};
 
         const BASE_URI: &str = "ipfs://myIpfsUri/";
         const MAX_SUPPLY: u64 = 10;
-        const TOKEN_METADATA: &str = "ipfs://tokenUri/";
 
         #[ink::test]
         fn init_works() {
@@ -310,24 +485,6 @@ pub mod rmrk_example_psp34_child_lazy {
             assert_eq!(
                 rmrk.set_base_uri(NEW_BASE_URI.into()),
                 Err(MissingRole.into())
-            );
-        }
-
-        #[ink::test]
-        fn lazy_mint_and_assign_metadata_works() {
-            let accounts = default_accounts();
-            let mut rmrk = init();
-
-            set_sender(accounts.alice);
-            let mint_res = rmrk.mint();
-
-            assert_eq!(mint_res.unwrap(), Id::U64(1));
-            assert!(rmrk
-                .assign_metadata(1, String::from(TOKEN_METADATA))
-                .is_ok());
-            assert_eq!(
-                rmrk.token_uri(1),
-                Ok(PreludeString::from(TOKEN_METADATA.to_owned()))
             );
         }
 
