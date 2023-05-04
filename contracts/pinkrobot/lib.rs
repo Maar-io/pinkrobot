@@ -2,7 +2,7 @@
 #![feature(min_specialization)]
 
 #[openbrush::contract]
-pub mod pink_robot {
+pub mod pinkrobot {
     use ink::{
         codegen::{EmitEvent, Env},
         prelude::vec::Vec,

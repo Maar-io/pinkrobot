@@ -1,5 +1,5 @@
 [package]
-name = "p-ink-robot"
+name = "pinkrobot"
 version = "0.1.0"
 authors = ["[Mario] <[mario@arrakis.com]>"]
 edition = "2021"

@@ -1,0 +1,29 @@
+[package]
+name = "gateway"
+version = "0.1.0"
+authors = ["[Mario] <[mario@arrakis.com]>"]
+edition = "2021"
+
+[dependencies]
+ink = { version = "4.2.0", default-features = false }
+
+scale = { package = "parity-scale-codec", version = "3", default-features = false, features = ["derive"] }
+scale-info = { version = "2.3", default-features = false, features = ["derive"], optional = true }
+pinkrobot = { path = "../pinkrobot", default-features = false, features = ["ink-as-dependency"] }
+
+[dev-dependencies]
+ink_e2e = "4.2.0"
+
+[lib]
+path = "lib.rs"
+
+[features]
+default = ["std"]
+std = [
+    "ink/std",
+    "scale/std",
+    "scale-info/std",
+    "pinkrobot/std",
+]
+ink-as-dependency = []
+e2e-tests = []
