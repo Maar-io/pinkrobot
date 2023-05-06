@@ -63,7 +63,7 @@ mod gateway {
         pub fn add_new_contract(&mut self, entry: u8, contract: AccountId) -> Result<()> {
             ensure!(self.env().caller() == self.owner, Error::NotOwner);
             ensure_valid_contract(contract)?;
-            self.contracts_map.insert(entry, &contract);
+            self.contracts_map.insert(&entry, &contract);
             Ok(())
         }
 
@@ -103,19 +103,24 @@ mod gateway {
         Ok(())
     }
 
-    /// Unit tests in Rust are normally defined within such a `#[cfg(test)]`
-    /// module and test functions are marked with a `#[test]` attribute.
-    /// The below code is technically just normal Rust code.
+
     #[cfg(test)]
     mod tests {
         use super::*;
 
-        /// We test a simple use case of our contract.
         #[ink::test]
         fn add_contract_works() {
             let contract: AccountId = [0x42; 32].into();
             let mut gateway = Gateway::new();
             assert!(gateway.add_new_contract(1, contract).is_ok());
+        }
+
+        #[ink::test]
+        fn get_contract_works() {
+            let contract: AccountId = [0x42; 32].into();
+            let mut gateway = Gateway::new();
+            assert!(gateway.add_new_contract(1, contract).is_ok());
+            assert_eq!(gateway.get_contract(1), Some(contract));
         }
     }
 
