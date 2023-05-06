@@ -1,0 +1,6 @@
+{
+    "projectFiles": ["pinkrobot/*", "gateway/*"],
+    "typechainGeneratedPath": "types",
+    "isWorkspace": true,
+    "workspacePath": "./"
+  }

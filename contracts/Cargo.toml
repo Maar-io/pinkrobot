@@ -1,5 +1,6 @@
 [workspace]
 members = [
+    "pinkrmrk",
+    "pinkpsp34",
     "pinkrobot",
-    "gateway",
 ]

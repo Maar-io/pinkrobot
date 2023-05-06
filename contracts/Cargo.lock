@@ -1162,17 +1162,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "gateway"
-version = "0.1.0"
-dependencies = [
- "ink",
- "ink_e2e",
- "parity-scale-codec",
- "pinkrobot",
- "scale-info",
-]
-
-[[package]]
 name = "generic-array"
 version = "0.12.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2591,13 +2580,37 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8b870d8c151b6f2fb93e84a13146138f05d02ed11c7e7c54f8826aaaf7c9f184"
 
 [[package]]
-name = "pinkrobot"
+name = "pinkpsp34"
+version = "0.1.0"
+dependencies = [
+ "ink",
+ "ink_e2e",
+ "openbrush",
+ "parity-scale-codec",
+ "psp34_minting",
+ "scale-info",
+]
+
+[[package]]
+name = "pinkrmrk"
 version = "0.1.0"
 dependencies = [
  "ink",
  "openbrush",
  "parity-scale-codec",
  "rmrk",
+ "scale-info",
+]
+
+[[package]]
+name = "pinkrobot"
+version = "0.1.0"
+dependencies = [
+ "ink",
+ "ink_e2e",
+ "parity-scale-codec",
+ "pinkpsp34",
+ "pinkrmrk",
  "scale-info",
 ]
 
@@ -2670,6 +2683,16 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5787f7cda34e3033a72192c018bc5883100330f362ef279a8cbccfce8bb4e874"
 dependencies = [
  "cc",
+]
+
+[[package]]
+name = "psp34_minting"
+version = "0.1.0"
+dependencies = [
+ "ink",
+ "openbrush",
+ "parity-scale-codec",
+ "scale-info",
 ]
 
 [[package]]
