@@ -12,7 +12,7 @@ pub mod pinkrobot34 {
     use openbrush::traits::Storage;
     use openbrush::traits::String;
 
-    use psp34_minting::pink_minting::*;
+    use psp34_minting::pinkmint::*;
     use psp34_minting::traits::*;
 
     #[ink(storage)]
@@ -25,7 +25,7 @@ pub mod pinkrobot34 {
         #[storage_field]
         metadata: metadata::Data,
         #[storage_field]
-        minting: MintingData,
+        pinkmint: MintingData,
     }
 
     /// Event emitted when a token transfer occurs.
@@ -60,14 +60,19 @@ pub mod pinkrobot34 {
 
     impl PinkPsp34 {
         #[ink(constructor)]
-        pub fn new() -> Self {
+        pub fn new(
+            name: String,
+            symbol: String,
+            max_supply: u64,
+            owner: Option<AccountId>,
+        ) -> Self {
             let mut instance = Self::default();
-            instance._init_with_owner(instance.env().caller());
-            instance
-                .pink_mint(instance.env().caller(), String::from("PinkPsp34"))
-                .unwrap();
-            instance._set_attribute(Id::U64(0), String::from("name"), String::from("PinkPsp34"));
-            instance._set_attribute(Id::U64(0), String::from("symbol"), String::from("PnkP"));
+            let contract_owner = owner.unwrap_or(instance.env().caller());
+            instance._init_with_owner(contract_owner);
+            instance._set_attribute(Id::U64(0), String::from("name"), String::from(name));
+            instance._set_attribute(Id::U64(0), String::from("symbol"), String::from(symbol));
+            instance.pinkmint.max_supply = Some(max_supply);
+            instance.pinkmint.last_token_id = 0;
             instance
         }
     }
@@ -97,74 +102,142 @@ pub mod pinkrobot34 {
     #[cfg(test)]
     mod tests {
         use super::*;
-        use ink::{
-            env::{pay_with_call, test},
-            prelude::string::String as PreludeString,
-        };
-        use psp34_minting::traits::*;
-        const PRICE: Balance = 100_000_000_000_000_000;
-        const BASE_URI: &str = "ipfs://myIpfsUri/";
+        use ink::{env::test, prelude::string::String as PreludeString};
+        use psp34_minting::internal::*;
+
         const MAX_SUPPLY: u64 = 10;
+        const NAME: &str = "PinkPsp34";
+        const SYMBOL: &str = "PnkP";
+        const TOKEN_URI: &str = "ipfs://myIpfsUri/";
+        const OWNER: [u8; 32] = [0x1; 32];
 
         fn init() -> PinkPsp34 {
+            PinkPsp34::new(String::from(NAME), String::from(SYMBOL), MAX_SUPPLY, None)
+        }
+
+        fn init_with_owner() -> PinkPsp34 {
+            let owner: AccountId = AccountId::from(OWNER);
             PinkPsp34::new(
-                    // String::from("Shiden34"),
-                    // String::from("SH34"),
-                    // String::from(BASE_URI),
-                    // MAX_SUPPLY,
-                    // PRICE,
-                )
+                String::from(NAME),
+                String::from(SYMBOL),
+                MAX_SUPPLY,
+                Some(owner),
+            )
         }
 
         #[ink::test]
         fn init_works() {
-            let sh34 = init();
-            let collection_id = sh34.collection_id();
+            let pink34 = init();
             assert_eq!(
-                sh34.get_attribute(Id::U64(0), String::from("name")),
-                Some(String::from("PinkPsp34"))
+                pink34.get_attribute(Id::U64(0), String::from("name")),
+                Some(String::from(NAME))
             );
             assert_eq!(
-                sh34.get_attribute(Id::U64(0), String::from("symbol")),
-                Some(String::from("PnkP"))
+                pink34.get_attribute(Id::U64(0), String::from("symbol")),
+                Some(String::from(SYMBOL))
             );
-            // assert_eq!(
-            //     sh34.get_attribute(collection_id, String::from("baseUri")),
-            //     Some(String::from(BASE_URI))
-            // );
-            // assert_eq!(sh34.max_supply(), MAX_SUPPLY);
-            // assert_eq!(sh34.price(), PRICE);
+            assert_eq!(pink34.max_supply(), Some(MAX_SUPPLY));
         }
 
-        // #[ink::test]
-        // fn mint_single_works() {
-        //     let mut sh34 = init();
-        //     let accounts = default_accounts();
-        //     assert_eq!(sh34.owner(), accounts.alice);
-        //     set_sender(accounts.bob);
+        #[ink::test]
+        fn init_with_owner_works() {
+            let mut pink34 = init_with_owner();
+            let accounts = default_accounts();
+            let token_uri = String::from(TOKEN_URI);
+            let maybe_owner: AccountId = AccountId::from(OWNER);
 
-        //     assert_eq!(sh34.total_supply(), 0);
-        //     test::set_value_transferred::<ink::env::DefaultEnvironment>(PRICE);
-        //     assert!(sh34.mint_next().is_ok());
-        //     assert_eq!(sh34.total_supply(), 1);
-        //     assert_eq!(sh34.owner_of(Id::U64(1)), Some(accounts.bob));
-        //     assert_eq!(sh34.balance_of(accounts.bob), 1);
+            assert_eq!(pink34.owner(), maybe_owner);
 
-        //     assert_eq!(sh34.owners_token_by_index(accounts.bob, 0), Ok(Id::U64(1)));
-        //     assert_eq!(sh34.payable_mint.last_token_id, 1);
-        //     assert_eq!(1, ink::env::test::recorded_events().count());
-        // }
+            // Should fail. Only maybe_owner can mint
+            // set_sender(accounts.alice);
+            // assert_eq!(pink34.pink_mint(accounts.bob, token_uri.clone()), Err(Error::Ownable(OwnableError::CallerIsNotOwner)));
+            // assert_eq!(pink34.total_supply(), 0);
 
-        // fn default_accounts() -> test::DefaultAccounts<ink::env::DefaultEnvironment> {
-        //     test::default_accounts::<Environment>()
-        // }
+            // New owner mints for Bob works
+            set_sender(maybe_owner);
+            assert_eq!(pink34.pink_mint(accounts.bob, token_uri), Ok(Id::U64(1)));
+            assert_eq!(
+                pink34.owners_token_by_index(accounts.bob, 0),
+                Ok(Id::U64(1))
+            );
+            assert_eq!(pink34.total_supply(), 1);
+        }
 
-        // fn set_sender(sender: AccountId) {
-        //     ink::env::test::set_caller::<Environment>(sender);
-        // }
+        #[ink::test]
+        fn pinkmint_works() {
+            let mut pink34 = init();
+            let accounts = default_accounts();
+            let token_uri = String::from(TOKEN_URI);
+            assert_eq!(pink34.owner(), accounts.alice);
 
-        // fn set_balance(account_id: AccountId, balance: Balance) {
-        //     ink::env::test::set_account_balance::<ink::env::DefaultEnvironment>(account_id, balance)
-        // }
+            // Should fail. Only owner can mint
+            set_sender(accounts.bob);
+            assert_eq!(
+                pink34.pink_mint(accounts.bob, token_uri.clone()),
+                Err(Error::Ownable(OwnableError::CallerIsNotOwner))
+            );
+            assert_eq!(pink34.total_supply(), 0);
+
+            // Owner mints for Bob works
+            set_sender(accounts.alice);
+            assert_eq!(pink34.pink_mint(accounts.bob, token_uri), Ok(Id::U64(1)));
+
+            // Check all the minting events
+            assert_eq!(pink34.total_supply(), 1);
+            assert_eq!(pink34.owner_of(Id::U64(1)), Some(accounts.bob));
+            assert_eq!(pink34.balance_of(accounts.bob), 1);
+            assert_eq!(
+                pink34.owners_token_by_index(accounts.bob, 0),
+                Ok(Id::U64(1))
+            );
+            assert_eq!(1, ink::env::test::recorded_events().count());
+            assert_eq!(pink34.pinkmint.last_token_id, 1);
+        }
+
+        #[ink::test]
+        fn change_owner_works() {
+            let mut pink34 = init();
+            let accounts = default_accounts();
+            let token_uri = String::from(TOKEN_URI);
+            assert_eq!(pink34.owner(), accounts.alice);
+
+            // change owner to Bob
+            set_sender(accounts.alice);
+            assert_eq!(pink34.transfer_ownership(accounts.bob), Ok(()));
+            assert_eq!(pink34.owner(), accounts.bob);
+
+            // Bob is now the owner and can mint
+            set_sender(accounts.bob);
+            assert_eq!(pink34.pink_mint(accounts.bob, token_uri), Ok(Id::U64(1)));
+        }
+
+        #[ink::test]
+        fn token_uri_works() {
+            let mut pink34 = init();
+            let accounts = default_accounts();
+            let token_uri = String::from(TOKEN_URI);
+
+            // Owner mints for Bob works
+            set_sender(accounts.alice);
+            assert_eq!(pink34.pink_mint(accounts.bob, token_uri), Ok(Id::U64(1)));
+
+            // return error if request is for not yet minted token
+            assert_eq!(
+                pink34.token_uri(42),
+                Err(Error::Pink(PinkError::TokenNotFound))
+            );
+            assert_eq!(
+                pink34.token_uri(1),
+                Ok(PreludeString::from(TOKEN_URI.to_owned()))
+            );
+        }
+
+        fn default_accounts() -> test::DefaultAccounts<ink::env::DefaultEnvironment> {
+            test::default_accounts::<Environment>()
+        }
+
+        fn set_sender(sender: AccountId) {
+            ink::env::test::set_caller::<Environment>(sender);
+        }
     }
 }

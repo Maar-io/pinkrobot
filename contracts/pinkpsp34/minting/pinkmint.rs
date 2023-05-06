@@ -2,7 +2,6 @@ use crate::internal::{Error, Internal, PinkError};
 use crate::traits::PinkMint;
 
 use ink::{prelude::string::String as PreludeString, storage::Mapping};
-
 use openbrush::{
     contracts::{
         ownable::*,
@@ -38,7 +37,6 @@ where
     #[modifiers(only_owner)]
     default fn pink_mint(&mut self, to: AccountId, metadata: String) -> Result<Id, Error> {
         self._check_amount(1)?;
-
         let minted_id = self._mint(to)?;
 
         self.data::<MintingData>()

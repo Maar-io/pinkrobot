@@ -1,4 +1,4 @@
-use crate::pink_minting::MintingData;
+use crate::pinkmint::MintingData;
 
 use ink::prelude::string::String as PreludeString;
 
@@ -50,11 +50,7 @@ pub trait Internal {
 /// Helper trait for Minting
 impl<T> Internal for T
 where
-    T: Storage<MintingData>
-        // + psp34::extensions::metadata::PSP34Metadata
-        + psp34::Internal
-        // + Storage<ownable::Data>
-        + Storage<psp34::Data<enumerable::Balances>>,
+    T: Storage<MintingData> + psp34::Internal + Storage<psp34::Data<enumerable::Balances>>,
 {
     /// Check amount of tokens to be minted
     default fn _check_amount(&self, mint_amount: u64) -> Result<(), Error> {
