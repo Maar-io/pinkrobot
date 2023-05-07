@@ -14,7 +14,7 @@ import { KeyringPair } from "@polkadot/keyring/types";
 use(chaiAsPromised);
 
 const MAX_SUPPLY = 888;
-const BASE_URI = "ipfs://tokenUriPrefix/";
+const TOKEN_URI = "ipfs://tokenUriPrefix/";
 const COLLECTION_METADATA = "ipfs://collectionMetadata/data.json";
 const CATALOG_METADATA = "ipfs://catalogMetadata/data.json";
 const ONE = new BN(10).pow(new BN(18));
@@ -88,31 +88,25 @@ describe("Pink Robot minting", () => {
     expect(newOwner).to.equal(pinkrobot.address);
   });
 
-  // it("Mint PSP via pinkrobot works", async () => {
-  //   expect(
-  //     (await pinkrobot.tx.addNewContract(1, psp.address)).result
-  //   ).to.be.ok;
+  it("Mint PSP via pinkrobot works", async () => {
+    expect(
+      (await pinkrobot.tx.addNewContract(1, psp.address)).result
+    ).to.be.ok;
 
-  //   expect(
-  //     (await pinkrobot.query.getContract(1)).value.ok
-  //   ).to.equal(psp.address);
+    expect(
+      (await pinkrobot.query.getContract(1)).value.ok
+    ).to.equal(psp.address);
 
-  //   let OwnerRes1 = (await psp.query.owner()).value;
-  //   console.log("OwnerRes result", OwnerRes1);
-  //   let newOwnerRes = (await psp.withSigner(deployer).query.transferOwnership(pinkrobot.address)).value;
-  //   console.log("newOwnerRes result", newOwnerRes);
-  //   let OwnerRes = (await psp.query.owner()).value;
-  //   console.log("OwnerRes result", OwnerRes);
+    // set pinkrobot to be the owner of PSP34 contract
+    expect((await psp.withSigner(deployer).tx.transferOwnership(pinkrobot.address)).result?.isFinalized).to.be.true;
 
-  //   let txRes = (await psp.withSigner(deployer).tx.transferOwnership(pinkrobot.address)).result.toHuman();
-  //   console.log("txRes result", txRes);
+    const res = await pinkrobot.withSigner(deployer).query.mint(1, [TOKEN_URI]);
 
-  //   const res = await pinkrobot.withSigner(deployer).query.mint(1);
-  //   console.log("mint result", res);
+    console.log("mint result", res.value);
 
-  //   expect((await psp.query.totalSupply()).value.unwrap().toNumber()).to.equal(1);
+    // expect((await psp.query.totalSupply()).value.unwrap().toNumber()).to.equal(1);
 
-  // });
+  });
 
 });
 

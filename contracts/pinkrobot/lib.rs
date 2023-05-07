@@ -11,7 +11,10 @@ mod pinkrobot {
 
     use ink::prelude::vec::Vec;
     use ink::storage::Mapping;
-    
+    // use ink::env::Result as EnvResult;
+    // use ink::MessageResult;
+    // type ContractResult = core::result::Result<(), ()>;
+
     // use pinkpsp34::pinkpsp34::PinkPsp34;
 
     #[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
@@ -19,6 +22,8 @@ mod pinkrobot {
     pub enum Error {
         NotOwner,
         FailedToGetContract,
+        FailedToCallContract,
+        // InkError(ink::env::Error),
     }
 
     pub type Result<T> = core::result::Result<T, Error>;
@@ -72,21 +77,35 @@ mod pinkrobot {
                 .get(&entry)
                 .ok_or(Error::FailedToGetContract)?;
 
+            ink::env::debug_println!("PinkMint::pink_mint selector: {:x?}", ink::selector_bytes!("PinkMint::pink_mint"));
+                
             let _mint_result = build_call::<DefaultEnvironment>()
                 .call(contract)
                 .gas_limit(50000000)
                 .exec_input(
-                    ExecutionInput::new(Selector::new(ink::selector_bytes!("pink_mint")))
+                    ExecutionInput::new(Selector::new(ink::selector_bytes!("PinkMint::pink_mint")))
                         .push_arg(caller)
                         .push_arg(metadata),
                 )
                 .returns::<Id>()
-                .invoke();
+                .try_invoke();
 
+            // self.process_result(_mint_result)
             // let mint_result = PinkPsp34::mint(&contract, caller);
             ink::env::debug_println!("mint_result: {:?}", _mint_result);
             Ok(())
         }
+
+        // fn process_result(result:  ) -> Result<()> {
+        //     match result {
+        //         Ok(id) => 
+        //         {
+        //             ink::env::debug_println!("mint_result: {:?}", result);
+        //             return Ok(id);
+        //         }
+        //         Err(err) => Err(Error::InkError(err)),
+        //     }
+        // }
 
         /// Simply returns the current value of our `bool`.
         #[ink(message)]
