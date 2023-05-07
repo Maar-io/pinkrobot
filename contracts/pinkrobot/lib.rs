@@ -4,15 +4,15 @@
 mod pinkrobot {
     
     use crate::ensure;
-    // use ink::env::{
-        //     call::{build_call, ExecutionInput, Selector},
-        //     DefaultEnvironment,
-        // };
+    use ink::env::{
+            call::{build_call, ExecutionInput, Selector},
+            DefaultEnvironment,
+        };
 
     use ink::prelude::vec::Vec;
     use ink::storage::Mapping;
     
-    use pinkpsp34::pinkpsp34::PinkPsp34;
+    // use pinkpsp34::pinkpsp34::PinkPsp34;
 
     #[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
     #[cfg_attr(feature = "std", derive(scale_info::TypeInfo))]
@@ -64,7 +64,7 @@ mod pinkrobot {
         }
 
         #[ink(message)]
-        pub fn mint(&self, entry: u8) -> Result<()> {
+        pub fn mint(&self, entry: u8, metadata: Vec<u8>) -> Result<()> {
             let caller = self.env().caller();
             ensure!(caller == self.owner, Error::NotOwner);
             let contract = self
@@ -72,18 +72,19 @@ mod pinkrobot {
                 .get(&entry)
                 .ok_or(Error::FailedToGetContract)?;
 
-            // let _mint_result = build_call::<DefaultEnvironment>()
-            //     .call(contract)
-            //     .gas_limit(50000000)
-            //     .exec_input(
-            //         ExecutionInput::new(Selector::new(ink::selector_bytes!("mint")))
-            //             .push_arg(caller),
-            //     )
-            //     .returns::<Id>()
-            //     .invoke();
+            let _mint_result = build_call::<DefaultEnvironment>()
+                .call(contract)
+                .gas_limit(50000000)
+                .exec_input(
+                    ExecutionInput::new(Selector::new(ink::selector_bytes!("pink_mint")))
+                        .push_arg(caller)
+                        .push_arg(metadata),
+                )
+                .returns::<Id>()
+                .invoke();
 
-            let mint_result = PinkPsp34::mint(&contract, caller);
-            println!("mint_result: {:?}", mint_result);
+            // let mint_result = PinkPsp34::mint(&contract, caller);
+            ink::env::debug_println!("mint_result: {:?}", _mint_result);
             Ok(())
         }
 

@@ -2592,17 +2592,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "pinkrmrk"
-version = "0.1.0"
-dependencies = [
- "ink",
- "openbrush",
- "parity-scale-codec",
- "rmrk",
- "scale-info",
-]
-
-[[package]]
 name = "pinkrobot"
 version = "0.1.0"
 dependencies = [
@@ -2610,7 +2599,6 @@ dependencies = [
  "ink_e2e",
  "parity-scale-codec",
  "pinkpsp34",
- "pinkrmrk",
  "scale-info",
 ]
 
@@ -2871,96 +2859,6 @@ name = "rlibc"
 version = "1.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "fc874b127765f014d792f16763a81245ab80500e2ad921ed4ee9e82481ee08fe"
-
-[[package]]
-name = "rmrk"
-version = "0.6.0"
-source = "git+https://github.com/rmrk-team/rmrk-ink?tag=v0.6.0#5af949391694892fb7ba6293d94b070b891274f5"
-dependencies = [
- "ink",
- "openbrush",
- "parity-scale-codec",
- "rmrk_catalog",
- "rmrk_common",
- "rmrk_equippable",
- "rmrk_minting",
- "rmrk_multiasset",
- "rmrk_nesting",
- "scale-info",
-]
-
-[[package]]
-name = "rmrk_catalog"
-version = "0.6.0"
-source = "git+https://github.com/rmrk-team/rmrk-ink?tag=v0.6.0#5af949391694892fb7ba6293d94b070b891274f5"
-dependencies = [
- "ink",
- "openbrush",
- "parity-scale-codec",
- "rmrk_common",
- "scale-info",
-]
-
-[[package]]
-name = "rmrk_common"
-version = "0.6.0"
-source = "git+https://github.com/rmrk-team/rmrk-ink?tag=v0.6.0#5af949391694892fb7ba6293d94b070b891274f5"
-dependencies = [
- "ink",
- "openbrush",
- "parity-scale-codec",
- "scale-info",
-]
-
-[[package]]
-name = "rmrk_equippable"
-version = "0.6.0"
-source = "git+https://github.com/rmrk-team/rmrk-ink?tag=v0.6.0#5af949391694892fb7ba6293d94b070b891274f5"
-dependencies = [
- "ink",
- "openbrush",
- "parity-scale-codec",
- "rmrk_catalog",
- "rmrk_common",
- "rmrk_multiasset",
- "scale-info",
-]
-
-[[package]]
-name = "rmrk_minting"
-version = "0.6.0"
-source = "git+https://github.com/rmrk-team/rmrk-ink?tag=v0.6.0#5af949391694892fb7ba6293d94b070b891274f5"
-dependencies = [
- "ink",
- "openbrush",
- "parity-scale-codec",
- "rmrk_common",
- "scale-info",
-]
-
-[[package]]
-name = "rmrk_multiasset"
-version = "0.6.0"
-source = "git+https://github.com/rmrk-team/rmrk-ink?tag=v0.6.0#5af949391694892fb7ba6293d94b070b891274f5"
-dependencies = [
- "ink",
- "openbrush",
- "parity-scale-codec",
- "rmrk_common",
- "scale-info",
-]
-
-[[package]]
-name = "rmrk_nesting"
-version = "0.6.0"
-source = "git+https://github.com/rmrk-team/rmrk-ink?tag=v0.6.0#5af949391694892fb7ba6293d94b070b891274f5"
-dependencies = [
- "ink",
- "openbrush",
- "parity-scale-codec",
- "rmrk_common",
- "scale-info",
-]
 
 [[package]]
 name = "rustc-demangle"
