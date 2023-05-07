@@ -1,6 +1,6 @@
 {
     "projectFiles": [
-      "pinkrobot/*", 
+      "./*", 
       "pinkpsp34/*"
     ],
     "typechainGeneratedPath": "types",

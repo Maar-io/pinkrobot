@@ -1,18 +1,18 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 
 #[ink::contract]
-mod gateway {
-
+mod pinkrobot {
+    
     use crate::ensure;
-    use ink::env::{
-        call::{build_call, ExecutionInput, Selector},
-        DefaultEnvironment,
-    };
+    // use ink::env::{
+        //     call::{build_call, ExecutionInput, Selector},
+        //     DefaultEnvironment,
+        // };
+
     use ink::prelude::vec::Vec;
     use ink::storage::Mapping;
-
-    // Add pinkrobot as a dependency
-    // use pinkrobot::traits::{Minting, MintingRef};
+    
+    use pinkpsp34::pinkpsp34::PinkPsp34;
 
     #[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
     #[cfg_attr(feature = "std", derive(scale_info::TypeInfo))]
@@ -39,15 +39,14 @@ mod gateway {
     }
 
     #[ink(storage)]
-    pub struct Gateway {
+    pub struct Pinkrobot {
         /// Contract owner
         owner: AccountId,
         /// Mapping of contract id to contract address
         contracts_map: Mapping<u8, AccountId>,
     }
 
-    impl Gateway {
-        /// Constructor that initializes the `bool` value to the given `init_value`.
+    impl Pinkrobot {
         #[ink(constructor)]
         pub fn new() -> Self {
             Self {
@@ -56,9 +55,6 @@ mod gateway {
             }
         }
 
-        /// A message that can be called on instantiated contracts.
-        /// This one flips the value of the stored `bool` from `true`
-        /// to `false` and vice versa.
         #[ink(message)]
         pub fn add_new_contract(&mut self, entry: u8, contract: AccountId) -> Result<()> {
             ensure!(self.env().caller() == self.owner, Error::NotOwner);
@@ -76,19 +72,18 @@ mod gateway {
                 .get(&entry)
                 .ok_or(Error::FailedToGetContract)?;
 
-            // let mint_result = MintingRef::mint(caller);
-            let _mint_result = build_call::<DefaultEnvironment>()
-                .call(contract)
-                .gas_limit(50000000)
-                .exec_input(
-                    ExecutionInput::new(Selector::new(ink::selector_bytes!("mint")))
-                        .push_arg(caller),
-                )
-                .returns::<Id>()
-                .invoke();
+            // let _mint_result = build_call::<DefaultEnvironment>()
+            //     .call(contract)
+            //     .gas_limit(50000000)
+            //     .exec_input(
+            //         ExecutionInput::new(Selector::new(ink::selector_bytes!("mint")))
+            //             .push_arg(caller),
+            //     )
+            //     .returns::<Id>()
+            //     .invoke();
 
-            // let mint_result = MintingRef::mint(caller);
-            // println!("mint_result: {:?}", mint_result);
+            let mint_result = PinkPsp34::mint(&contract, caller);
+            println!("mint_result: {:?}", mint_result);
             Ok(())
         }
 
@@ -111,16 +106,16 @@ mod gateway {
         #[ink::test]
         fn add_contract_works() {
             let contract: AccountId = [0x42; 32].into();
-            let mut gateway = Gateway::new();
-            assert!(gateway.add_new_contract(1, contract).is_ok());
+            let mut pinkrobot = Pinkrobot::new();
+            assert!(pinkrobot.add_new_contract(1, contract).is_ok());
         }
 
         #[ink::test]
         fn get_contract_works() {
             let contract: AccountId = [0x42; 32].into();
-            let mut gateway = Gateway::new();
-            assert!(gateway.add_new_contract(1, contract).is_ok());
-            assert_eq!(gateway.get_contract(1), Some(contract));
+            let mut pinkrobot = Pinkrobot::new();
+            assert!(pinkrobot.add_new_contract(1, contract).is_ok());
+            assert_eq!(pinkrobot.get_contract(1), Some(contract));
         }
     }
 
@@ -162,18 +157,18 @@ mod gateway {
         #[ink_e2e::test]
         async fn default_works(mut client: ink_e2e::Client<C, E>) -> E2EResult<()> {
             // Given
-            let constructor = GatewayRef::default();
+            let constructor = PinkrobotRef::default();
 
             // When
             let contract_account_id = client
-                .instantiate("gateway", &ink_e2e::alice(), constructor, 0, None)
+                .instantiate("pinkrobot", &ink_e2e::alice(), constructor, 0, None)
                 .await
                 .expect("instantiate failed")
                 .account_id;
 
             // Then
-            let get = build_message::<GatewayRef>(contract_account_id.clone())
-                .call(|gateway| gateway.get());
+            let get = build_message::<PinkrobotRef>(contract_account_id.clone())
+                .call(|pinkrobot| pinkrobot.get());
             let get_result = client.call_dry_run(&ink_e2e::alice(), &get, 0, None).await;
             assert!(matches!(get_result.return_value(), false));
 
@@ -184,29 +179,29 @@ mod gateway {
         #[ink_e2e::test]
         async fn it_works(mut client: ink_e2e::Client<C, E>) -> E2EResult<()> {
             // Given
-            let constructor = GatewayRef::new(false);
+            let constructor = PinkrobotRef::new(false);
             let contract_account_id = client
-                .instantiate("gateway", &ink_e2e::bob(), constructor, 0, None)
+                .instantiate("pinkrobot", &ink_e2e::bob(), constructor, 0, None)
                 .await
                 .expect("instantiate failed")
                 .account_id;
 
-            let get = build_message::<GatewayRef>(contract_account_id.clone())
-                .call(|gateway| gateway.get());
+            let get = build_message::<PinkrobotRef>(contract_account_id.clone())
+                .call(|pinkrobot| pinkrobot.get());
             let get_result = client.call_dry_run(&ink_e2e::bob(), &get, 0, None).await;
             assert!(matches!(get_result.return_value(), false));
 
             // When
-            let flip = build_message::<GatewayRef>(contract_account_id.clone())
-                .call(|gateway| gateway.flip());
+            let flip = build_message::<PinkrobotRef>(contract_account_id.clone())
+                .call(|pinkrobot| pinkrobot.flip());
             let _flip_result = client
                 .call(&ink_e2e::bob(), flip, 0, None)
                 .await
                 .expect("flip failed");
 
             // Then
-            let get = build_message::<GatewayRef>(contract_account_id.clone())
-                .call(|gateway| gateway.get());
+            let get = build_message::<PinkrobotRef>(contract_account_id.clone())
+                .call(|pinkrobot| pinkrobot.get());
             let get_result = client.call_dry_run(&ink_e2e::bob(), &get, 0, None).await;
             assert!(matches!(get_result.return_value(), true));
 

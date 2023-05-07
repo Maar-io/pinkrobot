@@ -2,7 +2,7 @@
 #![feature(min_specialization)]
 
 #[openbrush::contract]
-pub mod pinkrobot34 {
+pub mod pinkpsp34 {
     use ink::codegen::{EmitEvent, Env};
 
     use openbrush::contracts::ownable::*;
@@ -208,7 +208,13 @@ pub mod pinkrobot34 {
 
             // Bob is now the owner and can mint
             set_sender(accounts.bob);
-            assert_eq!(pink34.pink_mint(accounts.bob, token_uri), Ok(Id::U64(1)));
+            assert_eq!(pink34.pink_mint(accounts.bob, token_uri.clone()), Ok(Id::U64(1)));
+
+            // Should fail. Only owner can mint
+            set_sender(accounts.alice);
+            assert_eq!(pink34.pink_mint(accounts.alice, token_uri), 
+                Err(Error::Ownable(OwnableError::CallerIsNotOwner))
+            );
         }
 
         #[ink::test]

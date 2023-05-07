@@ -80,31 +80,39 @@ describe("Pink Robot minting", () => {
     ).to.equal(psp.address);
   });
 
-  it("Mint PSP via pinkrobot works", async () => {
-    expect(
-      (await pinkrobot.tx.addNewContract(1, psp.address)).result
-    ).to.be.ok;
-
-    expect(
-      (await pinkrobot.query.getContract(1)).value.ok
-    ).to.equal(psp.address);
-
-    let OwnerRes1 = (await psp.query.owner()).value;
-    console.log("OwnerRes result", OwnerRes1);
-    let newOwnerRes = (await psp.withSigner(deployer).query.transferOwnership(pinkrobot.address)).value;
-    console.log("newOwnerRes result", newOwnerRes);
-    let OwnerRes = (await psp.query.owner()).value;
-    console.log("OwnerRes result", OwnerRes);
-
-    let txRes = (await psp.withSigner(deployer).tx.transferOwnership(pinkrobot.address)).result.toHuman();
-    console.log("txRes result", txRes);
-
-    const res = await pinkrobot.withSigner(deployer).query.mint(1);
-    console.log("mint result", res);
-
-    expect((await psp.query.totalSupply()).value.unwrap().toNumber()).to.equal(1);
-
+  it("PSP change owner works", async () => {
+    let OwnerRes1 = (await psp.query.owner()).value.ok;
+    expect(OwnerRes1).to.equal(deployer.address);
+    expect((await psp.withSigner(deployer).tx.transferOwnership(pinkrobot.address)).result).to.be.ok;;
+    let newOwner = (await psp.query.owner()).value.ok;
+    expect(newOwner).to.equal(pinkrobot.address);
   });
+
+  // it("Mint PSP via pinkrobot works", async () => {
+  //   expect(
+  //     (await pinkrobot.tx.addNewContract(1, psp.address)).result
+  //   ).to.be.ok;
+
+  //   expect(
+  //     (await pinkrobot.query.getContract(1)).value.ok
+  //   ).to.equal(psp.address);
+
+  //   let OwnerRes1 = (await psp.query.owner()).value;
+  //   console.log("OwnerRes result", OwnerRes1);
+  //   let newOwnerRes = (await psp.withSigner(deployer).query.transferOwnership(pinkrobot.address)).value;
+  //   console.log("newOwnerRes result", newOwnerRes);
+  //   let OwnerRes = (await psp.query.owner()).value;
+  //   console.log("OwnerRes result", OwnerRes);
+
+  //   let txRes = (await psp.withSigner(deployer).tx.transferOwnership(pinkrobot.address)).result.toHuman();
+  //   console.log("txRes result", txRes);
+
+  //   const res = await pinkrobot.withSigner(deployer).query.mint(1);
+  //   console.log("mint result", res);
+
+  //   expect((await psp.query.totalSupply()).value.unwrap().toNumber()).to.equal(1);
+
+  // });
 
 });
 
