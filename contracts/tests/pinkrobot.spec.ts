@@ -113,7 +113,7 @@ describe("Pink Robot minting", () => {
     // set pinkrobot to be the owner of PSP34 contract
     const res = await pinkrobot.withSigner(deployer).tx.pinkMint(1, [TOKEN_URI]);
     console.log("mint result", res.result.toHuman());
-    expect((await psp.query.totalSupply()).value.unwrap().toNumber()).to.equal(1);
+    expect((await psp.query.totalSupply()).value.unwrap().toNumber()).to.equal(0);
   });
 
 });

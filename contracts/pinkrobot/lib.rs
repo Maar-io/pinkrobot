@@ -15,14 +15,13 @@ mod pinkrobot {
     // use ink::MessageResult;
     // type ContractResult = core::result::Result<(), ()>;
 
-    // use pinkpsp34::pinkpsp34::PinkPsp34;
-
     #[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
     #[cfg_attr(feature = "std", derive(scale_info::TypeInfo))]
     pub enum Error {
         NotOwner,
         FailedToGetContract,
         FailedToCallContract,
+        BadMintingFee,
     }
 
     pub type Result<T> = core::result::Result<T, Error>;
@@ -48,6 +47,8 @@ mod pinkrobot {
         owner: AccountId,
         /// Mapping of contract id to contract address
         contracts_map: Mapping<u8, AccountId>,
+        /// Minting price
+        price: Balance,
     }
 
     impl Pinkrobot {
@@ -56,6 +57,7 @@ mod pinkrobot {
             Self {
                 owner: Self::env().caller(),
                 contracts_map: Mapping::default(),
+                price: 0,
             }
         }
 
@@ -68,9 +70,20 @@ mod pinkrobot {
         }
 
         #[ink(message)]
+        pub fn set_price(&mut self, price: Balance) -> Result<()> {
+            ensure!(self.env().caller() == self.owner, Error::NotOwner);
+            self.price = price;
+            Ok(())
+        }
+
+        #[ink(message, payable)]
         pub fn pink_mint(&mut self, entry: u8, metadata: Vec<u8>) -> Result<()> {
             let caller = self.env().caller();
-            // ensure!(caller == self.owner, Error::NotOwner);
+            ensure!(
+                self.price == self.env().transferred_value(),
+                Error::BadMintingFee
+            );
+            ensure!(self.env().caller() == self.owner, Error::NotOwner);
             let contract = self
                 .contracts_map
                 .get(&entry)
@@ -146,84 +159,66 @@ mod pinkrobot {
     /// - Are running a Substrate node which contains `pallet-contracts` in the background
     #[cfg(all(test, feature = "e2e-tests"))]
     mod e2e_tests {
-        use super::DelegatorRef;
+        use crate::pinkrobot::PinkrobotRef;
         use ink_e2e::build_message;
+        use pinkpsp34::pinkpsp34::PinkPsp34Ref;
 
         type E2EResult<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 
-        // #[ink_e2e::test(
-        //     additional_contracts = "accumulator/Cargo.toml adder/Cargo.toml subber/Cargo.toml"
-        // )]
-        // async fn e2e_delegator(mut client: ink_e2e::Client<C, E>) -> E2EResult<()> {
-        //     // given
-        //     let accumulator_hash = client
-        //         .upload("accumulator", &ink_e2e::alice(), None)
-        //         .await
-        //         .expect("uploading `accumulator` failed")
-        //         .code_hash;
+        #[ink_e2e::test(additional_contracts = "pinkpsp34/Cargo.toml pinkrobot/Cargo.toml")]
+        async fn e2e_init_works(mut client: ink_e2e::Client<C, E>) -> E2EResult<()> {
+            // Instantiate pinkrobot anf PinkPsp34 contracts
+            let name: Vec<u8> = "PinkPsp34".as_bytes().to_vec();
+            let symbol: Vec<u8> = "PP".as_bytes().to_vec();
+            // let pinkpsp34_hash = client
+            //     .upload("pinkpsp34", &ink_e2e::alice(), None)
+            //     .await
+            //     .expect("uploading `pinkpsp34` failed")
+            //     .code_hash;
 
-        // }
-
-        /// Imports all the definitions from the outer scope so we can use them here.
-        use super::*;
-
-        /// A helper function used for calling contract messages.
-        use ink_e2e::build_message;
-
-        /// The End-to-End test `Result` type.
-        type E2EResult<T> = std::result::Result<T, Box<dyn std::error::Error>>;
-
-        /// We test that we can upload and instantiate the contract using its default constructor.
-        #[ink_e2e::test]
-        async fn default_works(mut client: ink_e2e::Client<C, E>) -> E2EResult<()> {
-            // Given
-            let constructor = PinkrobotRef::default();
-
-            // When
-            let contract_account_id = client
-                .instantiate("pinkrobot", &ink_e2e::alice(), constructor, 0, None)
+            let pinkpsp34_constructor = PinkPsp34Ref::new(name, symbol, 10, None);
+            let pinkpsp34_account_id = client
+                .instantiate(
+                    "pinkpsp34",
+                    &ink_e2e::alice(),
+                    pinkpsp34_constructor,
+                    0,
+                    None,
+                )
                 .await
-                .expect("instantiate failed")
+                .expect("pinkpsp34 instantiate failed")
                 .account_id;
 
-            // Then
-            let get = build_message::<PinkrobotRef>(contract_account_id.clone())
-                .call(|pinkrobot| pinkrobot.get());
-            let get_result = client.call_dry_run(&ink_e2e::alice(), &get, 0, None).await;
-            assert!(matches!(get_result.return_value(), false));
-
-            Ok(())
-        }
-
-        /// We test that we can read and write a value from the on-chain contract contract.
-        #[ink_e2e::test]
-        async fn it_works(mut client: ink_e2e::Client<C, E>) -> E2EResult<()> {
-            // Given
-            let constructor = PinkrobotRef::new(false);
-            let contract_account_id = client
-                .instantiate("pinkrobot", &ink_e2e::bob(), constructor, 0, None)
+            let pinkrobot_constructor = PinkrobotRef::new();
+            let mut pinkrobot_account_id = client
+                .instantiate(
+                    "pinkrobot",
+                    &ink_e2e::alice(),
+                    pinkrobot_constructor,
+                    0,
+                    None,
+                )
                 .await
-                .expect("instantiate failed")
+                .expect("pinkrobot instantiate failed")
                 .account_id;
 
-            let get = build_message::<PinkrobotRef>(contract_account_id.clone())
-                .call(|pinkrobot| pinkrobot.get());
-            let get_result = client.call_dry_run(&ink_e2e::bob(), &get, 0, None).await;
-            assert!(matches!(get_result.return_value(), false));
-
-            // When
-            let flip = build_message::<PinkrobotRef>(contract_account_id.clone())
-                .call(|pinkrobot| pinkrobot.flip());
-            let _flip_result = client
-                .call(&ink_e2e::bob(), flip, 0, None)
+            // Add pinkpsp34 contract to pinkrobot with index 1
+            let change_message = build_message::<PinkrobotRef>(pinkrobot_account_id.clone())
+                .call(|pinkrobot| pinkrobot.add_new_contract(1, pinkpsp34_account_id.clone()));
+            let _ = client
+                .call(&ink_e2e::alice(), change_message, 0, None)
                 .await
-                .expect("flip failed");
+                .expect("calling `add_new_contract` failed");
 
-            // Then
-            let get = build_message::<PinkrobotRef>(contract_account_id.clone())
-                .call(|pinkrobot| pinkrobot.get());
-            let get_result = client.call_dry_run(&ink_e2e::bob(), &get, 0, None).await;
-            assert!(matches!(get_result.return_value(), true));
+            // Verify that index 1 is pinkpsp34
+            let get = build_message::<PinkrobotRef>(pinkrobot_account_id.clone())
+                .call(|pinkrobot| pinkrobot.get_contract(1));
+            let value = client
+                .call_dry_run(&ink_e2e::bob(), &get, 0, None)
+                .await
+                .return_value();
+
+            assert_eq!(value, Some(pinkpsp34_account_id));
 
             Ok(())
         }

@@ -1,6 +1,8 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 #![feature(min_specialization)]
 
+pub use self::pinkpsp34::{PinkPsp34, PinkPsp34Ref};
+
 #[openbrush::contract]
 pub mod pinkpsp34 {
     use ink::codegen::{EmitEvent, Env};
@@ -109,7 +111,7 @@ pub mod pinkpsp34 {
         const NAME: &str = "PinkPsp34";
         const SYMBOL: &str = "PnkP";
         const TOKEN_URI: &str = "ipfs://myIpfsUri/";
-        const OWNER: [u8; 32] = [0x1; 32];
+        const OWNER: [u8; 32] = [0x9; 32];
 
         fn init() -> PinkPsp34 {
             PinkPsp34::new(String::from(NAME), String::from(SYMBOL), MAX_SUPPLY, None)
@@ -149,8 +151,11 @@ pub mod pinkpsp34 {
             assert_eq!(pink34.owner(), maybe_owner);
 
             // Should fail. Only maybe_owner can mint
-            set_sender(accounts.bob);
-            assert_eq!(pink34.mint(accounts.bob, token_uri.clone()), Err(Error::Ownable(OwnableError::CallerIsNotOwner)));
+            set_sender(accounts.alice);
+            assert_eq!(
+                pink34.mint(accounts.bob, token_uri.clone()),
+                Err(Error::Ownable(OwnableError::CallerIsNotOwner))
+            );
             assert_eq!(pink34.total_supply(), 0);
 
             // New owner mints for Bob works
