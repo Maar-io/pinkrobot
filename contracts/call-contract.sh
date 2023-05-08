@@ -17,30 +17,45 @@ PINKROBOT_ADDRESS=$(cargo contract instantiate \
 
 echo "-------- pinkrobot Address: $PINKROBOT_ADDRESS"
 
-# Add contract entry
-ADD_RESULT=$(cargo contract call \
-    --suri //Alice \
-    --contract $PINKROBOT_ADDRESS \
-    --message add_new_contract \
-    --args 1 $PINKROBOT_ADDRESS \
-    --manifest-path pinkrobot/Cargo.toml \
-    -x --skip-confirm
-    )
-echo "-------- ADD_RESULT: $ADD_RESULT"
 
 echo "-------- Upload and Instantiate the pinkpsp34 contract"
 PINK_PSP_ADDRESS=$(cargo contract instantiate --constructor new \
-    --args PinkName PN 10 [] \
+    --args 0x74657374 0x7465 1000 "None" \
     --suri //Alice --salt $(date +%s) \
     --manifest-path pinkpsp34/Cargo.toml \
     --output-json --skip-confirm --execute | jq .contract -r)
 
 echo "-------- pinkpsp34 Address: $PINK_PSP_ADDRESS"
 
+# Add contract entry
+ADD_RESULT=$(cargo contract call \
+    --suri //Alice \
+    --contract $PINKROBOT_ADDRESS \
+    --message add_new_contract \
+    --args 1 $PINK_PSP_ADDRESS \
+    --manifest-path pinkrobot/Cargo.toml \
+    -x --skip-confirm
+    )
+echo "-------- ADD_RESULT: $ADD_RESULT"
 
-# Mint through the pinkrobot contract
-cargo contract call --contract $PINKROBOT_ADDRESS \
-    --message mint \
-    --args 1 'ipfs' \
+# Get contract entry
+GET_RESULT=$(cargo contract call \
+    --suri //Alice \
+    --contract $PINKROBOT_ADDRESS \
+    --message get_contract \
+    --args 1 \
+    --manifest-path pinkrobot/Cargo.toml \
+    -x --skip-confirm
+    )
+echo "-------- GET_RESULT: $GET_RESULT"
+
+# Add contract entry
+MINT_RESULT=$(cargo contract call \
     --suri //Bob \
-    --manifest-path pinkrobot/Cargo.toml
+    --contract $PINKROBOT_ADDRESS \
+    --message pink_mint \
+    --args 1 0x69706673 \
+    --manifest-path pinkrobot/Cargo.toml \
+    -x --skip-confirm
+    )
+echo "-------- MINT_RESULT: $MINT_RESULT"

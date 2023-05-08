@@ -100,11 +100,11 @@ describe("Pink Robot minting", () => {
     // set pinkrobot to be the owner of PSP34 contract
     expect((await psp.withSigner(deployer).tx.transferOwnership(pinkrobot.address)).result?.isFinalized).to.be.true;
 
-    const res = await pinkrobot.withSigner(deployer).query.mint(1, [TOKEN_URI]);
+    const res = await pinkrobot.withSigner(deployer).query.pinkMint(1, [TOKEN_URI]);
 
     console.log("mint result", res.value);
 
-    // expect((await psp.query.totalSupply()).value.unwrap().toNumber()).to.equal(1);
+    expect((await psp.query.totalSupply()).value.unwrap().toNumber()).to.equal(1);
 
   });
 

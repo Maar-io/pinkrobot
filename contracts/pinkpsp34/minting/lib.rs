@@ -2,5 +2,5 @@
 #![feature(min_specialization)]
 
 pub mod internal;
-pub mod pinkmint;
+pub mod minting;
 pub mod traits;

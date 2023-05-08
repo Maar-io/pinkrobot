@@ -1,4 +1,4 @@
-use crate::pinkmint::MintingData;
+use crate::minting::MintingData;
 
 use ink::prelude::string::String as PreludeString;
 

@@ -16,7 +16,7 @@ pub type PinkMintRef = dyn PinkMint;
 pub trait PinkMint {
     /// Mint one or more tokens.
     #[ink(message)]
-    fn pink_mint(&mut self, to: AccountId, metadata: String) -> Result<Id, Error>;
+    fn mint(&mut self, to: AccountId, metadata: String) -> Result<Id, Error>;
 
     /// Get max supply of tokens.
     #[ink(message)]

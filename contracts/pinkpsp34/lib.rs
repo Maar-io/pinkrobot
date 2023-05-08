@@ -12,7 +12,7 @@ pub mod pinkpsp34 {
     use openbrush::traits::Storage;
     use openbrush::traits::String;
 
-    use psp34_minting::pinkmint::*;
+    use psp34_minting::minting::*;
     use psp34_minting::traits::*;
 
     #[ink(storage)]
@@ -75,6 +75,11 @@ pub mod pinkpsp34 {
             instance.pinkmint.last_token_id = 0;
             instance
         }
+
+        // #[ink(constructor)]
+        // pub fn default() -> Self {
+        //     Self::new(String::from("PinkPsp34"), String::from("PP"), 100, None)
+        // }
     }
 
     // Override event emission methods
@@ -126,7 +131,7 @@ pub mod pinkpsp34 {
         }
 
         #[ink::test]
-        fn init_works() {
+        fn init_new_works() {
             let pink34 = init();
             assert_eq!(
                 pink34.get_attribute(Id::U64(0), String::from("name")),
@@ -139,6 +144,11 @@ pub mod pinkpsp34 {
             assert_eq!(pink34.max_supply(), Some(MAX_SUPPLY));
         }
 
+        // #[ink::test]
+        // fn init_default_works() {
+        //     assert_eq!(PinkPsp34::default().total_supply(), 0);
+        // }
+
         #[ink::test]
         fn init_with_owner_works() {
             let mut pink34 = init_with_owner();
@@ -150,12 +160,12 @@ pub mod pinkpsp34 {
 
             // Should fail. Only maybe_owner can mint
             // set_sender(accounts.alice);
-            // assert_eq!(pink34.pink_mint(accounts.bob, token_uri.clone()), Err(Error::Ownable(OwnableError::CallerIsNotOwner)));
+            // assert_eq!(pink34.mint(accounts.bob, token_uri.clone()), Err(Error::Ownable(OwnableError::CallerIsNotOwner)));
             // assert_eq!(pink34.total_supply(), 0);
 
             // New owner mints for Bob works
             set_sender(maybe_owner);
-            assert_eq!(pink34.pink_mint(accounts.bob, token_uri), Ok(Id::U64(1)));
+            assert_eq!(pink34.mint(accounts.bob, token_uri), Ok(Id::U64(1)));
             assert_eq!(
                 pink34.owners_token_by_index(accounts.bob, 0),
                 Ok(Id::U64(1))
@@ -173,14 +183,14 @@ pub mod pinkpsp34 {
             // Should fail. Only owner can mint
             set_sender(accounts.bob);
             assert_eq!(
-                pink34.pink_mint(accounts.bob, token_uri.clone()),
+                pink34.mint(accounts.bob, token_uri.clone()),
                 Err(Error::Ownable(OwnableError::CallerIsNotOwner))
             );
             assert_eq!(pink34.total_supply(), 0);
 
             // Owner mints for Bob works
             set_sender(accounts.alice);
-            assert_eq!(pink34.pink_mint(accounts.bob, token_uri), Ok(Id::U64(1)));
+            assert_eq!(pink34.mint(accounts.bob, token_uri), Ok(Id::U64(1)));
 
             // Check all the minting events
             assert_eq!(pink34.total_supply(), 1);
@@ -208,11 +218,12 @@ pub mod pinkpsp34 {
 
             // Bob is now the owner and can mint
             set_sender(accounts.bob);
-            assert_eq!(pink34.pink_mint(accounts.bob, token_uri.clone()), Ok(Id::U64(1)));
+            assert_eq!(pink34.mint(accounts.bob, token_uri.clone()), Ok(Id::U64(1)));
 
             // Should fail. Only owner can mint
             set_sender(accounts.alice);
-            assert_eq!(pink34.pink_mint(accounts.alice, token_uri), 
+            assert_eq!(
+                pink34.mint(accounts.alice, token_uri),
                 Err(Error::Ownable(OwnableError::CallerIsNotOwner))
             );
         }
@@ -225,7 +236,7 @@ pub mod pinkpsp34 {
 
             // Owner mints for Bob works
             set_sender(accounts.alice);
-            assert_eq!(pink34.pink_mint(accounts.bob, token_uri), Ok(Id::U64(1)));
+            assert_eq!(pink34.mint(accounts.bob, token_uri), Ok(Id::U64(1)));
 
             // return error if request is for not yet minted token
             assert_eq!(

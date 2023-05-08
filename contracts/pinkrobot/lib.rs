@@ -2,12 +2,12 @@
 
 #[ink::contract]
 mod pinkrobot {
-    
+
     use crate::ensure;
     use ink::env::{
-            call::{build_call, ExecutionInput, Selector},
-            DefaultEnvironment,
-        };
+        call::{build_call, ExecutionInput, Selector},
+        DefaultEnvironment,
+    };
 
     use ink::prelude::vec::Vec;
     use ink::storage::Mapping;
@@ -23,7 +23,6 @@ mod pinkrobot {
         NotOwner,
         FailedToGetContract,
         FailedToCallContract,
-        // InkError(ink::env::Error),
     }
 
     pub type Result<T> = core::result::Result<T, Error>;
@@ -69,36 +68,38 @@ mod pinkrobot {
         }
 
         #[ink(message)]
-        pub fn mint(&self, entry: u8, metadata: Vec<u8>) -> Result<()> {
+        pub fn pink_mint(&mut self, entry: u8, metadata: Vec<u8>) -> Result<()> {
             let caller = self.env().caller();
-            ensure!(caller == self.owner, Error::NotOwner);
+            // ensure!(caller == self.owner, Error::NotOwner);
             let contract = self
                 .contracts_map
                 .get(&entry)
                 .ok_or(Error::FailedToGetContract)?;
 
-            ink::env::debug_println!("PinkMint::pink_mint selector: {:x?}", ink::selector_bytes!("PinkMint::pink_mint"));
-                
+            ink::env::debug_println!(
+                "PinkMint::mint selector: {:x?}",
+                ink::selector_bytes!("PinkMint::mint")
+            );
+
             let _mint_result = build_call::<DefaultEnvironment>()
                 .call(contract)
-                .gas_limit(50000000)
+                .gas_limit(5000000000)
                 .exec_input(
-                    ExecutionInput::new(Selector::new(ink::selector_bytes!("PinkMint::pink_mint")))
+                    ExecutionInput::new(Selector::new(ink::selector_bytes!("PinkMint::mint")))
                         .push_arg(caller)
                         .push_arg(metadata),
                 )
-                .returns::<Id>()
+                .returns::<()>()
                 .try_invoke();
 
             // self.process_result(_mint_result)
-            // let mint_result = PinkPsp34::mint(&contract, caller);
-            ink::env::debug_println!("mint_result: {:?}", _mint_result);
+            ink::env::debug_println!("pink_mint_result: {:?}", _mint_result);
             Ok(())
         }
 
         // fn process_result(result:  ) -> Result<()> {
         //     match result {
-        //         Ok(id) => 
+        //         Ok(id) =>
         //         {
         //             ink::env::debug_println!("mint_result: {:?}", result);
         //             return Ok(id);
@@ -117,7 +118,6 @@ mod pinkrobot {
     fn ensure_valid_contract(_contract: AccountId) -> Result<()> {
         Ok(())
     }
-
 
     #[cfg(test)]
     mod tests {

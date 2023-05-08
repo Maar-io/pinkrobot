@@ -35,11 +35,11 @@ where
 {
     /// Mint one token to the specified account.
     #[modifiers(only_owner)]
-    default fn pink_mint(&mut self, to: AccountId, metadata: String) -> Result<Id, Error> {
+    default fn mint(&mut self, to: AccountId, metadata: String) -> Result<Id, Error> {
         ink::env::debug_println!("PinkMint::pink_mint {:?} {:?}", to, metadata);
         self._check_amount(1)?;
         let minted_id = self._mint(to)?;
-        ink::env::debug_println!("PinkMint minted_id {:?}", minted_id);
+        ink::env::debug_println!("PSPMint minted_id {:?}", minted_id);
 
         self.data::<MintingData>()
             .nft_metadata
