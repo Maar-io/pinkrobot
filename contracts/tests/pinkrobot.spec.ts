@@ -15,11 +15,8 @@ use(chaiAsPromised);
 
 const MAX_SUPPLY = 888;
 const TOKEN_URI = "ipfs://tokenUriPrefix/";
-const COLLECTION_METADATA = "ipfs://collectionMetadata/data.json";
-const CATALOG_METADATA = "ipfs://catalogMetadata/data.json";
 const ONE = new BN(10).pow(new BN(18));
 const PRICE_PER_MINT = ONE;
-const ADMIN_ROLE = 0;
 
 // Create a new instance of contract
 const wsProvider = new WsProvider("ws://127.0.0.1:9944");
@@ -99,13 +96,24 @@ describe("Pink Robot minting", () => {
 
     // set pinkrobot to be the owner of PSP34 contract
     expect((await psp.withSigner(deployer).tx.transferOwnership(pinkrobot.address)).result?.isFinalized).to.be.true;
-
-    const res = await pinkrobot.withSigner(deployer).query.pinkMint(1, [TOKEN_URI]);
-
-    console.log("mint result", res.value);
-
+    const res = await pinkrobot.withSigner(deployer).tx.pinkMint(1, [TOKEN_URI]);
+    console.log("mint result", res.result.toHuman());
     expect((await psp.query.totalSupply()).value.unwrap().toNumber()).to.equal(1);
+  });
 
+  it("Should fail if pinkrobot is not the owner", async () => {
+    expect(
+      (await pinkrobot.tx.addNewContract(1, psp.address)).result
+    ).to.be.ok;
+
+    expect(
+      (await pinkrobot.query.getContract(1)).value.ok
+    ).to.equal(psp.address);
+
+    // set pinkrobot to be the owner of PSP34 contract
+    const res = await pinkrobot.withSigner(deployer).tx.pinkMint(1, [TOKEN_URI]);
+    console.log("mint result", res.result.toHuman());
+    expect((await psp.query.totalSupply()).value.unwrap().toNumber()).to.equal(1);
   });
 
 });

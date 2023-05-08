@@ -6,7 +6,6 @@ use openbrush::{
     contracts::{
         ownable::*,
         psp34::extensions::{enumerable::*, metadata::*},
-        // reentrancy_guard::*,
     },
     modifiers,
     traits::{AccountId, Balance, Storage, String},
@@ -27,7 +26,6 @@ impl<T> PinkMint for T
 where
     T: Storage<MintingData>
         + Storage<psp34::Data<enumerable::Balances>>
-        // + Storage<reentrancy_guard::Data>
         + Storage<ownable::Data>
         + Storage<metadata::Data>
         + psp34::extensions::metadata::PSP34Metadata
