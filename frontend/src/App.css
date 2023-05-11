@@ -176,7 +176,7 @@ h1 {
 }
 
 .group {
-  @apply relative pb-7
+  @apply pb-7
 }
 .group:last-child {
   @apply relative pb-2
@@ -202,4 +202,12 @@ h1 {
 }
 .user-guide {
   @apply text-xs text-gray-300 text-left;
+}
+
+.hide {
+  display: none;
+}
+
+.show {
+  display: block;
 }
