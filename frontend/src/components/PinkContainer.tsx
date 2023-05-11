@@ -14,6 +14,7 @@ export const PinkContainer = () => {
   return (
     <div className="App">
       <Formik
+        validateOnMount
         initialValues={initialPinkValues}
         validationSchema={PinkFormSchema}
         onSubmit={async (values, helpers) => {

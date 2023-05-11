@@ -172,7 +172,7 @@ h1 {
 }
 
 .error-message {
- @apply absolute bottom-4 text-red-500 text-xs
+ @apply text-red-500 text-xs text-left
 }
 
 .group {

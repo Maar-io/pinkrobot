@@ -129,7 +129,7 @@ export const GenerateForm = ({setIsBusy}: {setIsBusy: Function }) => {
             handleChange(e);
           }}
         />
-        <ErrorMessage name="url" component="div" className="error-message" />
+        <ErrorMessage name="prompt" component="div" className="error-message" />
       </div>
 
       <div className="group">
