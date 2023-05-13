@@ -1,6 +1,6 @@
 import * as Yup from "yup";
 import { PinkValues } from "../types";
-import robot_bestia from "../robot-bestia.jpeg";
+import robot_bestia from "../assets/robot-bestia.jpeg";
 import BN from "bn.js";
 
 

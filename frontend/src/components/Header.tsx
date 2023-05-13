@@ -1,4 +1,4 @@
-import logo from "../pink-logo.jpeg";
+import logo from "../assets/pink-logo.png";
 import { AccountsDropdown } from "./AccountsDropdown";
 import { XCircleIcon } from "@heroicons/react/solid";
 import { useExtension } from "useink";

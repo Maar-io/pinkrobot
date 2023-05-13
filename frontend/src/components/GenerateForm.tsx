@@ -86,7 +86,7 @@ export const GenerateForm = ({setIsBusy}: {setIsBusy: Function }) => {
     const { ipnft } = await nftstorage.store({
       name: "PinkRobot#",
       description: PINK_DESCRIPTION,
-      external_url: "https://pinkrobot.xwz",
+      external_url: "https://pinkrobot.me",
       image: new File([imageData], "image.jpeg", { type: "image/jpeg" }),
       attributes:
         [
