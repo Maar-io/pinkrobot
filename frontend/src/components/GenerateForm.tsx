@@ -130,7 +130,7 @@ export const GenerateForm = ({setIsBusy}: {setIsBusy: Function }) => {
       </div>
 
       <div className="group">
-        {isGenerated && isValid && values.prompt && (
+        {isGenerated && isValid && values.prompt && !isSubmitting && (
           <DryRunResult values={values} isValid={isValid} />
         )}
       </div>

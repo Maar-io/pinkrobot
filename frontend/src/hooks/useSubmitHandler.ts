@@ -75,30 +75,31 @@ export const useSubmitHandler = () => {
     // upload image to nft.storage
     await uploadImage(values);
 
-    const newLimit = doubleGasLimit(api, estimation.gasRequired);
+    // const newLimit = doubleGasLimit(api, estimation.gasRequired);
 
     try {
       const tx: SubmittableExtrinsic<"promise", ContractSubmittableResult> =
         contract.tx["pinkMint"](
           {
-            gasLimit: newLimit,
+            gasLimit: estimation.gasRequired,
             storageDepositLimit: estimation.storageDeposit.asCharge,
             value: estimation.price,
           },
           values.contractType,
           values.ipfs
         );
+        console.log("Sign the message");
       const unsub = await tx.signAndSend(
         account.address,
         { signer: injector.signer },
         (result) => {
           const events: UIEvent[] = [];
-          let slug = "";
+          let tokenId = "";
           setSubmitting(true);
 
           if (result.isInBlock) {
             result.contractEvents?.forEach(({ event, args }) => {
-              slug = args[0].toHuman()?.toString() || "";
+              tokenId = args[0].toHuman()?.toString() || "";
               events.push({
                 name: event.identifier,
                 message: `${event.docs.join()}`,
@@ -121,7 +122,8 @@ export const useSubmitHandler = () => {
                 });
             });
             if (!result.dispatchError) {
-              setStatus({ finalized: true, events, errorMessage: "", slug });
+              console.log("Minted tokenId", tokenId);
+              setStatus({ finalized: true, events, errorMessage: "", tokenId });
             } else {
               let message = "Unknown Error";
               if (result.dispatchError.isModule) {
@@ -131,6 +133,8 @@ export const useSubmitHandler = () => {
                 message = `${decoded.section.toUpperCase()}.${decoded.method
                   }: ${decoded.docs}`;
               }
+              console.log("Minting error", message);
+
               setStatus({
                 finalized: true,
                 events,

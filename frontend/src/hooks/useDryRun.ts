@@ -83,9 +83,10 @@ function useDryRun() {
           await api.call.contractsApi.call<ContractExecResult>(
             account?.address,
             contract.address,
-            message?.isPayable
-              ? api.registry.createType('Balance', price)
-              : api.registry.createType('Balance', BN_ZERO),
+            price,
+            // message?.isPayable
+            //   ? price
+            //   : api.registry.createType('Balance', BN_ZERO),
             null,
             null,
             inputData
