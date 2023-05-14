@@ -39,7 +39,7 @@ export const GenerateForm = ({setIsBusy}: {setIsBusy: Function }) => {
     console.log("prompt:", "pink robot, " + values.prompt);
 
     try {
-      setIsBusy('Generating your pink robot. This might take a while...')
+      setIsBusy('Imagining your pink robot. This might take a while...')
       setWaitinghuggingFace(true);
       setIsGenerated(false);
       const response = await axios({
@@ -164,7 +164,7 @@ export const GenerateForm = ({setIsBusy}: {setIsBusy: Function }) => {
             waitingHuggingFace || isSubmitting || !isValid || !accounts || !hasFunds
           }
         >
-          Generate New
+          Imagine New
         </button>
       </div>
 
