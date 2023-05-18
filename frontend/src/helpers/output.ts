@@ -54,6 +54,33 @@ export function getDecodedPrice(
   return '0';
 }
 
+export function getDecodedTokenId(
+  result: ContractExecResult["result"],
+  returnType: AbiMessage["returnType"],
+  registry: Registry
+): number {
+  if (result.isOk) {
+    const returnTypeName = getReturnTypeName(returnType);
+    const r = (
+      returnType
+        ? registry
+            .createTypeUnsafe(returnTypeName, [result.asOk.data])
+            .toHuman()
+        : 0
+    ) as string;
+    
+    type ObjectKey = keyof typeof r;
+    const okKey = 'Ok' as ObjectKey;
+    const p = r[okKey]
+
+    type ObjectKey2 = keyof typeof p;
+    const okKey2 = 'Ok' as ObjectKey2;
+    const q = p[okKey2] as number
+    return Number(q);
+  }
+  return 0;
+}
+
 export function checkDecodedOk(
   result: ContractExecResult["result"],
   returnType: AbiMessage["returnType"],

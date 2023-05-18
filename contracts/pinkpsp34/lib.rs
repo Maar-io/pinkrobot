@@ -6,8 +6,8 @@ pub use self::pinkpsp34::PinkPsp34Ref;
 #[openbrush::contract]
 pub mod pinkpsp34 {
     use ink::codegen::{EmitEvent, Env};
-    use ink::storage::Mapping;
     use ink::prelude::vec::Vec;
+    use ink::storage::Mapping;
 
     use openbrush::contracts::psp34;
     use openbrush::contracts::{

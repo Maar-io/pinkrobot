@@ -4,7 +4,7 @@ import type {
   ContractExecResult,
   Balance,
 } from "@polkadot/types/interfaces";
-import { dryRunCallerAddress, BN_ZERO } from "../const";
+import { dryRunCallerAddress } from "../const";
 import { Estimation } from "../types";
 import { ApiPromise } from "@polkadot/api";
 import { BN } from "@polkadot/util";
@@ -100,7 +100,6 @@ function useDryRun() {
           message.returnType,
           contract.abi.registry
         );
-        console.log("decodedOutput for pink_mint dry-run", decodedOutput);
 
         if (decodedOutput && "Ok" in decodedOutput
           //  && typeof decodedOutput.Ok === "object"
@@ -129,7 +128,7 @@ function useDryRun() {
           .add(storageDeposit.asCharge);
         const total: Balance = contract.api.createType("Balance", cost.toString());
 
-        console.log("return pass 1")
+        console.log("dryrun pass 1")
         if (result.isErr) {
           return {
             gasRequired,
@@ -148,7 +147,7 @@ function useDryRun() {
           contract.abi.registry
           );
           
-          console.log("return pass 2")
+          console.log("dryrun pass 2")
           if (result.isOk && ErrFoundInDecodedOk) {
             return {
               gasRequired,
@@ -163,7 +162,7 @@ function useDryRun() {
             };
           }
           
-          console.log("return pass 3")
+          console.log("dryrun pass 3")
         return {
           gasRequired,
           storageDeposit,
@@ -173,7 +172,7 @@ function useDryRun() {
             ? { message: "Insufficient funds!" }
             : undefined,
           price,
-          total
+          total,
         };
       } catch (e) {
         console.error(e);

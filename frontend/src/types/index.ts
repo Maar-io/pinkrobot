@@ -23,6 +23,8 @@ export interface PinkValues {
   aimodel: string;
   imageData: Uint8Array;
   aiImage: any;
+  tokenId: number;
+  networkId: NetworkId;
 }
 
 export interface UIEvent {
@@ -40,3 +42,13 @@ export type MintingResult = { Ok: u64 } | { Err: string };
 export type UIError = {
   message: string;
 };
+
+export interface NetworkInfo {
+  endpoint: string;
+  pinkContractAddress: string;
+}
+
+export enum NetworkId {
+  Shibuya = 0,
+  Astar = 1,
+}

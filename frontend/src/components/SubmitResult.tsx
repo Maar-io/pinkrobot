@@ -34,30 +34,31 @@ export const SubmitResult = ({ events, errorMessage, hideBusyMessage }: Props) =
   return (
     <>
       <div className="submit-outcome">{submitOutcome}</div>
-      <Disclosure>
-        {({ open }) => (
-          <>
-            <Disclosure.Button className="disclosure-button">
-              <span>Events log</span>
-              <ChevronUpIcon
-                className={`${open ? "rotate-180 transform" : ""
-                  } h-5 w-5 text-pink-500`}
-              />
-            </Disclosure.Button>
-            <Disclosure.Panel className="disclosure-panel">
-              {events.map((ev: UIEvent, index: number) => {
-                return (
-                  <div key={`${ev.name}-${index}`} className="ui-event">
-                    <div className="ui-event-name">{ev.name}</div>
-                    <div className="ui-event-message">{ev.message}</div>
-                  </div>
-                );
-              })}
-            </Disclosure.Panel>
-          </>
-        )}
-      </Disclosure>
-
+      {errorMessage && (
+        <Disclosure>
+          {({ open }) => (
+            <>
+              <Disclosure.Button className="disclosure-button">
+                <span>Events log</span>
+                <ChevronUpIcon
+                  className={`${open ? "rotate-180 transform" : ""
+                    } h-5 w-5 text-pink-500`}
+                />
+              </Disclosure.Button>
+              <Disclosure.Panel className="disclosure-panel">
+                {events.map((ev: UIEvent, index: number) => {
+                  return (
+                    <div key={`${ev.name}-${index}`} className="ui-event">
+                      <div className="ui-event-name">{ev.name}</div>
+                      <div className="ui-event-message">{ev.message}</div>
+                    </div>
+                  );
+                })}
+              </Disclosure.Panel>
+            </>
+          )}
+        </Disclosure>
+      )}
       {errorMessage && (
         <Disclosure>
           {({ open }) => (
