@@ -1,9 +1,8 @@
-import { PinkValues, UIEvent } from "../types";
+import { PinkValues, UIEvent, ContractType } from "../types";
 import { Disclosure } from "@headlessui/react";
 import { ChevronUpIcon } from "@heroicons/react/solid";
 import { useEffect, useState } from "react";
 import { useFormikContext } from "formik";
-import { ContractType } from "../const";
 
 interface Props {
   events: UIEvent[];
@@ -34,7 +33,7 @@ export const SubmitResult = ({
         );
       }
     });
-  }, [events]);
+  }, [events, hideBusyMessage]);
 
   return (
     <>

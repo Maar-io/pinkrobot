@@ -1,13 +1,12 @@
 import { DryRunResult } from "./DryRunResult";
 import { Form, Field, ErrorMessage, useFormikContext } from "formik";
-import { PinkValues } from "../types";
+import { PinkValues, ContractType } from "../types";
 import { useEstimationContext } from "../contexts";
 import { ChangeEvent, SetStateAction, useState } from "react";
 import { NewUserGuide } from "./NewUserGuide";
 import { useBalance, useExtension } from "useink";
 import axios from "axios";
 import { Buffer } from "buffer";
-import { ContractType } from "../const";
 
 export const GenerateForm = ({ setIsBusy, handleError }: { setIsBusy: Function, handleError: Function }) => {
   const { isSubmitting, isValid, values, setFieldTouched, handleChange } =

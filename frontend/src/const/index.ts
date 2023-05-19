@@ -1,5 +1,5 @@
 import * as Yup from "yup";
-import { PinkValues } from "../types";
+import { PinkValues, NetworkInfo, NetworkId, ContractType } from "../types";
 import robot_bestia from "../assets/robot-bestia.jpeg";
 import BN from "bn.js";
 
@@ -18,24 +18,16 @@ export const endpoint = "wss://rpc.shibuya.astar.network";
 
 export const BN_ZERO = new BN(0);
 
-enum dNetworks {
-  Shibuya = "Shibuya",
-  Astar = "Astar",
-}
-
-enum Endpoints {
-  Shibuya = "wss://rpc.shibuya.astar.network",
-  Astar = "wss://rpc.astar.network",
-}
-
-export enum ContractType{
-  PinkPsp34 = 0,
-  CustomUpload34 = 1,
-  PinkRmrk = 2,
-}
-
-export const contractAddress =
-  "ZCtoYmcJ2wwkZoFyejydTLrZj12roZzXHh5St7BTuJ78fRa";
+export const networks: Array<NetworkInfo> = [
+  {
+    endpoint: "wss://rpc.shibuya.astar.network",
+    pinkContractAddress: "ZQgRzVGamwEvpkU1LzkT4b7EdtHq6PtH7GmEfyTv1HzQJvv"
+  },
+  {
+    endpoint: "wss://rpc.astar.network",
+    pinkContractAddress: "0"
+  }
+];
 
 export const dryRunCallerAddress =
   "5DPDFJi6rcooALEpR5gSbR8jgUU6YerEHRkAv3Sk8MDoRTke";
@@ -51,5 +43,8 @@ export const initialPinkValues: PinkValues = {
   imageData: new Uint8Array(),
   aiImage: robot_bestia,
   customImage: robot_bestia,
-  // network: Networks.Shibuya,
+  tokenId: 0,
+  networkId: NetworkId.Shibuya,
 };
+
+export const contractAddress = networks[initialPinkValues.networkId].pinkContractAddress;

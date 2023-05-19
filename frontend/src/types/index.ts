@@ -24,6 +24,14 @@ export interface PinkValues {
   imageData: Uint8Array;
   aiImage: any;
   customImage: any;
+  tokenId: number;
+  networkId: NetworkId;
+}
+
+export enum ContractType {
+  PinkPsp34 = 0,
+  CustomUpload34 = 1,
+  PinkRmrk = 2,
 }
 
 export interface UIEvent {
@@ -41,3 +49,13 @@ export type MintingResult = { Ok: u64 } | { Err: string };
 export type UIError = {
   message: string;
 };
+
+export interface NetworkInfo {
+  endpoint: string;
+  pinkContractAddress: string;
+}
+
+export enum NetworkId {
+  Shibuya = 0,
+  Astar = 1,
+}

@@ -43,7 +43,7 @@ function useDryRun() {
       );
       setBalance(freeBalance);
       console.log("connected account", account.address);
-      console.log("balance", freeBalance);
+      console.log("balance", freeBalance.toHuman());
     };
     getBalance().catch((e) => console.error(e));
   }, [api, account]);
@@ -72,7 +72,7 @@ function useDryRun() {
         );
         const price: Balance = contract.api.createType("Balance", decodedPrice);
         // const price: Balance = contract.api.createType("Balance", "100000000000000");
-        console.log("price", price);
+        console.log("price", price.toHuman());
 
         // dry run pink_mint to get gasRequired and storageDeposit
         const message = contract.abi.findMessage("pinkMint");

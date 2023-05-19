@@ -1,13 +1,12 @@
 import { DryRunResult } from "./DryRunResult";
 import { Form, ErrorMessage, useFormikContext } from "formik";
-import { PinkValues } from "../types";
+import { PinkValues, ContractType } from "../types";
 import { useEstimationContext } from "../contexts";
 import React, { useState } from "react";
 import { NewUserGuide } from "./NewUserGuide";
 import { useBalance, useExtension } from "useink";
 import { IconButton } from "@mui/material";
 import { CameraIcon } from "@heroicons/react/solid";
-import { ContractType } from "../const";
 
 export const GenerateCustomUploadForm = ({
   setIsBusy,
@@ -16,7 +15,7 @@ export const GenerateCustomUploadForm = ({
   setIsBusy: Function;
   handleError: Function;
 }) => {
-  const { isSubmitting, isValid, values, setFieldTouched, handleChange } =
+  const { isSubmitting, isValid, values } =
     useFormikContext<PinkValues>();
   const { estimation, isEstimating } = useEstimationContext();
   const { account, accounts } = useExtension();
