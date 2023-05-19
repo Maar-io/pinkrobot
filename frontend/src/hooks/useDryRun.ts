@@ -4,7 +4,6 @@ import type {
   ContractExecResult,
   Balance,
 } from "@polkadot/types/interfaces";
-import { dryRunCallerAddress, BN_ZERO } from "../const";
 import { Estimation } from "../types";
 import { ApiPromise } from "@polkadot/api";
 import { BN } from "@polkadot/util";
@@ -100,7 +99,6 @@ function useDryRun() {
           message.returnType,
           contract.abi.registry
         );
-        console.log("decodedOutput for pink_mint dry-run", decodedOutput);
 
         if (decodedOutput && "Ok" in decodedOutput
           //  && typeof decodedOutput.Ok === "object"
@@ -122,7 +120,7 @@ function useDryRun() {
           ...params
         );
 
-        const { partialFee } = await tx.paymentInfo(dryRunCallerAddress);
+        const { partialFee } = await tx.paymentInfo(account?.address!);
         // calculate total cost for minting
         const cost = partialFee
           .add(price)
