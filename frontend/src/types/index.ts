@@ -20,11 +20,10 @@ export interface PinkValues {
   prompt: string;
   contractType: number;
   ipfs: string;
-  aimodel: string;
-  imageData: Uint8Array;
-  aiImage: any;
-  customImage: any;
-  tokenId: number;
+  aiModel: string;
+  imageData: Array<Uint8Array>;
+  displayImage: Array<any>;
+  tokenId: Array<number>;
   networkId: NetworkId;
 }
 
@@ -53,6 +52,10 @@ export type UIError = {
 export interface NetworkInfo {
   endpoint: string;
   pinkContractAddress: string;
+}
+export interface Meta {
+  name: string;
+  description: string;
 }
 
 export enum NetworkId {

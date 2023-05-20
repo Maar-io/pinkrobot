@@ -19,7 +19,7 @@ export const GenerateCustomUploadForm = ({
     useFormikContext<PinkValues>();
   const { estimation, isEstimating } = useEstimationContext();
   const { account, accounts } = useExtension();
-  const [isGenerated, setIsGenerated] = useState(false);
+  const [isUploaded, setIsUploaded] = useState(false);
   const balance = useBalance(account);
   const hasFunds =
     !balance?.freeBalance.isEmpty && !balance?.freeBalance.isZero();
@@ -34,15 +34,15 @@ export const GenerateCustomUploadForm = ({
   const handleCustomImageUpload = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setIsGenerated(false);
+    setIsUploaded(false);
     const file = event.target.files ? event.target.files[0] : null;
     if (!file) return;
 
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = () => {
-      values.customImage = reader.result?.toString() || "";
-      setIsGenerated(true);
+      values.displayImage[values.contractType] = reader.result?.toString() || "";
+      setIsUploaded(true);
     };
     reader.onerror = (error) => {
       console.error(error);
@@ -53,7 +53,7 @@ export const GenerateCustomUploadForm = ({
   return (
     <Form>
       <img
-        src={values.customImage}
+        src={values.displayImage[values.contractType]}
         className="pink-example rounded-lg"
         alt="example"
       />
@@ -80,25 +80,25 @@ export const GenerateCustomUploadForm = ({
           className="error-message"
         />
       </div>
-      <div className="buttons-container">
-        <div className="group">
-          <button
-            type="submit"
-            disabled={
-              !isGenerated ||
-              isSubmitting ||
-              !isOkToMint ||
-              !accounts ||
-              !hasFunds
-            }
-            name="submit"
-          >
-            Mint
-          </button>
-        </div>
-      </div>
+      {/* <div className="buttons-container"> */}
       <div className="group">
-        <DryRunResult values={values} isValid={isGenerated} />
+        <button
+          type="submit"
+          disabled={
+            !isUploaded ||
+            isSubmitting ||
+            !isOkToMint ||
+            !accounts ||
+            !hasFunds
+          }
+          name="submit"
+        >
+          Mint
+        </button>
+      </div>
+      {/* </div> */}
+      <div className="group">
+        <DryRunResult values={values} isValid={isUploaded} />
       </div>
       {isValid && estimation?.error && !isEstimating && (
         <div className="text-xs text-left mb-2 text-red-500">

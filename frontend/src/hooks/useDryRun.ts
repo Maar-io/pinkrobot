@@ -41,8 +41,8 @@ function useDryRun() {
         account.address
       );
       setBalance(freeBalance);
-      console.log("connected account", account.address);
-      console.log("balance", freeBalance.toHuman());
+      console.log("dry: connected account", account.address);
+      console.log("dry: balance", freeBalance.toHuman());
     };
     getBalance().catch((e) => console.error(e));
   }, [api, account]);
@@ -71,11 +71,11 @@ function useDryRun() {
         );
         const price: Balance = contract.api.createType("Balance", decodedPrice);
         // const price: Balance = contract.api.createType("Balance", "100000000000000");
-        console.log("price", price.toHuman());
+        console.log("dry: price", price.toHuman());
 
         // dry run pink_mint to get gasRequired and storageDeposit
         const message = contract.abi.findMessage("pinkMint");
-        console.log("minting params", params);
+        console.log("dry: minting params", params);
         const inputData = message.toU8a(params);
 
         const { storageDeposit, gasRequired, result, debugMessage } =
@@ -90,8 +90,8 @@ function useDryRun() {
             null,
             inputData
           );
-        console.log("debugMessage", debugMessage.toString());
-        console.log("gasRequired", gasRequired.toString());
+        console.log("dry: debugMessage", debugMessage.toString());
+        console.log("dry: gasRequired", gasRequired.toString());
 
 
         const decodedOutput = getDecodedOutput(
@@ -103,12 +103,12 @@ function useDryRun() {
         if (decodedOutput && "Ok" in decodedOutput
           //  && typeof decodedOutput.Ok === "object"
         ) {
-          console.log("decodedOutput ok", decodedOutput.Ok);
+          console.log("dry: decodedOutput ok", decodedOutput.Ok);
         }
         if (decodedOutput && "Err" in decodedOutput
           // && typeof decodedOutput.Err === "object"
         ) {
-          console.log("decodedOutput Err", decodedOutput.Err);
+          console.log("dry: decodedOutput Err", decodedOutput.Err);
         }
 
         const tx = contract.tx["pinkMint"](
@@ -127,7 +127,7 @@ function useDryRun() {
           .add(storageDeposit.asCharge);
         const total: Balance = contract.api.createType("Balance", cost.toString());
 
-        console.log("return pass 1")
+        console.log("dry: return pass 1")
         if (result.isErr) {
           return {
             gasRequired,
@@ -146,7 +146,7 @@ function useDryRun() {
           contract.abi.registry
           );
           
-          console.log("return pass 2")
+          console.log("dry: return pass 2")
           if (result.isOk && ErrFoundInDecodedOk) {
             return {
               gasRequired,
@@ -161,7 +161,7 @@ function useDryRun() {
             };
           }
           
-          console.log("return pass 3")
+          console.log("dry: return pass 3")
         return {
           gasRequired,
           storageDeposit,

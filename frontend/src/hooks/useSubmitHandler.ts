@@ -5,7 +5,7 @@ import { SubmittableExtrinsic } from "@polkadot/api/types";
 import { ContractSubmittableResult } from "@polkadot/api-contract/base/Contract";
 import { useEstimationContext, useLinkContract } from "../contexts";
 import { useApi, useExtension } from "useink";
-import { PINK_DESCRIPTION } from "../const";
+import { pinkMeta } from "../const";
 import { NFTStorage, File } from "nft.storage";
 import { getDecodedTokenId } from "../helpers";
 import type { ContractExecResult } from "@polkadot/types/interfaces";
@@ -31,26 +31,35 @@ export const useSubmitHandler = () => {
     );
     let decodedToken = getDecodedTokenId(tokenResult, tokenMessage?.returnType, contract?.abi.registry);
     console.log("set tokenId to ", decodedToken + 1);
-    values.tokenId = decodedToken + 1;
+    values.tokenId[values.contractType] = decodedToken + 1;
   };
 
   const uploadImage = async (values: PinkValues) => {
+    if (!values!.imageData[values!.contractType]){
+      console.log("ImageData not set values.contractType,",values!.contractType);
+      return;
+    }
     console.log(
-      "uploading Image to nft.storage, byteLength=",
-      values!.imageData.byteLength
+      "uploading Image to nft.storage,", values.contractType, "byteLength=",
+      values!.imageData[values!.contractType].byteLength
     );
+    const tokenIdString: string = String(values.tokenId[values!.contractType]);
+    const name: string = pinkMeta[values!.contractType].name + tokenIdString;
+    console.log("storing token name", name);
+    const description: string = pinkMeta[values!.contractType].description;
+    console.log("storing token description", description);
+    const fileName: string = tokenIdString + ".jpeg";
+    console.log("storing file name", fileName);
+    const imageFile: Uint8Array = values!.imageData[values!.contractType];
+
     // Create instance to NFT.Storage
     const client = new NFTStorage({ token: process.env.REACT_APP_NFT_STORAGE_API_KEY! })
 
     // Send request to store image
-    const tokenName: string = "PinkRobot#" + String(values.tokenId);
-    console.log("storing token name", tokenName);
-    const fileName: string = String(values.tokenId) + ".jpeg";
-    console.log("storing file name", fileName);
     const metadata = await client.store({
-      name: tokenName,
-      description: PINK_DESCRIPTION,
-      image: new File([values!.imageData], fileName, { type: "image/jpeg" })
+      name,
+      description,
+      image: new File([imageFile], fileName, { type: "image/jpeg" }),
       // properties: {
       //   external_url: "https://pinkrobot.me",
       //   attributes:
@@ -76,6 +85,8 @@ export const useSubmitHandler = () => {
     values: PinkValues,
     { setSubmitting, setStatus }: FormikHelpers<PinkValues>
   ) => {
+    console.log("Submit", api, contract, estimation, account);
+
     if (!api || !contract || !estimation || !account) return;
 
     const injector = await web3FromAddress(account.address);
@@ -148,9 +159,8 @@ export const useSubmitHandler = () => {
                 const decoded = api.registry.findMetaError(
                   result.dispatchError.asModule
                 );
-                message = `${decoded.section.toUpperCase()}.${
-                  decoded.method
-                }: ${decoded.docs}`;
+                message = `${decoded.section.toUpperCase()}.${decoded.method
+                  }: ${decoded.docs}`;
               }
               console.log("Minting error", message);
 
