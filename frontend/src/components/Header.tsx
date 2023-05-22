@@ -8,8 +8,8 @@ export const Header = () => {
 
   return (
     <div className="flex justify-between w-full px-8 py-4">
-      <div className="flex items-center w-32">
-        <img src={logo} className="pink-logo" alt="logo" />
+      <div className="flex items-center">
+        <img src={logo} className="pink-logo" alt="pink-robot" />
         {/* <h2 className="text-2xl font-bold">PinkRobot</h2> */}
       </div>
 
