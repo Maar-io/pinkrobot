@@ -28,7 +28,7 @@ export const GenerateForm = ({ setIsBusy, handleError }: { setIsBusy: Function, 
 
   const composePrompt = () => {
     const prompt = 
-      "pink robot, " + 
+      "pink robot, sharp edge, vector art, 2d, " + 
       values.aiStyle +
       values.prompt
       ;

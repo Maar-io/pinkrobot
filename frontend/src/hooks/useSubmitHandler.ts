@@ -23,9 +23,9 @@ export const useSubmitHandler = () => {
 
 
     console.log("send pinkMint Tx")
-    const claimArgs = [values.contractType, values.ipfs];
+    const mintArgs = [values.contractType, values.ipfs];
     const options = {value: values.price};
-    pinkMint?.signAndSend(claimArgs, options, (result, _api, error) => {
+    pinkMint?.signAndSend(mintArgs, options, (result, _api, error) => {
       if (error) {
         console.error(JSON.stringify(error));
         setSubmitting(false);

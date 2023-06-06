@@ -23,6 +23,7 @@ export function PinkContractProvider({ children }: PropsWithChildren) {
 
   useTxNotifications(pinkMint);
 
+  console.log("contract", pinkRobotContract)
   return (
     <PinkContractContext.Provider value={{ pinkRobotContract, pinkMintDryRun, pinkMint, getPrice, getSupply }}>
       {children}
