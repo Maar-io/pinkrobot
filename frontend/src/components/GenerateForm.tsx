@@ -1,10 +1,9 @@
 import { DryRunResult } from "./DryRunResult";
 import { Form, Field, ErrorMessage, useFormikContext } from "formik";
 import { PinkValues, ContractType } from "../types";
-import { useEstimationContext } from "../contexts";
 import { ChangeEvent, useState } from "react";
 import { NewUserGuide } from "./NewUserGuide";
-import { useBalance, useExtension } from "useink";
+import { useBalance, useWallet } from "useink";
 import axios from "axios";
 import { Buffer } from "buffer";
 import { ModelSelector } from "./ModelSelector";
@@ -13,8 +12,7 @@ import { StyleSelector } from "./StyleSelector";
 export const GenerateForm = ({ setIsBusy, handleError }: { setIsBusy: Function, handleError: Function }) => {
   const { isSubmitting, isValid, values, setFieldTouched, handleChange } =
     useFormikContext<PinkValues>();
-  const { estimation, isEstimating } = useEstimationContext();
-  const { account, accounts } = useExtension();
+  const { account, accounts } = useWallet();
   const [waitingHuggingFace, setWaitingHuggingFace] = useState(false);
   const [isGenerated, setIsGenerated] = useState(false);
   const balance = useBalance(account);
@@ -22,11 +20,11 @@ export const GenerateForm = ({ setIsBusy, handleError }: { setIsBusy: Function, 
     !balance?.freeBalance.isEmpty && !balance?.freeBalance.isZero();
   values.contractType = ContractType.PinkPsp34;
 
-  const isOkToMint =
-    !isEstimating &&
-    estimation &&
-    estimation.result &&
-    "Ok" in estimation.result;
+  const isOkToMint = true
+    // !isEstimating &&
+    // estimation &&
+    // estimation.result &&
+    // "Ok" in estimation.result;
 
   const composePrompt = () => {
     const prompt = 
@@ -152,11 +150,11 @@ export const GenerateForm = ({ setIsBusy, handleError }: { setIsBusy: Function, 
         )}
       </div>
 
-      {isValid && estimation?.error && !isEstimating && (
+      {/* {isValid && estimation?.error && !isEstimating && (
         <div className="text-xs text-left mb-2 text-red-500">
           {estimation.error.message}
         </div>
-      )}
+      )} */}
 
       <div className="group">
         <NewUserGuide

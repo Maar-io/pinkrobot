@@ -1,20 +1,19 @@
-import type {
-  StorageDeposit,
-  Balance,
-  WeightV2,
-} from "@polkadot/types/interfaces";
-import { web3Accounts, web3Enable } from "@polkadot/extension-dapp";
-import type { u64} from '@polkadot/types-codec';
+// import type {
+//   StorageDeposit,
+//   Balance,
+//   WeightV2,
+// } from "@polkadot/types/interfaces";
+// import type { u64} from '@polkadot/types-codec';
 
-export type Estimation = {
-  gasRequired: WeightV2;
-  storageDeposit: StorageDeposit;
-  partialFee: Balance;
-  result: MintingResult;
-  error?: UIError;
-  price: Balance;
-  total: Balance;
-};
+// export type Estimation = {
+//   gasRequired: WeightV2;
+//   storageDeposit: StorageDeposit;
+//   partialFee: Balance;
+//   result: MintingResult;
+//   error?: UIError;
+//   price: Balance;
+//   total: Balance;
+// };
 
 export interface PinkValues {
   prompt: string;
@@ -26,6 +25,8 @@ export interface PinkValues {
   displayImage: Array<any>;
   tokenId: Array<number>;
   networkId: NetworkId;
+  price: any;
+  total: any;
 }
 
 export enum ContractType {
@@ -41,10 +42,10 @@ export interface UIEvent {
 
 export type Flatten<Type> = Type extends Array<infer Item> ? Item : Type;
 
-export type InjectedAccount = Flatten<Awaited<ReturnType<typeof web3Accounts>>>;
-export type InjectedExtension = Flatten<Awaited<ReturnType<typeof web3Enable>>>;
+// export type InjectedAccount = Flatten<Awaited<ReturnType<typeof web3Accounts>>>;
+// export type InjectedExtension = Flatten<Awaited<ReturnType<typeof web3Enable>>>;
 
-export type MintingResult = { Ok: u64 } | { Err: string };
+export type MintingResult = { Ok: number } | { Err: string };
 
 export type UIError = {
   message: string;
