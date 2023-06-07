@@ -110,7 +110,6 @@ export const PinkContainer = () => {
                         )}
                         {tab === ContractType.CustomUpload34 && (
                           <GenerateCustomUploadForm
-                            setIsBusy={setBusyMessage}
                             handleError={handleError}
                           />
                         )}

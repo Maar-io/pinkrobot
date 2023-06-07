@@ -5,16 +5,14 @@ import React, { useState } from "react";
 import { NewUserGuide } from "./NewUserGuide";
 import { useBalance, useWallet } from "useink";
 import { IconButton } from "@mui/material";
-import { CameraIcon } from "@heroicons/react/solid";
+import { CameraIcon } from "@heroicons/react/24/solid";
 
 export const GenerateCustomUploadForm = ({
-  setIsBusy,
   handleError,
 }: {
-  setIsBusy: Function;
   handleError: Function;
 }) => {
-  const { isSubmitting, isValid, values } = useFormikContext<PinkValues>();
+  const { isSubmitting, values } = useFormikContext<PinkValues>();
   const { account, accounts } = useWallet();
   const [isUploaded, setIsUploaded] = useState(false);
   const balance = useBalance(account);
