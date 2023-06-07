@@ -21,10 +21,12 @@ export const BN_ZERO = new BN(0);
 
 export const networks: Array<NetworkInfo> = [
   {
+    name: "Shibuya",
     endpoint: "wss://rpc.shibuya.astar.network",
     pinkContractAddress: "ZQgRzVGamwEvpkU1LzkT4b7EdtHq6PtH7GmEfyTv1HzQJvv"
   },
   {
+    name: "Astar",
     endpoint: "wss://rpc.astar.network",
     pinkContractAddress: "0"
   }
@@ -54,6 +56,9 @@ export const initialPinkValues: PinkValues = {
   displayImage: [default_pink_robot, default_upload_image],
   tokenId: [0, 0],
   networkId: NetworkId.Shibuya,
+  price: BN_ZERO,
+  total: BN_ZERO,
 };
 
 export const contractAddress = networks[initialPinkValues.networkId].pinkContractAddress;
+export const connectedNetwork = networks[initialPinkValues.networkId].name;

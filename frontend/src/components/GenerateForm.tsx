@@ -1,13 +1,16 @@
 import { DryRunResult } from "./DryRunResult";
 import { Form, Field, ErrorMessage, useFormikContext } from "formik";
 import { PinkValues, ContractType } from "../types";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useState, useEffect } from "react";
 import { NewUserGuide } from "./NewUserGuide";
 import { useBalance, useWallet } from "useink";
 import axios from "axios";
 import { Buffer } from "buffer";
 import { ModelSelector } from "./ModelSelector";
 import { StyleSelector } from "./StyleSelector";
+import { usePinkContract } from "../hooks";
+
+
 
 export const GenerateForm = ({ setIsBusy, handleError }: { setIsBusy: Function, handleError: Function }) => {
   const { isSubmitting, isValid, values, setFieldTouched, handleChange } =
@@ -16,6 +19,7 @@ export const GenerateForm = ({ setIsBusy, handleError }: { setIsBusy: Function, 
   const [waitingHuggingFace, setWaitingHuggingFace] = useState(false);
   const [isGenerated, setIsGenerated] = useState(false);
   const balance = useBalance(account);
+  const { getPrice } = usePinkContract();
   const hasFunds =
     !balance?.freeBalance.isEmpty && !balance?.freeBalance.isZero();
   values.contractType = ContractType.PinkPsp34;
@@ -25,6 +29,19 @@ export const GenerateForm = ({ setIsBusy, handleError }: { setIsBusy: Function, 
     // estimation &&
     // estimation.result &&
     // "Ok" in estimation.result;
+
+    useEffect(() => {
+      fetchPrice();
+    }, [account]);
+    
+    const fetchPrice = async () => {
+      const price = await getPrice?.send([], { defaultCaller: true });
+      console.log('##### fetched price', price?.ok && price.value.decoded);
+      if (price?.ok && price.value.decoded) {
+        values.price = price.value.decoded;
+      } 
+      console.log('##### saved price', values.price);
+    };
 
   const composePrompt = () => {
     const prompt = 

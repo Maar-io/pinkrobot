@@ -52,6 +52,7 @@ export type UIError = {
 };
 
 export interface NetworkInfo {
+  name: string;
   endpoint: string;
   pinkContractAddress: string;
 }
