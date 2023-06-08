@@ -1,10 +1,9 @@
 import { PinkValues, SupplyResult, TransferredBalanceEvent, UIEvent } from "../types";
-import { FormikHelpers } from "formik";
+import { FormikHelpers, useFormikContext } from "formik";
 import { usePinkContract } from "../hooks";
 import { useWallet } from "useink";
 import { pinkMeta } from "../const";
 import { NFTStorage } from "nft.storage";
-import { pickDecoded } from "useink/utils";
 import { decodeError } from "useink/core";
 
 
@@ -12,30 +11,23 @@ export const useSubmitHandler = () => {
   const { getSupply, pinkMint, pinkRobotContract } = usePinkContract();
   const { account } = useWallet();
 
+
   return async (
     values: PinkValues,
     { setSubmitting, setStatus }: FormikHelpers<PinkValues>
   ) => {
 
-    const getTokenId = async (values: PinkValues) => {
-      // get tokenId from the contract's total_supply
-      const supply = await getSupply?.send([values.contractType], { defaultCaller: true });
-      console.log('getSupply response', supply);
-      console.log('getSupply getSupply?.result', getSupply?.result);
-      if (getSupply?.result && getSupply.result.ok) {
-        const { decoded } = getSupply?.result?.value;
-        console.log("getSupply decoded", decoded);
-      }
+    // const getTokenId = async (values: PinkValues) => {
+    //   // get tokenId from the contract's total_supply
+    //   const s = await getSupply?.send([values.contractType], { defaultCaller: true });
+    //   let supply = pickResultOk<SupplyResult>(getSupply?.result);
+    //   console.log("getSupply decoded+1", Number(supply) + 1);
 
-
-      const decoded = pickDecoded<SupplyResult>(getSupply?.result?.ok && getSupply.result.value);
-      console.log("getSupply decoded2", decoded);
-      // if (supply?.ok && supply.value.decoded) {
-
-
-      // values.tokenId[values.contractType] = decoded;
-      // }
-    };
+    //   if (getSupply?.result && getSupply.result.ok) {
+    //     console.log("getSupply decoded+1", Number(supply) + 1);
+    //     values.tokenId[values!.contractType] = Number(supply) + 1;
+    //   }
+    // };
 
     const uploadImage = async (values: PinkValues) => {
       if (!values!.imageData[values!.contractType]) {
@@ -87,11 +79,11 @@ export const useSubmitHandler = () => {
     if (!account) return;
 
     console.log("Minting Image... ");
-    console.log("PinkValues", values);
 
     // get tokenId from the contract's total_supply
-    await getTokenId(values);
+    // await getTokenId(values);
 
+    console.log("PinkValues", values);
     // upload image to nft.storage
     await uploadImage(values);
 

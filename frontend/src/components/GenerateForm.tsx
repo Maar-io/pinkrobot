@@ -1,6 +1,6 @@
 import { DryRunResult } from "./DryRunResult";
 import { Form, Field, ErrorMessage, useFormikContext } from "formik";
-import { PinkValues, ContractType } from "../types";
+import { PinkValues, ContractType, SupplyResult } from "../types";
 import { ChangeEvent, useState, useEffect } from "react";
 import { NewUserGuide } from "./NewUserGuide";
 import { useBalance, useWallet } from "useink";
@@ -9,7 +9,8 @@ import { Buffer } from "buffer";
 import { ModelSelector } from "./ModelSelector";
 import { StyleSelector } from "./StyleSelector";
 import { usePinkContract } from "../hooks";
-
+import { pickResultOk } from "useink/utils";
+import { PINK_PREFIX } from "../const";
 
 
 export const GenerateForm = ({ setIsBusy, handleError }: { setIsBusy: Function, handleError: Function }) => {
@@ -19,33 +20,47 @@ export const GenerateForm = ({ setIsBusy, handleError }: { setIsBusy: Function, 
   const [waitingHuggingFace, setWaitingHuggingFace] = useState(false);
   const [isGenerated, setIsGenerated] = useState(false);
   const balance = useBalance(account);
-  const { getPrice } = usePinkContract();
+  const { getPrice, getSupply } = usePinkContract();
   const hasFunds =
     !balance?.freeBalance.isEmpty && !balance?.freeBalance.isZero();
   values.contractType = ContractType.PinkPsp34;
 
   const isOkToMint = true
-    // !isEstimating &&
-    // estimation &&
-    // estimation.result &&
-    // "Ok" in estimation.result;
+  // !isEstimating &&
+  // estimation &&
+  // estimation.result &&
+  // "Ok" in estimation.result;
 
-    useEffect(() => {
-      fetchPrice();
-    }, [account]);
-    
-    const fetchPrice = async () => {
-      const price = await getPrice?.send([], { defaultCaller: true });
-      console.log('fetched price', price?.ok && price.value.decoded);
-      if (price?.ok && price.value.decoded) {
-        let priceNoQuotes = price.value.decoded.toString().replace(/,/g, '');
-        values.price = priceNoQuotes;
-      } 
-    };
+  useEffect(() => {
+    fetchPrice();
+    getTokenId(values);
+  }, [account, values.contractType]);
+
+  const getTokenId = async (values: PinkValues) => {
+    // get tokenId from the contract's total_supply
+    const s = await getSupply?.send([values.contractType], { defaultCaller: true });
+    let supply = pickResultOk<SupplyResult>(getSupply?.result);
+    console.log("getSupply decoded+1", Number(supply) + 1);
+    console.log("getSupply getSupply?.result", getSupply?.result);
+
+    if (getSupply?.result && getSupply.result.ok) {
+      console.log("getSupply decoded+1", Number(supply) + 1);
+      values.tokenId[values!.contractType] = Number(supply) + 1;
+    }
+  };
+
+  const fetchPrice = async () => {
+    const price = await getPrice?.send([], { defaultCaller: true });
+    console.log('fetched price', price?.ok && price.value.decoded);
+    if (price?.ok && price.value.decoded) {
+      let priceNoQuotes = price.value.decoded.toString().replace(/,/g, '');
+      values.price = priceNoQuotes;
+    }
+  };
 
   const composePrompt = () => {
-    const prompt = 
-      "pink robot, sharp edge, vector art, 2d, " + 
+    const prompt =
+      PINK_PREFIX +
       values.aiStyle +
       values.prompt
       ;
@@ -183,3 +198,5 @@ export const GenerateForm = ({ setIsBusy, handleError }: { setIsBusy: Function, 
     </Form>
   );
 };
+
+
