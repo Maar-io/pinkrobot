@@ -62,3 +62,6 @@ export const initialPinkValues: PinkValues = {
 
 export const contractAddress = networks[initialPinkValues.networkId].pinkContractAddress;
 export const connectedNetwork = networks[initialPinkValues.networkId].name;
+
+export const PINK_MINT_TEXT = `Your Pink Robot is now on ${connectedNetwork}! Keep it or flip it.`
+export const CUSTOM_MINT_TEXT = `Your NFT is now on ${connectedNetwork}! Keep it or flip it.`

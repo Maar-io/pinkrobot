@@ -1,5 +1,5 @@
 import { Formik } from "formik";
-import { initialPinkValues, PinkFormSchema } from "../const";
+import { connectedNetwork, initialPinkValues, PinkFormSchema } from "../const";
 import { useSubmitHandler, useUI } from "../hooks";
 import { Header } from "./Header";
 import { SubmitResult } from "./SubmitResult";
@@ -50,7 +50,7 @@ export const PinkContainer = () => {
           if (!helpers) return;
 
           try {
-            setBusyMessage("Minting your NFT on...");
+            setBusyMessage(`Minting your NFT on ${connectedNetwork}...`);
             await submitFn(values, helpers);
           } catch (err: any) {
             setError(err.toString());

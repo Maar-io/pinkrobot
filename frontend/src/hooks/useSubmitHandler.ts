@@ -5,29 +5,25 @@ import { useWallet } from "useink";
 import { pinkMeta } from "../const";
 import { NFTStorage } from "nft.storage";
 import { decodeError } from "useink/core";
+import { pickResultOk } from "useink/utils";
 
 
 export const useSubmitHandler = () => {
   const { getSupply, pinkMint, pinkRobotContract } = usePinkContract();
   const { account } = useWallet();
 
-
   return async (
     values: PinkValues,
     { setSubmitting, setStatus }: FormikHelpers<PinkValues>
   ) => {
 
-    // const getTokenId = async (values: PinkValues) => {
-    //   // get tokenId from the contract's total_supply
-    //   const s = await getSupply?.send([values.contractType], { defaultCaller: true });
-    //   let supply = pickResultOk<SupplyResult>(getSupply?.result);
-    //   console.log("getSupply decoded+1", Number(supply) + 1);
-
-    //   if (getSupply?.result && getSupply.result.ok) {
-    //     console.log("getSupply decoded+1", Number(supply) + 1);
-    //     values.tokenId[values!.contractType] = Number(supply) + 1;
-    //   }
-    // };
+    const getTokenId = async (values: PinkValues) => {
+      // get tokenId from the contract's total_supply
+      const s = await getSupply?.send([values.contractType], { defaultCaller: true });
+      let supply = pickResultOk<SupplyResult>(s);
+      console.log("Next tokenId premint", Number(supply) + 1);
+      values.tokenId[values!.contractType] = Number(supply) + 1;
+    };
 
     const uploadImage = async (values: PinkValues) => {
       if (!values!.imageData[values!.contractType]) {
@@ -81,7 +77,7 @@ export const useSubmitHandler = () => {
     console.log("Minting Image... ");
 
     // get tokenId from the contract's total_supply
-    // await getTokenId(values);
+    await getTokenId(values);
 
     console.log("PinkValues", values);
     // upload image to nft.storage

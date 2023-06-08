@@ -39,14 +39,9 @@ export const GenerateForm = ({ setIsBusy, handleError }: { setIsBusy: Function, 
   const getTokenId = async (values: PinkValues) => {
     // get tokenId from the contract's total_supply
     const s = await getSupply?.send([values.contractType], { defaultCaller: true });
-    let supply = pickResultOk<SupplyResult>(getSupply?.result);
-    console.log("getSupply decoded+1", Number(supply) + 1);
-    console.log("getSupply getSupply?.result", getSupply?.result);
-
-    if (getSupply?.result && getSupply.result.ok) {
-      console.log("getSupply decoded+1", Number(supply) + 1);
-      values.tokenId[values!.contractType] = Number(supply) + 1;
-    }
+    let supply = pickResultOk<SupplyResult>(s);
+    console.log("getSupply decoded+1 probing", Number(supply) + 1);
+    values.tokenId[values!.contractType] = Number(supply) + 1;
   };
 
   const fetchPrice = async () => {
