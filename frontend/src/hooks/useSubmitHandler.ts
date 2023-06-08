@@ -1,4 +1,4 @@
-import { PinkValues, SupplyResult, TransferredBalanceEvent } from "../types";
+import { PinkValues, SupplyResult, TransferredBalanceEvent, UIEvent } from "../types";
 import { FormikHelpers } from "formik";
 import { usePinkContract } from "../hooks";
 import { useWallet } from "useink";
@@ -26,8 +26,8 @@ export const useSubmitHandler = () => {
         const { decoded } = getSupply?.result?.value;
         console.log("getSupply decoded", decoded);
       }
-      
-      
+
+
       const decoded = pickDecoded<SupplyResult>(getSupply?.result?.ok && getSupply.result.value);
       console.log("getSupply decoded2", decoded);
       // if (supply?.ok && supply.value.decoded) {
@@ -102,10 +102,9 @@ export const useSubmitHandler = () => {
         console.error(JSON.stringify(error));
         setSubmitting(false);
       }
-      console.log("Tx", result?.status);
+      console.log("Mint Tx", result?.status.toHuman());
 
       if (!result?.status.isInBlock) return;
-
       const events: UIEvent[] = [];
 
       // Collect Contract emitted events
@@ -136,10 +135,10 @@ export const useSubmitHandler = () => {
       const dispatchError = pinkMint.result?.dispatchError;
 
       if (dispatchError && pinkRobotContract?.contract) {
-        const errorMessage = decodeError(dispatchError, pinkRobotContract, undefined, 'Something went wrong') ;
+        const errorMessage = decodeError(dispatchError, pinkRobotContract, undefined, 'Something went wrong');
         setStatus({ finalized: true, events, errorMessage })
       }
-
+      setStatus({ finalized: true, events, errorMessage: "" })
       setSubmitting(false);
     });
   };

@@ -20,9 +20,6 @@ function Fees({ storage, gas, price }: FeesProps) {
   const cost = gas
     .add(priceBN)
     .add(storage);
-
-  console.log("cost", cost.toString());
-
   return (
     <>
       {/* <p>storage: {storage}</p>
@@ -49,7 +46,7 @@ export function DryRunResult({ values, isValid }: Props) {
       timeoutId.current = setTimeout(() => {
         getOutcome().catch(console.error);
         timeoutId.current = null;
-      }, 300);
+      }, 1000);
     }
 
     debouncedDryRun();
