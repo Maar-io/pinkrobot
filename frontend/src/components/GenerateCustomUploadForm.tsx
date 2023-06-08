@@ -21,10 +21,6 @@ export const GenerateCustomUploadForm = ({
   values.contractType = ContractType.CustomUpload34;
 
   const isOkToMint = true
-    // !isEstimating &&
-    // estimation &&
-    // estimation.result &&
-    // "Ok" in estimation.result;
 
   const handleCustomImageUpload = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -92,11 +88,6 @@ export const GenerateCustomUploadForm = ({
       <div className="group">
         <DryRunResult values={values} isValid={isUploaded} />
       </div>
-      {/* {isValid && estimation?.error && !isEstimating && (
-        <div className="text-xs text-left mb-2 text-red-500">
-          {estimation.error.message}
-        </div>
-      )} */}
       <div className="group">
         <NewUserGuide
           hasAccounts={!!accounts && accounts.length > 0}

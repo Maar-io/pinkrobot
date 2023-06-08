@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { PinkValues } from "../types";
 import { usePinkContract } from "../hooks";
-import { pickDecoded, pickTxInfo } from "useink/utils";
+import { pickTxInfo, formatBalance } from "useink/utils";
 import { useWallet } from "useink";
 import BN from "bn.js";
 interface Props {
@@ -16,7 +16,6 @@ interface FeesProps {
 }
 
 function Fees({ storage, gas, price }: FeesProps) {
-  console.log("storage, gas, price", storage, gas, price);
   const priceBN = new BN(price);
   const cost = gas
     .add(priceBN)
@@ -29,22 +28,19 @@ function Fees({ storage, gas, price }: FeesProps) {
       {/* <p>storage: {storage}</p>
       <p>gas: {gas}</p>
       <p>price: {price}</p> */}
-      <p>price + gas: {cost.toString()}</p>
+      <p>price + gas: {formatBalance(cost.toString(), { decimals: 18, withSi: true })}</p>
     </>
   );
 }
-
-
 
 export function DryRunResult({ values, isValid }: Props) {
   const { pinkMintDryRun } = usePinkContract();
   const { account } = useWallet();
   const timeoutId = useRef<NodeJS.Timeout | null>(null);
-  let priceNoQuotes = values.price.toString().replace(/,/g, '');
 
   useEffect(() => {
     async function getOutcome() {
-      pinkMintDryRun?.send([values.contractType, values.ipfs], { value: priceNoQuotes, defaultCaller: true });
+      pinkMintDryRun?.send([values.contractType, values.ipfs], { value: values.price, defaultCaller: true });
     }
 
     function debouncedDryRun() {
@@ -67,7 +63,7 @@ export function DryRunResult({ values, isValid }: Props) {
     <>
       <Fees storage={txInfo ? txInfo.storageDeposit.asCharge : '--'}
         gas={txInfo ? txInfo.partialFee : '--'}
-        price={priceNoQuotes} />
+        price={values.price} />
     </>
   );
 }

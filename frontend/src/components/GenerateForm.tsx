@@ -36,11 +36,11 @@ export const GenerateForm = ({ setIsBusy, handleError }: { setIsBusy: Function, 
     
     const fetchPrice = async () => {
       const price = await getPrice?.send([], { defaultCaller: true });
-      console.log('##### fetched price', price?.ok && price.value.decoded);
+      console.log('fetched price', price?.ok && price.value.decoded);
       if (price?.ok && price.value.decoded) {
-        values.price = price.value.decoded;
+        let priceNoQuotes = price.value.decoded.toString().replace(/,/g, '');
+        values.price = priceNoQuotes;
       } 
-      console.log('##### saved price', values.price);
     };
 
   const composePrompt = () => {
