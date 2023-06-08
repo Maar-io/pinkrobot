@@ -21,12 +21,12 @@ function Fees({ storage, gas, price }: FeesProps) {
     .add(priceBN)
     .add(storage);
   return (
-    <>
-      {/* <p>storage: {storage}</p>
+    <div className="text-xs text-right mb-2 text-gray-200">      
+    {/* <p>storage: {storage}</p>
       <p>gas: {gas}</p>
       <p>price: {price}</p> */}
       <p>price + gas: {formatBalance(cost.toString(), { decimals: 18, withSi: true })}</p>
-    </>
+    </div>
   );
 }
 
