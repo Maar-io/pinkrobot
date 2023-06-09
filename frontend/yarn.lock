@@ -10630,10 +10630,10 @@ url-parse@^1.5.3:
     querystringify "^2.1.1"
     requires-port "^1.0.0"
 
-useink@^1.4.1:
-  version "1.4.3"
-  resolved "https://registry.yarnpkg.com/useink/-/useink-1.4.3.tgz#90151c7779fbe527bca851fb2ad4174e30d1e294"
-  integrity sha512-JVFG9fcYKqPGnBN5T5R3PT4JK47biRRoGGjl9/JpmsShmMTkGNDgiuulb0cYO58/PJeRfWnxAgtqLi74dACQhw==
+useink@^1.4.4:
+  version "1.5.1"
+  resolved "https://registry.yarnpkg.com/useink/-/useink-1.5.1.tgz#71f0368fa26d76ebcdd37b1ee27fb88f2d3d3254"
+  integrity sha512-rwvW9AIYpXZ2cC45plGsGZlQbPj4V7KKmiwumRP/M3UoCQKe0EGiH2+7mkY2EVJflqlPh5MD3+fheHL3v/nA8A==
   dependencies:
     "@polkadot/api" "10.7.2"
     "@polkadot/api-contract" "10.7.2"

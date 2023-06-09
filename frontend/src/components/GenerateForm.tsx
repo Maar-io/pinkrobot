@@ -40,7 +40,7 @@ export const GenerateForm = ({ setIsBusy, handleError }: { setIsBusy: Function, 
     // get tokenId from the contract's total_supply
     const s = await getSupply?.send([values.contractType], { defaultCaller: true });
     let supply = pickResultOk<SupplyResult>(s);
-    console.log("getSupply decoded+1 probing", Number(supply) + 1);
+    console.log("Next tokenId probing", Number(supply) + 1);
     values.tokenId[values!.contractType] = Number(supply) + 1;
   };
 
@@ -72,7 +72,7 @@ export const GenerateForm = ({ setIsBusy, handleError }: { setIsBusy: Function, 
     console.log("prompt:", prompt);
 
     try {
-      setIsBusy("Imagining your pink robot. This might take a while...");
+      setIsBusy("Imagining your pink robot. This might take a while (up to 30s)");
       setWaitingHuggingFace(true);
       setIsGenerated(false);
       const response = await axios({

@@ -13,7 +13,7 @@ export function AccountsDropdown() {
         value={account}
         onChange={(a) => { setAccount(a) }}
       >
-        <div className="relative">
+        <div className="relative z-10">
           <Listbox.Button 
             className={classNames(
               "relative w-full cursor-default rounded-lg bg-violet-900 py-2 pl-3 pr-10 text-left shadow-md",
@@ -38,7 +38,7 @@ export function AccountsDropdown() {
           >
             <Listbox.Options 
               className={classNames(
-                "absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-violet-900 py-1 text-base shadow-lg ring-1",
+                "absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-pink-300 py-1 text-base shadow-lg ring-1",
                 "ring-black ring-opacity-5 focus:outline-none sm:text-sm",
               )}
             >
@@ -48,7 +48,7 @@ export function AccountsDropdown() {
                   className={({ active }) =>
                     classNames(
                       'relative cursor-default select-none py-2 pl-10 pr-4 hover:cursor-pointer',
-                      active ? "bg-violet-800 text-gray-300" : "text-gray-300"
+                      active ? "bg-purple-700 text-gray-300" : "text-gray-300"
                     )
                   }
                   value={acc}
@@ -66,7 +66,7 @@ export function AccountsDropdown() {
                         </span>
 
                         {selected && (
-                          <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-600">
+                          <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-white">
                             <CheckIcon className="h-5 w-5" aria-hidden="true" />
                           </span>
                         )}
