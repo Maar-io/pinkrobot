@@ -21,11 +21,14 @@ body {
 }
 .form-panel {
   @apply flex flex-col items-center justify-center bg-gray-900 p-6 shadow-md shadow-xl;
-  width: 420px;
   border-radius: 20px;
+
+  @media only screen and (min-width: 600px ) {
+    width: 420px;
+  }
 }
 .pink-example {
-  width: 512px;
+  width: auto;
   margin-bottom: 32px;
   border-radius: 0.5rem;
 }
@@ -104,11 +107,15 @@ a {
 .container {
   display: flex;
   height: 100vh;
+  max-width: 100%
 }
 
 .text-info {
-  @apply flex flex-col relative pb-5 ml-32 self-center z-10;
-  max-width: 600px;
+  @apply self-center text-center mx-auto px-4;
+}
+
+.loader-image {
+  @apply w-fit mx-auto mt-4;
 }
 
 h1 {
@@ -125,7 +132,7 @@ h1 {
 }
 
 .group {
-  @apply pb-5
+  @apply pb-5 text-left
 }
 .group:last-child {
   @apply relative pb-2
