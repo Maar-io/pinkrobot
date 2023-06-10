@@ -20,10 +20,6 @@ export const ModelSelector = ({ values }: { values: PinkValues }) => {
         style={{ display: "block" }}
       >
         <option
-          value="https://api-inference.huggingface.co/models/VuDucQuang/robot-style"
-          label="Robot"
-        ></option>
-        <option
           value="https://api-inference.huggingface.co/models/lambdalabs/sd-pokemon-diffusers"
           label="Pokemon Diffusers"
         ></option>
@@ -44,24 +40,16 @@ export const ModelSelector = ({ values }: { values: PinkValues }) => {
           label="Anything MidJourney"
         ></option>
         <option
-          value="https://api-inference.huggingface.co/models/naclbit/trinart_stable_diffusion_v2"
-          label="Trinart"
-        ></option>
-        <option
           value="https://api-inference.huggingface.co/models/eimiss/EimisAnimeDiffusion_1.0v"
           label="Eimis Anime"
-        ></option>
-        <option
-          value="https://api-inference.huggingface.co/models/CompVis/stable-diffusion-v1-4"
-          label="Stable Diffusion v1.4"
         ></option>
         <option
           value="https://api-inference.huggingface.co/models/runwayml/stable-diffusion-v1-5"
           label="Stable Diffusion v1.5"
         ></option>
         <option
-          value="https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-2"
-          label="Stable Diffusion v2.0"
+          value="https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-2-1"
+          label="Stable Diffusion v2.1"
         ></option>
         <option
           value="https://api-inference.huggingface.co/models/hakurei/waifu-diffusion"

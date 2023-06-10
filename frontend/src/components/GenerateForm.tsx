@@ -11,6 +11,7 @@ import { StyleSelector } from "./StyleSelector";
 import { usePinkContract } from "../hooks";
 import { pickResultOk } from "useink/utils";
 import { PINK_PREFIX } from "../const";
+import { ArtistSelector } from "./ArtistSelector";
 
 
 export const GenerateForm = ({ setIsBusy, handleError }: { setIsBusy: Function, handleError: Function }) => {
@@ -57,8 +58,8 @@ export const GenerateForm = ({ setIsBusy, handleError }: { setIsBusy: Function, 
     const prompt =
       PINK_PREFIX +
       values.aiStyle +
-      values.prompt
-      ;
+      values.artist +
+      values.prompt;
     return prompt
   }
 
@@ -132,6 +133,9 @@ export const GenerateForm = ({ setIsBusy, handleError }: { setIsBusy: Function, 
       </div>
       <div className="group">
         <StyleSelector values={values} />
+      </div>
+      <div className="group">
+        <ArtistSelector values={values} />
       </div>
       <div className="group">
         <ModelSelector values={values} />
