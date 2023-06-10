@@ -22,21 +22,54 @@ body {
 .form-panel {
   @apply flex flex-col items-center justify-center bg-gray-900 p-6 shadow-md shadow-xl;
   border-radius: 20px;
-
-  @media only screen and (min-width: 600px ) {
-    width: 420px;
-  }
 }
+
 .pink-example {
   width: auto;
   margin-bottom: 32px;
   border-radius: 0.5rem;
 }
+
 .pink-logo {
-  /* width: 300px; */
+  height: 45px;
+  margin-right: 16px;
+  display: none;
+}
+
+.pink-logo-mobile {
   height: 45px;
   margin-right: 16px;
 }
+
+.header-container {
+  @apply flex justify-between w-full px-2 py-4;
+}
+
+.accounts-dropdown {
+  @apply w-48;
+}
+
+@media only screen and (min-width: 600px ) {
+  .pink-logo {
+    display: block;
+  }
+  .pink-logo-mobile {
+    display: none;
+  }
+
+  .header-container {
+    @apply px-8;
+  }
+
+  .accounts-dropdown {
+    @apply w-64;
+  }
+
+  .form-panel {
+    width: 420px;
+  }
+}
+
 form {
   width: 100%;
   text-align: center;
@@ -116,6 +149,14 @@ a {
 
 .loader-image {
   @apply w-fit mx-auto mt-4;
+}
+
+.wallet-wrapper {
+  @apply flex items-center;
+}
+
+.network {
+  @apply mr-4
 }
 
 h1 {
