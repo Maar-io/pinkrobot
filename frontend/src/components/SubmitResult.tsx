@@ -1,6 +1,6 @@
 import { ContractType, PinkValues, UIEvent } from "../types";
 import { Disclosure } from "@headlessui/react";
-import { ChevronUpIcon } from "@heroicons/react/solid";
+import { ChevronUpIcon } from "@heroicons/react/24/solid";
 import { useEffect, useState } from "react";
 import { useFormikContext } from "formik";
 import { CUSTOM_MARKETPLACE, CUSTOM_MINT_TEXT, PINK_MARKETPLACE, PINK_MINT_TEXT } from "../const";
