@@ -49,6 +49,10 @@ body {
   @apply w-48;
 }
 
+.tweet {
+  @apply mb-4;
+}
+
 @media only screen and (min-width: 600px ) {
   .pink-logo {
     display: block;
