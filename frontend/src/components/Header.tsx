@@ -2,15 +2,11 @@ import { Button } from "./Button";
 import { useUI } from "../hooks";
 import { AccountsDropdown } from "./AccountsDropdown";
 import { useWallet } from "useink";
-import { PinkValues } from "../types";
-import { useFormikContext } from "formik";
 import { connectedNetwork } from "../const";
 
 export const Header = () => {
-  const { account, accounts, disconnect } = useWallet();
+  const { account, accounts } = useWallet();
   const { setShowConnectWallet } = useUI();
-  const { isSubmitting, isValid, values, setFieldTouched, handleChange } =
-    useFormikContext<PinkValues>();
 
   return (
     <div className="header-container">
@@ -18,10 +14,10 @@ export const Header = () => {
         <img src='assets/pink-logo-300.png' className="pink-logo" alt="PinkRobot" />
         <img src='assets/pink-logo.png' className="pink-logo-mobile" alt="PinkRobot" />
         <div className="wallet-wrapper">
-          <div className="pink-logo">{connectedNetwork === "Shibuya" ?
-            (<img src='assets/shibuya.svg' className="pink-logo" alt="Shibuya" />
+          <div className="pink-network-logo">{connectedNetwork === "Shibuya" ?
+            (<img src='assets/shibuya.svg' alt="Shibuya" />
             ) : (
-              <img src='assets/astar.svg' className="pink-logo" alt="Astar" />)
+              <img src='assets/astar.svg' alt="Astar" />)
           }
           </div>
           {!account ? (

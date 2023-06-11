@@ -1,5 +1,5 @@
 import { PinkValues, SupplyResult, TransferredBalanceEvent, UIEvent } from "../types";
-import { FormikHelpers, useFormikContext } from "formik";
+import { FormikHelpers } from "formik";
 import { usePinkContract } from "../hooks";
 import { useWallet } from "useink";
 import { pinkMeta } from "../const";

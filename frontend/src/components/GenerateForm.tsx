@@ -25,17 +25,11 @@ export const GenerateForm = ({ setIsBusy, handleError }: { setIsBusy: Function, 
   const hasFunds =
     !balance?.freeBalance.isEmpty && !balance?.freeBalance.isZero();
   values.contractType = ContractType.PinkPsp34;
-
-  const isOkToMint = true
-  // !isEstimating &&
-  // estimation &&
-  // estimation.result &&
-  // "Ok" in estimation.result;
-
+  
   useEffect(() => {
     fetchPrice();
     getTokenId(values);
-  }, [account, values.contractType]);
+  }, [account, values.contractType, values]);
 
   const getTokenId = async (values: PinkValues) => {
     // get tokenId from the contract's total_supply
@@ -44,7 +38,7 @@ export const GenerateForm = ({ setIsBusy, handleError }: { setIsBusy: Function, 
     console.log("Next tokenId probing", Number(supply) + 1);
     values.tokenId[values!.contractType] = Number(supply) + 1;
   };
-
+  
   const fetchPrice = async () => {
     const price = await getPrice?.send([], { defaultCaller: true });
     console.log('fetched price', price?.ok && price.value.decoded);
@@ -165,7 +159,6 @@ export const GenerateForm = ({ setIsBusy, handleError }: { setIsBusy: Function, 
               !isGenerated ||
               waitingHuggingFace ||
               isSubmitting ||
-              !isOkToMint ||
               !isValid ||
               !accounts ||
               !hasFunds
