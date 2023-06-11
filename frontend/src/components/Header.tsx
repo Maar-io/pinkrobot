@@ -15,10 +15,15 @@ export const Header = () => {
   return (
     <div className="header-container">
       <div className="flex items-center justify-between w-full">
-        <img src='assets/pink-logo-300.png' className="pink-logo" alt="logo" />
-        <img src='assets/pink-logo.png' className="pink-logo-mobile" alt="logo" />
+        <img src='assets/pink-logo-300.png' className="pink-logo" alt="PinkRobot" />
+        <img src='assets/pink-logo.png' className="pink-logo-mobile" alt="PinkRobot" />
         <div className="wallet-wrapper">
-          <div className="network">{connectedNetwork}</div>
+          <div className="pink-logo">{connectedNetwork === "Shibuya" ?
+            (<img src='assets/shibuya.svg' className="pink-logo" alt="Shibuya" />
+            ) : (
+              <img src='assets/astar.svg' className="pink-logo" alt="Astar" />)
+          }
+          </div>
           {!account ? (
             <Button onClick={() => setShowConnectWallet(true)}>
               Connect Wallet

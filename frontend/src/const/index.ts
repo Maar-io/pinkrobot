@@ -80,7 +80,7 @@ export enum AiStyles {
   Nouveau = "in Art Nouveau style, ",
   Paper = "made with paper and paper-cuts, ",
   Deviant = "in Deviant website style, ",
-  Best = "masterpiece, best quality, clean edges, sharp edges, ",
+  Best = "masterpiece, best quality, clean edges, sharp edges, detailed, ",
   Ink = "in ink splash, ",
   Pixiv = "in Pixiv website style, ",
   Watercolor = "in watercolor style with splashes, ",

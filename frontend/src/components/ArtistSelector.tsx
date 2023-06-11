@@ -19,8 +19,9 @@ export const ArtistSelector = ({ values }: { values: PinkValues }) => {
         value={artist}
         onChange={artistChanged}
         style={{ display: "block" }}
+        title="Select an Artist style. You can also enter any other Artist style in the prompt field."
       >
-        <option value="" disabled selected>Select an Artist style</option>
+        <option value="" disabled>Select an Artist style</option>
         <option
           value={ArtistStyles.None}
           label="No Artist selected"

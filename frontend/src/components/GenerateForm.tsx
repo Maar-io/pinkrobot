@@ -73,7 +73,7 @@ export const GenerateForm = ({ setIsBusy, handleError }: { setIsBusy: Function, 
     console.log("prompt:", prompt);
 
     try {
-      setIsBusy("Imagining your pink robot. This might take a while (up to 30s)");
+      setIsBusy("Imagining your pink robot. This might take up to 30s");
       setWaitingHuggingFace(true);
       setIsGenerated(false);
       const response = await axios({
@@ -116,6 +116,7 @@ export const GenerateForm = ({ setIsBusy, handleError }: { setIsBusy: Function, 
         src={values.displayImage[values.contractType]}
         className="pink-example rounded-lg"
         alt="example"
+        title="Here you can see the generated image. If you like it click 'Mint' to make your own NFT with it. Or click 'Imagine New' to generate a new image. If you would like to invoke previous image, you need to enter the same prompt, same style, same artist and same model. In case it is just a black square, try again"
       />
 
       <div className="group">
@@ -124,6 +125,7 @@ export const GenerateForm = ({ setIsBusy, handleError }: { setIsBusy: Function, 
           name="prompt"
           disabled={isSubmitting}
           placeholder="Pink robot as a..."
+          title="Enter a prompt to generate your pink robot. All prompts have predefined 'Pink Robot, ' prefix. For example, if you enter 'Smiling owl' the AI will generate an image for prompt 'Pink robot, smiling owl'. The style and artist will enhance the image but they are optional. The AI model is mandatory and by default is the latest Stable Diffusion version."
           onChange={(e: ChangeEvent) => {
             setFieldTouched("prompt");
             handleChange(e);
