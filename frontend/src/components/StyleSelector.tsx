@@ -71,6 +71,11 @@ export const StyleSelector = ({ values }: { values: PinkValues }) => {
             label="Nouveau"
           />
           <FormControlLabel
+            value={AiStyles.Ink}
+            control={<CustomRadio />}
+            label="Ink"
+          />
+          <FormControlLabel
             value={AiStyles.Disney}
             control={<CustomRadio />}
             label="Disney"
@@ -86,24 +91,19 @@ export const StyleSelector = ({ values }: { values: PinkValues }) => {
             label="Pixar"
           />
           <FormControlLabel
-            value={AiStyles.Deviant}
-            control={<CustomRadio />}
-            label="Deviant"
-          />
-          <FormControlLabel
             value={AiStyles.Best}
             control={<CustomRadio />}
             label="Best"
           />
           <FormControlLabel
+            value={AiStyles.Deviant}
+            control={<CustomRadio />}
+            label="Deviant"
+          />
+          <FormControlLabel
             value={AiStyles.Watercolor}
             control={<CustomRadio />}
             label="Watercolor"
-          />
-          <FormControlLabel
-            value={AiStyles.Ink}
-            control={<CustomRadio />}
-            label="Ink"
           />
           <FormControlLabel
             value={AiStyles.Paper}

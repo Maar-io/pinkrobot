@@ -12,20 +12,17 @@ export const ModelSelector = ({ values }: { values: PinkValues }) => {
 
   return (
     <div className="group">
-      <label htmlFor="aimodel">A.I. Model</label>
+      {/* <label htmlFor="aimodel">A.I. Model</label> */}
       <select
         name="aimodel"
         value={model}
         onChange={modelChanged}
         style={{ display: "block" }}
       >
+        <option value="" disabled selected>Select AI model</option>
         <option
-          value="https://api-inference.huggingface.co/models/lambdalabs/sd-pokemon-diffusers"
-          label="Pokemon Diffusers"
-        ></option>
-        <option
-          value="https://api-inference.huggingface.co/models/nitrosocke/Arcane-Diffusion"
-          label="Arcane Diffusion"
+          value="https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-2-1"
+          label="Stable Diffusion v2.1"
         ></option>
         <option
           value="https://api-inference.huggingface.co/models/andite/anything-v4.0"
@@ -40,16 +37,20 @@ export const ModelSelector = ({ values }: { values: PinkValues }) => {
           label="Anything MidJourney"
         ></option>
         <option
+          value="https://api-inference.huggingface.co/models/lambdalabs/sd-pokemon-diffusers"
+          label="Pokemon Diffusers"
+        ></option>
+        <option
+          value="https://api-inference.huggingface.co/models/nitrosocke/Arcane-Diffusion"
+          label="Arcane Diffusion"
+        ></option>
+        <option
           value="https://api-inference.huggingface.co/models/eimiss/EimisAnimeDiffusion_1.0v"
           label="Eimis Anime"
         ></option>
         <option
           value="https://api-inference.huggingface.co/models/runwayml/stable-diffusion-v1-5"
           label="Stable Diffusion v1.5"
-        ></option>
-        <option
-          value="https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-2-1"
-          label="Stable Diffusion v2.1"
         ></option>
         <option
           value="https://api-inference.huggingface.co/models/hakurei/waifu-diffusion"

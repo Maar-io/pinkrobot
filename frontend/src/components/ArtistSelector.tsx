@@ -13,16 +13,17 @@ export const ArtistSelector = ({ values }: { values: PinkValues }) => {
 
   return (
     <div className="group">
-      <label htmlFor="artist">Artist</label>
+      {/* <label htmlFor="artist">Artist</label> */}
       <select
         name="artist"
         value={artist}
         onChange={artistChanged}
         style={{ display: "block" }}
       >
+        <option value="" disabled selected>Select an Artist style</option>
         <option
           value={ArtistStyles.None}
-          label="None"
+          label="No Artist selected"
         ></option>
         <option
           value={ArtistStyles.Kusama}
