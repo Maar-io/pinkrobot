@@ -173,6 +173,26 @@ mod pinkrobot {
                 .map_err(|_| Error::FailedToWithdraw)?;
             Ok(())
         }
+
+        /// Get token supply of given contract
+        #[ink(message)]
+        pub fn get_supply(&mut self, contract_index: u8) -> Result<u128> {
+            let caller = self.env().caller();
+            let contract = self
+                .contracts_map
+                .get(&contract_index)
+                .ok_or(Error::FailedToGetContract)?;
+
+            let supply = build_call::<DefaultEnvironment>()
+                .call(contract)
+                .exec_input(
+                    ExecutionInput::new(Selector::new(ink::selector_bytes!("PSP34::total_supply")))
+                        .push_arg(caller),
+                )
+                .returns::<u128>()
+                .invoke();
+            Ok(supply)
+        }
     }
 
     fn ensure_valid_contract(_contract: AccountId) -> Result<()> {
@@ -424,6 +444,15 @@ mod pinkrobot {
                 .await
                 .return_value();
             assert_eq!(token_balance, 1);
+
+            // Verify that total_supply on PinkPsp34 is increased
+            let total_supply_message = build_message::<PinkrobotRef>(pinkrobot_account_id.clone())
+                .call(|p| p.get_supply(CONTRACT_INDEX));
+            let total_supply = client
+                .call_dry_run(&ink_e2e::bob(), &total_supply_message, 0, None)
+                .await
+                .return_value();
+            assert_eq!(total_supply.unwrap(), 1);
 
             // Owner sets max supply
             let max_supply_message = build_message::<PinkrobotRef>(pinkrobot_account_id.clone())
