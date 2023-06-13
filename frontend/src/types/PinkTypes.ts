@@ -6,13 +6,22 @@ export interface PinkValues {
   ipfs: string;
   aiModel: string;
   artist: string;
-  aiStyle: string;
+  aiStyle: AiStyle;
   imageData: Array<Uint8Array>;
   displayImage: Array<any>;
   tokenId: Array<number>;
   networkId: NetworkId;
   price: any;
   total: any;
+}
+
+export interface AiStyle {
+  name: string;
+  text: string;
+}
+
+export interface AiStyles {
+  [key: string]: AiStyle;
 }
 
 export enum ContractType {
