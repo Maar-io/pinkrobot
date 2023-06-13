@@ -10,6 +10,7 @@ import { GenerateCustomUploadForm } from "./GenerateCustomUploadForm";
 import { ContractType } from "../types";
 import { Error } from "./Error";
 import { ConnectWallet } from "./ConnectWallet";
+import { Gallery } from "./Gallery";
 // import { PinkTabs } from "./PinkTabs";
 
 export const PinkContainer = () => {
@@ -79,6 +80,7 @@ export const PinkContainer = () => {
                       </>
                     )}
                   </div>
+                  <Gallery />
                   <Error
                     open={!!error}
                     onClose={handleCloseError}

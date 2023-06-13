@@ -23,12 +23,14 @@ export const networks: Array<NetworkInfo> = [
   {
     name: "Shibuya",
     endpoint: "wss://rpc.shibuya.astar.network",
-    pinkContractAddress: "ZQgRzVGamwEvpkU1LzkT4b7EdtHq6PtH7GmEfyTv1HzQJvv"
+    pinkContractAddress: "ZQgRzVGamwEvpkU1LzkT4b7EdtHq6PtH7GmEfyTv1HzQJvv",
+    pinkPsp34ContractAddress: "Z9F7LFQSKAgJbfxeidKgttcPALiNzsSiG5iZEmohY36iGzY"
   },
   {
     name: "Astar",
     endpoint: "wss://rpc.astar.network",
-    pinkContractAddress: "0"
+    pinkContractAddress: "0",
+    pinkPsp34ContractAddress: "0"
   }
 ];
 
@@ -65,6 +67,7 @@ export const initialPinkValues: PinkValues = {
 };
 
 export const contractAddress = networks[initialPinkValues.networkId].pinkContractAddress;
+export const psp34ContractAddress = networks[initialPinkValues.networkId].pinkPsp34ContractAddress;
 export const connectedNetwork = networks[initialPinkValues.networkId].name;
 
 export const PINK_MINT_TEXT = `Your Pink Robot is now on ${connectedNetwork}! Keep it or flip it on `
