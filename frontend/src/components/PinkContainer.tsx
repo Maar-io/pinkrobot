@@ -60,7 +60,7 @@ export const PinkContainer = () => {
                   {/* <div className="group">
                     <PinkTabs tab={tab} setTab={setTab} />
                   </div> */}
-                  <div style={{display: 'flex'}}>
+                  <div className="pink-gallery-container">
                     <div className="form-panel">
                       {finalized ? (
                         <SubmitResult

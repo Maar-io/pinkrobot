@@ -5,7 +5,7 @@ import { pickDecoded, pickResultOk } from "useink/utils";
 import { Id } from "../types";
 import { Error } from "./Error";
 import axios from "axios";
-import { wrap } from "module";
+import { marketplaceTokenUrl } from "../const";
 
 type Props = {};
 
@@ -29,6 +29,11 @@ export const Gallery: React.FC<Props> = ({}) => {
   const getProxiedUri = (ipfsUri: string | undefined): string | undefined => {
     const ipfsGateway = "https://ipfs.io/ipfs/";
     return ipfsUri ? ipfsUri.replace("ipfs://", ipfsGateway) : undefined;
+  };
+
+  const getMarketplaceUrl = (tokenImageUrl: string): string => {
+    const tokenId = tokenImageUrl.split("/").pop()?.split(".")[0] || "";
+    return `${marketplaceTokenUrl}::${tokenId}/${tokenId}`
   };
 
   const getTokensMetadata = async (
@@ -57,17 +62,11 @@ export const Gallery: React.FC<Props> = ({}) => {
 
   const list = tokensUrls.map((url) => {
     return (
-      <img
-        src={url}
-        key={url}
-        alt="Token"
-        style={{
-          width: "120px",
-          borderRadius: "12px",
-          marginBottom: "8px",
-          marginLeft: "16px",
-        }}
-      />
+      <div className="gallery-image-wrapper">
+        <a href={getMarketplaceUrl(url)} target="_blank">
+          <img className="gallery-image" src={url} key={url} alt="Token" />
+        </a>
+      </div>
     );
   });
 
@@ -75,7 +74,7 @@ export const Gallery: React.FC<Props> = ({}) => {
     try {
       const ownedTokens = await getTotalBalance();
       if (ownedTokens) {
-        const metadata = (await getTokensMetadata(ownedTokens));
+        const metadata = await getTokensMetadata(ownedTokens);
 
         const nftUrls = metadata.map((data: any) => {
           return getProxiedUri(data.image);
@@ -94,7 +93,7 @@ export const Gallery: React.FC<Props> = ({}) => {
 
   return (
     <div>
-      <div style={{display: 'flex', flexWrap: 'wrap', maxWidth: '420px'}}>{list}</div>
+      <div className="gallery-container">{list}</div>
       <Error open={!!error} onClose={handleCloseError} message={error} />
     </div>
   );

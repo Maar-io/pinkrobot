@@ -105,7 +105,7 @@ export const GenerateForm = ({ setIsBusy, handleError }: { setIsBusy: Function, 
   };
 
   return (
-    <Form>
+    <Form style={{marginBottom: 'auto'}}>
       <img
         src={values.displayImage[values.contractType]}
         className="pink-example rounded-lg"

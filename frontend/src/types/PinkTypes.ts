@@ -32,6 +32,7 @@ export interface NetworkInfo {
   endpoint: string;
   pinkContractAddress: string;
   pinkPsp34ContractAddress: string;
+  marketplaceTokenUrl: string;
 }
 export interface Meta {
   name: string;
