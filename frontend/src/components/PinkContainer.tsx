@@ -26,7 +26,10 @@ export const PinkContainer = () => {
 
   return (
     <div className="App">
-      <ConnectWallet show={showConnectWallet} onClose={() => setShowConnectWallet(false)} />
+      <ConnectWallet
+        show={showConnectWallet}
+        onClose={() => setShowConnectWallet(false)}
+      />
       <Formik
         validateOnMount
         initialValues={initialPinkValues}
@@ -57,30 +60,32 @@ export const PinkContainer = () => {
                   {/* <div className="group">
                     <PinkTabs tab={tab} setTab={setTab} />
                   </div> */}
-                  <div className="form-panel">
-                    {finalized ? (
-                      <SubmitResult
-                        events={events}
-                        errorMessage={errorMessage}
-                        hideBusyMessage={notBusyAnymore}
-                      />
-                    ) : (
-                      <>
-                        {tab === ContractType.PinkPsp34 && (
-                          <GenerateForm
-                            setIsBusy={setBusyMessage}
-                            handleError={handleError}
-                          />
-                        )}
-                        {tab === ContractType.CustomUpload34 && (
-                          <GenerateCustomUploadForm
-                            handleError={handleError}
-                          />
-                        )}
-                      </>
-                    )}
+                  <div style={{display: 'flex'}}>
+                    <div className="form-panel">
+                      {finalized ? (
+                        <SubmitResult
+                          events={events}
+                          errorMessage={errorMessage}
+                          hideBusyMessage={notBusyAnymore}
+                        />
+                      ) : (
+                        <>
+                          {tab === ContractType.PinkPsp34 && (
+                            <GenerateForm
+                              setIsBusy={setBusyMessage}
+                              handleError={handleError}
+                            />
+                          )}
+                          {tab === ContractType.CustomUpload34 && (
+                            <GenerateCustomUploadForm
+                              handleError={handleError}
+                            />
+                          )}
+                        </>
+                      )}
+                    </div>
+                    <Gallery />
                   </div>
-                  <Gallery />
                   <Error
                     open={!!error}
                     onClose={handleCloseError}

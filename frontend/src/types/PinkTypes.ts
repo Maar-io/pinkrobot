@@ -43,5 +43,8 @@ export enum NetworkId {
   Astar = 1,
 }
 
+export interface Id {
+  U64: string;
+}
 
 export type SupplyResult = RustResult<{ value: number }, { err: { e: string } }>;
