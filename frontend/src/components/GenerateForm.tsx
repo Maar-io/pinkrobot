@@ -52,7 +52,7 @@ export const GenerateForm = ({ setIsBusy, handleError }: { setIsBusy: Function, 
     const prompt =
       PINK_PREFIX +
       values.aiStyle.text +
-      values.artist +
+      values.artist.text +
       values.prompt;
     return prompt
   }
@@ -71,7 +71,7 @@ export const GenerateForm = ({ setIsBusy, handleError }: { setIsBusy: Function, 
       setWaitingHuggingFace(true);
       setIsGenerated(false);
       const response = await axios({
-        url: values.aiModel,
+        url: values.aiModel.text,
         method: "POST",
         headers: {
           Authorization: `Bearer ${process.env.REACT_APP_HUGGING_FACE_API_KEY}`,

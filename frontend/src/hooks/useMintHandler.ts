@@ -53,8 +53,8 @@ export const useMintHandler = () => {
         image: new File([imageFile], fileName, { type: "image/jpeg" }),
         attributes: [
           { trait_type: "Prompt", value: values!.prompt },
-          { trait_type: "AI Model", value: values!.aiModel},
-          { trait_type: "Artist", value: values!.artist},
+          { trait_type: "AI Model", value: values!.aiModel.name},
+          { trait_type: "Artist", value: values!.artist.name},
           { trait_type: "Style", value: values!.aiStyle.name},
         ],
       })

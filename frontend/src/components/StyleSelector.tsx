@@ -1,5 +1,5 @@
-import { SetStateAction, useState } from "react";
-import { AiStyle, AiStyles, PinkValues } from "../types";
+import { useState } from "react";
+import { NameText, PinkValues } from "../types";
 import { aiStyles } from "../const";
 import {
   FormControl,
@@ -18,10 +18,10 @@ const CustomRadio = styled(Radio)<RadioProps>(({ theme }) => ({
 }));
 
 export const StyleSelector = ({ values }: { values: PinkValues }) => {
-  const [style, setStyle] = useState<string>(aiStyles.none.name);
+  const [style, setStyle] = useState<string>(values.aiStyle.name);
 
   const styleChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newStyle: AiStyle = aiStyles[e.target.value.toLowerCase()];
+    const newStyle: NameText = aiStyles[e.target.value.toLowerCase()];
     setStyle(newStyle.name);
     values.aiStyle = newStyle;
     console.log("modelChanged", newStyle);

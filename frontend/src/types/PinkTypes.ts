@@ -4,9 +4,9 @@ export interface PinkValues {
   prompt: string;
   contractType: number;
   ipfs: string;
-  aiModel: string;
-  artist: string;
-  aiStyle: AiStyle;
+  aiModel: NameText;
+  artist: NameText;
+  aiStyle: NameText;
   imageData: Array<Uint8Array>;
   displayImage: Array<any>;
   tokenId: Array<number>;
@@ -15,13 +15,13 @@ export interface PinkValues {
   total: any;
 }
 
-export interface AiStyle {
+export interface NameText {
   name: string;
   text: string;
 }
 
-export interface AiStyles {
-  [key: string]: AiStyle;
+export interface NameTextMap {
+  [key: string]: NameText;
 }
 
 export enum ContractType {
