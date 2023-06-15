@@ -11,7 +11,7 @@ pub mod pinkpsp34 {
 
     use openbrush::contracts::psp34;
     use openbrush::contracts::{
-        ownable::*,
+        access_control::*,
         psp34::extensions::{burnable::*, enumerable::*, metadata::*},
     };
 
@@ -26,7 +26,7 @@ pub mod pinkpsp34 {
         #[storage_field]
         psp34: psp34::Data<enumerable::Balances>,
         #[storage_field]
-        ownable: ownable::Data,
+        access: access_control::Data,
         #[storage_field]
         metadata: metadata::Data,
         #[storage_field]
@@ -60,7 +60,7 @@ pub mod pinkpsp34 {
     impl PSP34 for PinkPsp34 {}
     impl PSP34Burnable for PinkPsp34 {}
     impl PSP34Enumerable for PinkPsp34 {}
-    impl Ownable for PinkPsp34 {}
+    impl AccessControl for PinkPsp34 {}
     impl PSP34Metadata for PinkPsp34 {}
     impl PinkMint for PinkPsp34 {}
 
@@ -74,7 +74,8 @@ pub mod pinkpsp34 {
         ) -> Self {
             let mut instance = Self::default();
             let contract_owner = owner.unwrap_or(instance.env().caller());
-            instance._init_with_owner(contract_owner);
+            instance._init_with_admin(contract_owner);
+            instance._setup_role(CONTRIBUTOR, contract_owner);
             instance._set_attribute(Id::U64(0), String::from("name"), String::from(name));
             instance._set_attribute(Id::U64(0), String::from("symbol"), String::from(symbol));
             instance.pinkmint.max_supply = Some(max_supply);

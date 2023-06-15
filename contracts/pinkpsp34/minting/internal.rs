@@ -2,7 +2,7 @@ use crate::minting::MintingData;
 
 use ink::prelude::string::String as PreludeString;
 use openbrush::{
-    contracts::{ownable::*, psp34::extensions::enumerable::*},
+    contracts::{access_control::*, psp34::extensions::enumerable::*},
     traits::{AccountId, Storage},
 };
 
@@ -10,7 +10,7 @@ use openbrush::{
 #[cfg_attr(feature = "std", derive(scale_info::TypeInfo))]
 pub enum Error {
     Pink(PinkError),
-    Ownable(OwnableError),
+    AccessControl(AccessControlError),
 }
 
 #[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
@@ -25,17 +25,18 @@ pub enum PinkError {
     TokenNotFound,
 }
 
-impl From<OwnableError> for Error {
-    fn from(err: OwnableError) -> Self {
-        Self::Ownable(err)
-    }
-}
-
 impl From<PinkError> for Error {
     fn from(err: PinkError) -> Self {
         Self::Pink(err)
     }
 }
+
+impl From<AccessControlError> for Error {
+    fn from(err: AccessControlError) -> Self {
+        Self::AccessControl(err)
+    }
+}
+
 /// Trait definitions for Minting internal functions.
 pub trait Internal {
     /// Check amount of tokens to be minted.
