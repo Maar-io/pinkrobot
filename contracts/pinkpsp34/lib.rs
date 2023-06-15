@@ -364,6 +364,58 @@ pub mod pinkpsp34 {
         }
 
         #[ink::test]
+        fn whitelisting_works() {
+            let mut pink34 = init();
+            let accounts = default_accounts();
+            let token_uri = String::from(TOKEN_URI);
+
+            // Bob fails to add to whitelist
+            set_sender(accounts.bob);
+            assert_eq!(
+                pink34.add_to_whitelist(accounts.bob, true),
+                Err(Error::Ownable(OwnableError::CallerIsNotOwner))
+            );
+
+            // Alice adds Bob to whitelist
+            set_sender(accounts.alice);
+            assert!(pink34.enable_whitelist(true).is_ok());
+            assert_eq!(pink34.is_whitelist_enabled(), true);
+            assert_eq!(pink34.add_to_whitelist(accounts.bob, true), Ok(()));
+            assert_eq!(pink34.is_whitelisted(accounts.bob), true);
+            assert_eq!(pink34.whitelist_count(), 1);
+
+            // Alice mints for Bob works
+            assert_eq!(pink34.set_limit_per_account(1), Ok(()));
+            assert_eq!(pink34.mint(accounts.bob, token_uri), Ok(Id::U64(1)));
+
+            // Alice mint for Charlie fails
+            assert_eq!(
+                pink34.mint(accounts.charlie, String::from(TOKEN_URI)),
+                Err(Error::Pink(PinkError::NotWhitelisted))
+            );
+
+            // Alice removes Bob from whitelist
+            assert_eq!(pink34.add_to_whitelist(accounts.bob, false), Ok(()));
+            assert_eq!(pink34.is_whitelisted(accounts.bob), false);
+            assert_eq!(pink34.whitelist_count(), 0);
+
+            // Alice mints for Bob fails
+            assert_eq!(
+                pink34.mint(accounts.bob, String::from(TOKEN_URI)),
+                Err(Error::Pink(PinkError::NotWhitelisted))
+            );
+
+            // Disable whitelist and mint for Bob works
+            assert!(pink34.enable_whitelist(false).is_ok());
+            assert_eq!(pink34.set_limit_per_account(2), Ok(()));
+            assert_eq!(
+                pink34.mint(accounts.bob, String::from(TOKEN_URI)),
+                Ok(Id::U64(2))
+            );
+            assert_eq!(pink34.whitelist_count(), 0);
+        }
+
+        #[ink::test]
         fn token_uri_works() {
             let mut pink34 = init();
             let accounts = default_accounts();

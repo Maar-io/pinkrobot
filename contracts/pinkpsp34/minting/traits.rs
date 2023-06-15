@@ -29,6 +29,26 @@ pub trait PinkMint {
     /// Get max amount of tokens to be minted per account.
     fn limit_per_account(&self) -> u32;
 
+    /// Add an account to the whitelist.
+    #[ink(message)]
+    fn add_to_whitelist(&mut self, user: AccountId, enabled: bool) -> Result<(), Error>;
+
+    /// Use or not use whitelist.
+    #[ink(message)]
+    fn enable_whitelist(&mut self, enabled: bool) -> Result<(), Error>;
+
+    /// Check if an account is whitelisted.
+    #[ink(message)]
+    fn is_whitelisted(&self, user: AccountId) -> bool;
+
+    /// Check if whitelist is enabled.
+    #[ink(message)]
+    fn is_whitelist_enabled(&self) -> bool;
+
+    /// Get number of whitelisted accounts.
+    #[ink(message)]
+    fn whitelist_count(&self) -> u32;
+
     /// Get max supply of tokens.
     #[ink(message)]
     fn max_supply(&self) -> Option<u64>;

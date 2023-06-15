@@ -20,6 +20,9 @@ pub struct MintingData {
     pub max_supply: Option<u64>,
     pub limit_per_account: u32,
     pub nft_metadata: Mapping<Id, String>,
+    pub whitelist: Mapping<AccountId, bool>,
+    pub whitelist_enabled: bool,
+    pub whitelist_count: u32,
 }
 
 impl<T> PinkMint for T
@@ -35,6 +38,7 @@ where
     #[modifiers(only_owner)]
     default fn mint(&mut self, to: AccountId, metadata: String) -> Result<Id, Error> {
         self._check_amount(1)?;
+        self._check_whitelisted(to)?;
         self._check_limit(to)?;
         let minted_id = self._mint(to)?;
 
@@ -67,6 +71,44 @@ where
     /// Get max supply of tokens.
     default fn max_supply(&self) -> Option<u64> {
         self.data::<MintingData>().max_supply
+    }
+
+    /// Add an account to the whitelist.
+    #[modifiers(only_owner)]
+    default fn add_to_whitelist(&mut self, user: AccountId, enabled: bool) -> Result<(), Error> {
+        if !enabled && self.data::<MintingData>().whitelist.contains(&user) {
+            self.data::<MintingData>().whitelist_count -= 1;
+            self.data::<MintingData>().whitelist.remove(&user);
+        } else if enabled && !self.data::<MintingData>().whitelist.contains(&user) {
+            self.data::<MintingData>().whitelist_count += 1;
+            self.data::<MintingData>().whitelist.insert(user, &enabled);
+        }
+        Ok(())
+    }
+
+    /// Use or not use whitelist.
+    #[modifiers(only_owner)]
+    default fn enable_whitelist(&mut self, enabled: bool) -> Result<(), Error> {
+        self.data::<MintingData>().whitelist_enabled = enabled;
+        Ok(())
+    }
+
+    /// Check if an account is whitelisted.
+    default fn is_whitelisted(&self, user: AccountId) -> bool {
+        self.data::<MintingData>()
+            .whitelist
+            .get(&user)
+            .unwrap_or(false)
+    }
+
+    /// Check if whitelist is enabled.
+    default fn is_whitelist_enabled(&self) -> bool {
+        self.data::<MintingData>().whitelist_enabled
+    }
+
+    /// Get number of whitelisted accounts.
+    default fn whitelist_count(&self) -> u32 {
+        self.data::<MintingData>().whitelist_count
     }
 
     /// Get URI for the token Id.
