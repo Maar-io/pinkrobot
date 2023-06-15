@@ -8,7 +8,7 @@ use openbrush::{
         psp34::extensions::{enumerable::*, metadata::*},
     },
     modifiers,
-    traits::{AccountId, Balance, Storage, String},
+    traits::{AccountId, Storage, String},
 };
 
 pub const STORAGE_MINTING_KEY: u32 = openbrush::storage_unique_key!(MintingData);
@@ -18,7 +18,7 @@ pub const STORAGE_MINTING_KEY: u32 = openbrush::storage_unique_key!(MintingData)
 pub struct MintingData {
     pub last_token_id: u64,
     pub max_supply: Option<u64>,
-    pub price_per_mint: Balance,
+    pub limit_per_account: u32,
     pub nft_metadata: Mapping<Id, String>,
 }
 
@@ -35,6 +35,7 @@ where
     #[modifiers(only_owner)]
     default fn mint(&mut self, to: AccountId, metadata: String) -> Result<Id, Error> {
         self._check_amount(1)?;
+        self._check_limit(to)?;
         let minted_id = self._mint(to)?;
 
         self.data::<MintingData>()
@@ -44,11 +45,23 @@ where
         Ok(minted_id)
     }
 
-    /// Get max supply of tokens.
+    /// Set max supply of tokens.
     #[modifiers(only_owner)]
     default fn set_max_supply(&mut self, max_supply: Option<u64>) -> Result<(), Error> {
         self.data::<MintingData>().max_supply = max_supply;
         Ok(())
+    }
+
+    /// Set max amount of tokens to be minted per account.
+    #[modifiers(only_owner)]
+    default fn set_limit_per_account(&mut self, limit: u32) -> Result<(), Error> {
+        self.data::<MintingData>().limit_per_account = limit;
+        Ok(())
+    }
+
+    /// Get max amount of tokens to be minted per account.
+    default fn limit_per_account(&self) -> u32 {
+        self.data::<MintingData>().limit_per_account
     }
 
     /// Get max supply of tokens.

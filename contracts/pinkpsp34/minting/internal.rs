@@ -1,7 +1,6 @@
 use crate::minting::MintingData;
 
 use ink::prelude::string::String as PreludeString;
-
 use openbrush::{
     contracts::{ownable::*, psp34::extensions::enumerable::*},
     traits::{AccountId, Storage},
@@ -19,6 +18,7 @@ pub enum Error {
 pub enum PinkError {
     CannotMintZeroTokens,
     CollectionIsFull,
+    MintingLimit,
     UriNotFound,
     TokenExists,
     TokenNotFound,
@@ -45,6 +45,9 @@ pub trait Internal {
 
     /// Get URI for the token Id.
     fn _token_uri(&self, token_id: u64) -> Result<PreludeString, Error>;
+
+    /// Get URI for the token Id.
+    fn _check_limit(&self, to: AccountId) -> Result<(), Error>;
 }
 
 /// Helper trait for Minting
@@ -70,6 +73,17 @@ where
         }
 
         Err(PinkError::CollectionIsFull.into())
+    }
+
+    /// Check limit of tokens to be minted per account
+    default fn _check_limit(&self, to: AccountId) -> Result<(), Error> {
+        let current_balance: u32 = self
+            .data::<psp34::Data<enumerable::Balances>>()
+            .balance_of(to);
+        if current_balance >= self.data::<MintingData>().limit_per_account {
+            return Err(PinkError::MintingLimit.into());
+        }
+        Ok(())
     }
 
     /// Mint next token to specified account

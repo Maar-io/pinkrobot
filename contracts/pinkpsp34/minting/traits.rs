@@ -22,6 +22,13 @@ pub trait PinkMint {
     #[ink(message)]
     fn set_max_supply(&mut self, max_supply: Option<u64>) -> Result<(), Error>;
 
+    /// Set max amount of tokens to be minted per account.
+    #[ink(message)]
+    fn set_limit_per_account(&mut self, limit: u32) -> Result<(), Error>;
+
+    /// Get max amount of tokens to be minted per account.
+    fn limit_per_account(&self) -> u32;
+
     /// Get max supply of tokens.
     #[ink(message)]
     fn max_supply(&self) -> Option<u64>;

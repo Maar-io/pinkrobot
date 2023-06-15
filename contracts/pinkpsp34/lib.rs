@@ -6,8 +6,8 @@ pub use self::pinkpsp34::PinkPsp34Ref;
 #[openbrush::contract]
 pub mod pinkpsp34 {
     use ink::codegen::{EmitEvent, Env};
-    use ink::storage::Mapping;
     use ink::prelude::vec::Vec;
+    use ink::storage::Mapping;
 
     use openbrush::contracts::psp34;
     use openbrush::contracts::{
@@ -220,6 +220,7 @@ pub mod pinkpsp34 {
 
             // New owner mints for Bob works
             set_sender(maybe_owner);
+            assert_eq!(pink34.set_limit_per_account(1), Ok(()));
             assert_eq!(pink34.mint(accounts.bob, token_uri), Ok(Id::U64(1)));
             assert_eq!(
                 pink34.owners_token_by_index(accounts.bob, 0),
@@ -245,6 +246,7 @@ pub mod pinkpsp34 {
 
             // Owner mints for Bob works
             set_sender(accounts.alice);
+            assert_eq!(pink34.set_limit_per_account(1), Ok(()));
             assert_eq!(pink34.mint(accounts.bob, token_uri), Ok(Id::U64(1)));
 
             // Check all the minting events
@@ -267,6 +269,7 @@ pub mod pinkpsp34 {
 
             // Owner mints two for Bob
             set_sender(accounts.alice);
+            assert_eq!(pink34.set_limit_per_account(2), Ok(()));
             assert_eq!(pink34.mint(accounts.bob, token_uri.clone()), Ok(Id::U64(1)));
             assert_eq!(pink34.total_balance(accounts.bob), vec![Id::U64(1)]);
             assert_eq!(pink34.mint(accounts.bob, token_uri), Ok(Id::U64(2)));
@@ -304,6 +307,7 @@ pub mod pinkpsp34 {
 
             // Bob is now the owner and can mint
             set_sender(accounts.bob);
+            assert_eq!(pink34.set_limit_per_account(1), Ok(()));
             assert_eq!(pink34.mint(accounts.bob, token_uri.clone()), Ok(Id::U64(1)));
 
             // Should fail. Only owner can mint
@@ -333,6 +337,33 @@ pub mod pinkpsp34 {
         }
 
         #[ink::test]
+        fn set_limit_per_account_works() {
+            let mut pink34 = init();
+            let accounts = default_accounts();
+
+            // Bob fails to change limit
+            set_sender(accounts.bob);
+            assert_eq!(
+                pink34.set_limit_per_account(42),
+                Err(Error::Ownable(OwnableError::CallerIsNotOwner))
+            );
+
+            // Alice changes max supply
+            set_sender(accounts.alice);
+            assert_eq!(pink34.set_limit_per_account(42), Ok(()));
+            assert_eq!(pink34.limit_per_account(), 42);
+
+            // Alice mints fails to mint over limit for Bob
+            assert_eq!(pink34.set_limit_per_account(2), Ok(()));
+            assert!(pink34.mint(accounts.bob, String::from(TOKEN_URI)).is_ok());
+            assert!(pink34.mint(accounts.bob, String::from(TOKEN_URI)).is_ok());
+            assert_eq!(
+                pink34.mint(accounts.bob, String::from(TOKEN_URI)),
+                Err(Error::Pink(PinkError::MintingLimit))
+            );
+        }
+
+        #[ink::test]
         fn token_uri_works() {
             let mut pink34 = init();
             let accounts = default_accounts();
@@ -340,6 +371,7 @@ pub mod pinkpsp34 {
 
             // Owner mints for Bob works
             set_sender(accounts.alice);
+            assert_eq!(pink34.set_limit_per_account(1), Ok(()));
             assert_eq!(pink34.mint(accounts.bob, token_uri), Ok(Id::U64(1)));
 
             // return error if request is for not yet minted token
