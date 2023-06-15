@@ -63,9 +63,9 @@ export const Gallery: React.FC<Props> = ({}) => {
 
   const list = tokensUrls.map((url) => {
     return (
-      <div className="gallery-image-wrapper">
+      <div className="gallery-image-wrapper" key={url}>
         <a href={getMarketplaceUrl(url)} target="_blank">
-          <img className="gallery-image" src={url} key={url} alt="Token" />
+          <img className="gallery-image" src={url} alt="Token" />
         </a>
       </div>
     );
