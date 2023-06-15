@@ -14,6 +14,7 @@ export const Gallery: React.FC<Props> = ({}) => {
   const [error, setError] = useState<string>("");
   const { totalBalance, tokenUri } = usePinkPsp34Contract();
   const { account } = useWallet();
+  const MAX_GALLERY_SIZE = 12;
 
   const handleCloseError = () => setError("");
 
@@ -78,7 +79,7 @@ export const Gallery: React.FC<Props> = ({}) => {
 
         const nftUrls = metadata.map((data: any) => {
           return getProxiedUri(data.image);
-        });
+        }).splice(0, MAX_GALLERY_SIZE);
 
         setTokensUrls(nftUrls as string[]);
       }

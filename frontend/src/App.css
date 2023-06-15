@@ -81,6 +81,9 @@ body {
   &:hover {
     transform: scale(1.1);
     -webkit-transform: scale(1.1);
+    outline: none;
+    border-color: #9ecaed;
+    box-shadow: 0 0 6px #9ecaed;
   }
 } 
 
@@ -108,11 +111,11 @@ body {
   }
 
   .pink-gallery-container {
-    @apply flex-row;
+    @apply flex-row-reverse;
   }
 
   .gallery-container {
-    @apply ml-2 mt-0 w-28;
+    @apply mr-2 mt-0 w-28;
   }
 
   .gallery-image-wrapper {
