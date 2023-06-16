@@ -12,7 +12,7 @@ use openbrush::{
 };
 
 pub const ADMIN: RoleType = DEFAULT_ADMIN_ROLE;
-pub const CONTRIBUTOR: RoleType = 1;
+pub const MINTER: RoleType = 1;
 
 pub const STORAGE_MINTING_KEY: u32 = openbrush::storage_unique_key!(MintingData);
 
@@ -38,7 +38,7 @@ where
         + psp34::Internal,
 {
     /// Mint one token to the specified account.
-    #[modifiers(only_role(CONTRIBUTOR))]
+    #[modifiers(only_role(MINTER))]
     default fn mint(&mut self, to: AccountId, metadata: String) -> Result<Id, Error> {
         self._check_amount(1)?;
         self._check_whitelisted(to)?;
@@ -53,7 +53,7 @@ where
     }
 
     /// Change metadata for the token Id.
-    #[modifiers(only_role(CONTRIBUTOR))]
+    #[modifiers(only_role(ADMIN))]
     default fn change_metadata(&mut self, token: Id, metadata: String) -> Result<(), Error> {
         if self
             .data::<MintingData>()
@@ -70,14 +70,14 @@ where
     }
 
     /// Set max supply of tokens.
-    #[modifiers(only_role(CONTRIBUTOR))]
+    #[modifiers(only_role(ADMIN))]
     default fn set_max_supply(&mut self, max_supply: Option<u64>) -> Result<(), Error> {
         self.data::<MintingData>().max_supply = max_supply;
         Ok(())
     }
 
     /// Set max amount of tokens to be minted per account.
-    #[modifiers(only_role(CONTRIBUTOR))]
+    #[modifiers(only_role(ADMIN))]
     default fn set_limit_per_account(&mut self, limit: u32) -> Result<(), Error> {
         self.data::<MintingData>().limit_per_account = limit;
         Ok(())
@@ -94,7 +94,7 @@ where
     }
 
     /// Add an account to the whitelist.
-    #[modifiers(only_role(CONTRIBUTOR))]
+    #[modifiers(only_role(ADMIN))]
     default fn add_to_whitelist(&mut self, user: AccountId, enabled: bool) -> Result<(), Error> {
         if !enabled && self.data::<MintingData>().whitelist.contains(&user) {
             self.data::<MintingData>().whitelist_count -= 1;
@@ -107,7 +107,7 @@ where
     }
 
     /// Use or not use whitelist.
-    #[modifiers(only_role(CONTRIBUTOR))]
+    #[modifiers(only_role(ADMIN))]
     default fn enable_whitelist(&mut self, enabled: bool) -> Result<(), Error> {
         self.data::<MintingData>().whitelist_enabled = enabled;
         Ok(())

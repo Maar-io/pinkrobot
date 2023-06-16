@@ -1,6 +1,6 @@
 [package]
 name = "pinkpsp34"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["[Mario] <[mario@arrakis.com]>"]
 edition = "2021"
 
@@ -17,9 +17,9 @@ ink_e2e = "4.2.1"
 
 [lib]
 path = "lib.rs"
-crate-type = [
-    "rlib",
-]
+# crate-type = [
+#     "rlib",
+# ]
 
 [features]
 default = ["std"]

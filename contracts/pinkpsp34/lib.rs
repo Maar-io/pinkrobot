@@ -1,4 +1,4 @@
-#![cfg_attr(not(feature = "std"), no_std)]
+#![cfg_attr(not(feature = "std"), no_std, no_main)]
 #![feature(min_specialization)]
 
 pub use self::pinkpsp34::PinkPsp34Ref;
@@ -75,7 +75,7 @@ pub mod pinkpsp34 {
             let mut instance = Self::default();
             let contract_owner = owner.unwrap_or(instance.env().caller());
             instance._init_with_admin(contract_owner);
-            instance._setup_role(CONTRIBUTOR, contract_owner);
+            instance._setup_role(MINTER, contract_owner);
             instance._set_attribute(Id::U64(0), String::from("name"), String::from(name));
             instance._set_attribute(Id::U64(0), String::from("symbol"), String::from(symbol));
             instance.pinkmint.max_supply = Some(max_supply);
@@ -323,7 +323,9 @@ pub mod pinkpsp34 {
                 pink34.mint(accounts.charlie, token_uri.clone()),
                 Err(AccessControlError::MissingRole.into())
             );
-            pink34._setup_role(CONTRIBUTOR, accounts.charlie);
+            // Alice gives Minter role to Charlie
+            set_sender(accounts.alice);
+            assert!(pink34.grant_role(MINTER, accounts.charlie).is_ok());
             assert_eq!(pink34.mint(accounts.charlie, token_uri), Ok(Id::U64(3)));
         }
 

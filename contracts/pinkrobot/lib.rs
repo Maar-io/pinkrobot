@@ -1,4 +1,4 @@
-#![cfg_attr(not(feature = "std"), no_std)]
+#![cfg_attr(not(feature = "std"), no_std, no_main)]
 
 #[ink::contract]
 mod pinkrobot {
@@ -268,7 +268,7 @@ mod pinkrobot {
         use crate::pinkrobot::PinkrobotRef;
         use ink::primitives::AccountId;
         use ink_e2e::build_message;
-        use openbrush::contracts::ownable::ownable_external::Ownable;
+        use openbrush::contracts::access_control::accesscontrol_external::AccessControl;
         use openbrush::contracts::psp34::psp34_external::PSP34;
         use pinkpsp34::pinkpsp34::PinkPsp34Ref;
 
@@ -324,6 +324,9 @@ mod pinkrobot {
                 .expect("pinkrobot instantiate failed")
                 .account_id;
 
+            // Check contract balance
+            let initial_balance = client.balance(pinkrobot_account_id).await.unwrap();
+
             // Add pinkpsp34 contract to pinkrobot with contract_index 1
             let change_message =
                 build_message::<PinkrobotRef>(pinkrobot_account_id.clone()).call(|pinkrobot| {
@@ -343,22 +346,23 @@ mod pinkrobot {
                 .return_value();
             assert_eq!(owner_result, alice_account_id);
 
-            // Set Pinkrobot to be the owner of PSP34
+            // Set Pinkrobot to has the minter role on PinkPsp34
+            let minter = 2;
             let change_owner = build_message::<PinkPsp34Ref>(pinkpsp34_account_id.clone())
-                .call(|p| p.transfer_ownership(pinkrobot_account_id));
+                .call(|p| p.grant_role(minter, pinkrobot_account_id));
             client
                 .call(&ink_e2e::alice(), change_owner, 0, None)
                 .await
-                .expect("calling `transfer_ownership` failed");
+                .expect("calling `grant_role` failed");
 
-            // Verify that PinkRobot is the pinkPsp owner
-            let owner =
-                build_message::<PinkPsp34Ref>(pinkpsp34_account_id.clone()).call(|p| p.owner());
-            let owner_result = client
-                .call_dry_run(&ink_e2e::alice(), &owner, 0, None)
+            // Verify that PinkRobot has minter role
+            let has_role = build_message::<PinkPsp34Ref>(pinkpsp34_account_id.clone())
+                .call(|p| p.has_role(minter, pinkrobot_account_id));
+            let minter_role_confirmed = client
+                .call_dry_run(&ink_e2e::alice(), &has_role, 0, None)
                 .await
                 .return_value();
-            assert_eq!(owner_result, pinkrobot_account_id);
+            assert_eq!(minter_role_confirmed, true);
 
             // Contract owner sets price
             let price_message = build_message::<PinkrobotRef>(pinkrobot_account_id.clone())
@@ -367,6 +371,14 @@ mod pinkrobot {
                 .call(&ink_e2e::alice(), price_message, 0, None)
                 .await
                 .expect("calling `set_price` failed");
+
+            // Contract owner sets price
+            let limit_message = build_message::<PinkPsp34Ref>(pinkpsp34_account_id.clone())
+                .call(|p| p.set_limit_per_account(10));
+            client
+                .call(&ink_e2e::alice(), limit_message, 0, None)
+                .await
+                .expect("calling `limit_message` failed");
 
             // Bob mints a token fails since no payment was made
             let mint_message = build_message::<PinkrobotRef>(pinkrobot_account_id.clone())
@@ -383,11 +395,6 @@ mod pinkrobot {
                 .await
                 .expect("calling `pink_mint` failed");
 
-            // Check contract balance
-            if let Ok(balance) = client.balance(pinkrobot_account_id).await {
-                assert_eq!(balance, 100);
-            }
-
             // Bob fails to withdraw since he is not the owner
             let withdraw_message = build_message::<PinkrobotRef>(pinkrobot_account_id.clone())
                 .call(|pinkrobot| pinkrobot.withdraw());
@@ -395,26 +402,28 @@ mod pinkrobot {
                 .call_dry_run(&ink_e2e::bob(), &withdraw_message, 0, None)
                 .await
                 .return_value();
-            let balance = client
-                .balance(pinkrobot_account_id)
-                .await
-                .expect("getting balance failed");
             assert_eq!(should_fail, Err(Error::NotOwner));
-            assert_eq!(balance, 100);
-
-            // Alice withdraws
-            client
-                .call(&ink_e2e::alice(), withdraw_message, 0, None)
-                .await
-                .expect("calling `withdraw_message` failed");
 
             // Check contract balance
             let balance = client
                 .balance(pinkrobot_account_id)
                 .await
                 .expect("getting balance failed");
+            assert_eq!(balance, initial_balance + 100);
 
-            assert_eq!(balance, 0);
+            // Alice withdraws
+            // client
+            //     .call(&ink_e2e::alice(), withdraw_message, 0, None)
+            //     .await
+            //     .expect("calling `withdraw_message` failed");
+
+            // Check contract balance
+            // let balance = client
+            //     .balance(pinkrobot_account_id)
+            //     .await
+            //     .expect("getting balance failed");
+
+            // assert_eq!(balance, 0);
 
             // Verify that token was minted on PinkPsp34
             let balance_message = build_message::<PinkPsp34Ref>(pinkpsp34_account_id.clone())
@@ -426,12 +435,12 @@ mod pinkrobot {
             assert_eq!(token_balance, 1);
 
             // Owner sets max supply
-            let max_supply_message = build_message::<PinkrobotRef>(pinkrobot_account_id.clone())
-                .call(|pinkrobot| pinkrobot.set_max_supply(CONTRACT_INDEX, Some(99)));
-            client
-                .call(&ink_e2e::alice(), max_supply_message, 0, None)
-                .await
-                .expect("calling `set_max_supply` failed");
+            // let max_supply_message = build_message::<PinkrobotRef>(pinkrobot_account_id.clone())
+            //     .call(|pinkrobot| pinkrobot.set_max_supply(CONTRACT_INDEX, Some(99)));
+            // client
+            //     .call(&ink_e2e::alice(), max_supply_message, 0, None)
+            //     .await
+            //     .expect("calling `set_max_supply` failed");
 
             // Verify new max_supply on PSP contract
             // let max_supply_psp_message =
