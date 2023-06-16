@@ -18,6 +18,10 @@ pub trait PinkMint {
     #[ink(message)]
     fn mint(&mut self, to: AccountId, metadata: String) -> Result<Id, Error>;
 
+    /// Change metadata for the token Id.
+    #[ink(message)]
+    fn change_metadata(&mut self, token: Id, metadata: String) -> Result<(), Error>;
+
     /// Set max supply of tokens.
     #[ink(message)]
     fn set_max_supply(&mut self, max_supply: Option<u64>) -> Result<(), Error>;

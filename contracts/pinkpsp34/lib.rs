@@ -262,6 +262,36 @@ pub mod pinkpsp34 {
         }
 
         #[ink::test]
+        fn change_metadata_works() {
+            let mut pink34 = init();
+            let accounts = default_accounts();
+            let token_uri = String::from(TOKEN_URI);
+            const TOKEN_NEW: &str = "new";
+            let token_new = String::from(TOKEN_NEW);
+
+            // Should fail. Only owner can change metadata
+            set_sender(accounts.bob);
+            assert_eq!(
+                pink34.change_metadata(Id::U64(1), token_uri.clone()),
+                Err(AccessControlError::MissingRole.into())
+            );
+
+            // Owner changes metadata
+            set_sender(accounts.alice);
+            assert_eq!(pink34.set_limit_per_account(1), Ok(()));
+            assert_eq!(pink34.mint(accounts.bob, token_uri.clone()), Ok(Id::U64(1)));
+            assert_eq!(
+                pink34.change_metadata(Id::U64(1), token_new.clone()),
+                Ok(())
+            );
+            assert_eq!(
+                pink34.change_metadata(Id::U64(42), token_new.clone()),
+                Err(Error::Pink(PinkError::TokenNotFound))
+            );
+            assert_eq!(pink34.token_uri(1), Ok(PreludeString::from(TOKEN_NEW)));
+        }
+
+        #[ink::test]
         fn access_control_works() {
             let mut pink34 = init();
             let accounts = default_accounts();

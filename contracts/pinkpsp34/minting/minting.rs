@@ -52,6 +52,23 @@ where
         Ok(minted_id)
     }
 
+    /// Change metadata for the token Id.
+    #[modifiers(only_role(CONTRIBUTOR))]
+    default fn change_metadata(&mut self, token: Id, metadata: String) -> Result<(), Error> {
+        if self
+            .data::<MintingData>()
+            .nft_metadata
+            .contains(token.clone())
+        {
+            self.data::<MintingData>()
+                .nft_metadata
+                .insert(token, &metadata);
+            Ok(())
+        } else {
+            Err(PinkError::TokenNotFound.into())
+        }
+    }
+
     /// Set max supply of tokens.
     #[modifiers(only_role(CONTRIBUTOR))]
     default fn set_max_supply(&mut self, max_supply: Option<u64>) -> Result<(), Error> {
