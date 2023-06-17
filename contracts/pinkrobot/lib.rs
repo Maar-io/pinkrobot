@@ -11,14 +11,13 @@ mod pinkrobot {
 
     use ink::prelude::vec::Vec;
     use ink::storage::Mapping;
-    // use ink::env::Result as EnvResult;
-    // use ink::MessageResult;
-    // type ContractResult = core::result::Result<(), ()>;
 
     #[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
     #[cfg_attr(feature = "std", derive(scale_info::TypeInfo))]
     pub enum Error {
         NotOwner,
+        CrossContractError1,
+        CrossContractError2,
         FailedToGetContract,
         FailedToCallContract,
         BadMintingFee,
@@ -65,7 +64,6 @@ mod pinkrobot {
         #[ink(message)]
         pub fn add_new_contract(&mut self, contract_index: u8, contract: AccountId) -> Result<()> {
             ensure!(self.env().caller() == self.owner, Error::NotOwner);
-            ensure_valid_contract(contract)?;
             self.contracts_map.insert(&contract_index, &contract);
             Ok(())
         }
@@ -94,7 +92,7 @@ mod pinkrobot {
                 .get(&contract_index)
                 .ok_or(Error::FailedToGetContract)?;
 
-            let _mint_result = build_call::<DefaultEnvironment>()
+            let mint_result = build_call::<DefaultEnvironment>()
                 .call(contract)
                 .gas_limit(5000000000)
                 .exec_input(
@@ -104,9 +102,10 @@ mod pinkrobot {
                 )
                 .returns::<()>()
                 .try_invoke();
+            mint_result
+                .map_err(|_| Error::CrossContractError1)?
+                .map_err(|_| Error::CrossContractError2)?;
 
-            // self.process_result(_mint_result)
-            ink::env::debug_println!("pink_mint_result: {:?}", _mint_result);
             Ok(())
         }
 
@@ -173,10 +172,6 @@ mod pinkrobot {
                 .map_err(|_| Error::FailedToWithdraw)?;
             Ok(())
         }
-    }
-
-    fn ensure_valid_contract(_contract: AccountId) -> Result<()> {
-        Ok(())
     }
 
     #[cfg(test)]
@@ -266,11 +261,12 @@ mod pinkrobot {
     mod e2e_tests {
         use super::*;
         use crate::pinkrobot::PinkrobotRef;
-        use ink::primitives::AccountId;
         use ink_e2e::build_message;
+        // use ink::primitives::AccountId;
+        use pinkpsp34::pinkpsp34::PinkPsp34Ref;
+
         use openbrush::contracts::access_control::accesscontrol_external::AccessControl;
         use openbrush::contracts::psp34::psp34_external::PSP34;
-        use pinkpsp34::pinkpsp34::PinkPsp34Ref;
 
         type E2EResult<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 
@@ -295,7 +291,7 @@ mod pinkrobot {
             let token_uri: Vec<u8> = "ipfs://myIpfsUri/".as_bytes().to_vec();
 
             // Instantiate PinkPsp34 contract
-            let pinkpsp34_constructor = PinkPsp34Ref::new(name, symbol, 10, None);
+            let pinkpsp34_constructor = PinkPsp34Ref::new(name, symbol, 10);
             let (alice_account_id, bob_account_id) = get_alice_and_bob();
 
             let pinkpsp34_account_id = client
@@ -371,14 +367,6 @@ mod pinkrobot {
                 .call(&ink_e2e::alice(), price_message, 0, None)
                 .await
                 .expect("calling `set_price` failed");
-
-            // Contract owner sets price
-            let limit_message = build_message::<PinkPsp34Ref>(pinkpsp34_account_id.clone())
-                .call(|p| p.set_limit_per_account(10));
-            client
-                .call(&ink_e2e::alice(), limit_message, 0, None)
-                .await
-                .expect("calling `limit_message` failed");
 
             // Bob mints a token fails since no payment was made
             let mint_message = build_message::<PinkrobotRef>(pinkrobot_account_id.clone())

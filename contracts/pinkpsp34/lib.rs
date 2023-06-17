@@ -2,7 +2,6 @@
 #![feature(min_specialization)]
 
 pub use self::pinkpsp34::PinkPsp34Ref;
-
 #[openbrush::contract]
 pub mod pinkpsp34 {
     use ink::codegen::{EmitEvent, Env};
@@ -66,20 +65,14 @@ pub mod pinkpsp34 {
 
     impl PinkPsp34 {
         #[ink(constructor)]
-        pub fn new(
-            name: String,
-            symbol: String,
-            max_supply: u64,
-            owner: Option<AccountId>,
-        ) -> Self {
+        pub fn new(name: String, symbol: String, max_supply: u64) -> Self {
             let mut instance = Self::default();
-            let contract_owner = owner.unwrap_or(instance.env().caller());
+            let contract_owner = instance.env().caller();
             instance._init_with_admin(contract_owner);
-            instance._setup_role(MINTER, contract_owner);
             instance._set_attribute(Id::U64(0), String::from("name"), String::from(name));
             instance._set_attribute(Id::U64(0), String::from("symbol"), String::from(symbol));
             instance.pinkmint.max_supply = Some(max_supply);
-            instance.pinkmint.last_token_id = 0;
+            instance.pinkmint.limit_per_account = 2;
             instance
         }
 
@@ -172,19 +165,12 @@ pub mod pinkpsp34 {
         const NAME: &str = "PinkPsp34";
         const SYMBOL: &str = "PnkP";
         const TOKEN_URI: &str = "ipfs://myIpfsUri/";
-        const OWNER: [u8; 32] = [0x9; 32];
 
         fn init() -> PinkPsp34 {
-            PinkPsp34::new(String::from(NAME), String::from(SYMBOL), MAX_SUPPLY, None)
-        }
-
-        fn init_with_owner(owner: AccountId) -> PinkPsp34 {
-            PinkPsp34::new(
-                String::from(NAME),
-                String::from(SYMBOL),
-                MAX_SUPPLY,
-                Some(owner),
-            )
+            let accounts = default_accounts();
+            let mut pink34 = PinkPsp34::new(String::from(NAME), String::from(SYMBOL), MAX_SUPPLY);
+            _ = pink34.grant_role(MINTER, accounts.alice);
+            pink34
         }
 
         #[ink::test]
@@ -199,35 +185,6 @@ pub mod pinkpsp34 {
                 Some(String::from(SYMBOL))
             );
             assert_eq!(pink34.max_supply(), Some(MAX_SUPPLY));
-        }
-
-        #[ink::test]
-        fn init_with_owner_works() {
-            let maybe_owner: AccountId = AccountId::from(OWNER);
-            let mut pink34 = init_with_owner(maybe_owner);
-            let accounts = default_accounts();
-            let token_uri = String::from(TOKEN_URI);
-
-            // New owner should be set during instantiation
-            // assert_eq!(pink34.get, maybe_owner);
-
-            // Should fail. Only maybe_owner can mint
-            set_sender(accounts.alice);
-            assert_eq!(
-                pink34.mint(accounts.bob, token_uri.clone()),
-                Err(AccessControlError::MissingRole.into())
-            );
-            assert_eq!(pink34.total_supply(), 0);
-
-            // New owner mints for Bob works
-            set_sender(maybe_owner);
-            assert_eq!(pink34.set_limit_per_account(1), Ok(()));
-            assert_eq!(pink34.mint(accounts.bob, token_uri), Ok(Id::U64(1)));
-            assert_eq!(
-                pink34.owners_token_by_index(accounts.bob, 0),
-                Ok(Id::U64(1))
-            );
-            assert_eq!(pink34.total_supply(), 1);
         }
 
         #[ink::test]
