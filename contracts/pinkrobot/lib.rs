@@ -343,7 +343,7 @@ mod pinkrobot {
             assert_eq!(owner_result, alice_account_id);
 
             // Set Pinkrobot to has the minter role on PinkPsp34
-            let minter = 2;
+            let minter = 1;
             let change_owner = build_message::<PinkPsp34Ref>(pinkpsp34_account_id.clone())
                 .call(|p| p.grant_role(minter, pinkrobot_account_id));
             client
