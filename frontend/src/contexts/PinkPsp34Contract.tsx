@@ -9,6 +9,7 @@ interface PinkPsp34ContractState {
   totalBalance?: Call<Id[]>;
   tokenUri?: Call<string>;
   totalSupply?: Call<SupplyResult>;
+  balanceOf?: Call<SupplyResult>;
   limitPerAccount?: Call<SupplyResult>;
 }
 
@@ -21,11 +22,12 @@ export function PinkPsp34ContractProvider({ children }: PropsWithChildren) {
   const totalBalance = useCall<Id[]>(pinkPsp34Contract, "totalBalance");
   const tokenUri = useCall<string>(pinkPsp34Contract, "pinkMint::tokenUri");
   const totalSupply = useCall<SupplyResult>(pinkPsp34Contract, 'psp34::totalSupply');
+  const balanceOf = useCall<SupplyResult>(pinkPsp34Contract, 'psp34::balanceOf');
   const limitPerAccount = useCall<SupplyResult>(pinkPsp34Contract, 'pinkMint::limitPerAccount');
 
   return (
     <PinkPsp34ContractContext.Provider
-      value={{ pinkPsp34Contract, totalBalance, tokenUri, totalSupply, limitPerAccount }}
+      value={{ pinkPsp34Contract, totalBalance, tokenUri, totalSupply, limitPerAccount, balanceOf }}
     >
       {children}
     </PinkPsp34ContractContext.Provider>

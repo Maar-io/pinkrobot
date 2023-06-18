@@ -23,7 +23,9 @@ export const GenerateForm = ({ setIsBusy, handleError }: { setIsBusy: Function, 
   const [isGenerated, setIsGenerated] = useState(false);
   const balance = useBalance(account);
   const { getPrice, } = usePinkContract();
-  const { totalSupply, limitPerAccount } = usePinkPsp34Contract();
+  const { totalSupply, limitPerAccount, balanceOf } = usePinkPsp34Contract();
+  const [limit, setLimit] = useState(false);
+  const [tokenBalance, setTokenBalance] = useState<number>(0);
   const hasFunds =
     !balance?.freeBalance.isEmpty && !balance?.freeBalance.isZero();
   values.contractType = ContractType.PinkPsp34;
@@ -32,6 +34,7 @@ export const GenerateForm = ({ setIsBusy, handleError }: { setIsBusy: Function, 
     fetchPrice();
     getTokenId(values);
     getLimitPerAccount(values);
+    getHolderBalance(values);
   }, [account, values.contractType, values]);
 
   const getTokenId = async (values: PinkValues) => {
@@ -43,11 +46,26 @@ export const GenerateForm = ({ setIsBusy, handleError }: { setIsBusy: Function, 
     }
   };
 
+  const getHolderBalance = async (values: PinkValues) => {
+    // get tokenId from the contract's total_supply
+    const s = await balanceOf?.send([account?.address], { defaultCaller: true });
+    if (s?.ok && s.value.decoded) {
+      setTokenBalance(Number(s.value.decoded));
+      console.log("User balance", Number(s.value.decoded));
+    }
+  };
+
   const getLimitPerAccount = async (values: PinkValues) => {
     // get tokenId from the contract's total_supply
     const s = await limitPerAccount?.send([], { defaultCaller: true });
     if (s?.ok && s.value.decoded) {
       values.limitMint = Number(s.value.decoded);
+      if (tokenBalance >= values.limitMint) {
+        setLimit(false);
+      }
+      else {
+        setLimit(true);
+      }
       console.log("mint limited to ", values.limitMint);
     }
   };
@@ -174,7 +192,8 @@ export const GenerateForm = ({ setIsBusy, handleError }: { setIsBusy: Function, 
               isSubmitting ||
               !isValid ||
               !accounts ||
-              !hasFunds
+              !hasFunds ||
+              limit
             }
             name="submit"
           >
