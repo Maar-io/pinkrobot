@@ -29,8 +29,9 @@ pub trait PinkMint {
     /// Set max amount of tokens to be minted per account.
     #[ink(message)]
     fn set_limit_per_account(&mut self, limit: u32) -> Result<(), Error>;
-
+    
     /// Get max amount of tokens to be minted per account.
+    #[ink(message)]
     fn limit_per_account(&self) -> u32;
 
     /// Add an account to the whitelist.
