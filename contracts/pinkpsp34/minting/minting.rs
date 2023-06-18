@@ -15,7 +15,6 @@ pub const ADMIN: RoleType = DEFAULT_ADMIN_ROLE;
 pub const MINTER: RoleType = 1;
 pub const WHITELIST: RoleType = 2;
 
-
 pub const STORAGE_MINTING_KEY: u32 = openbrush::storage_unique_key!(MintingData);
 
 #[derive(Default, Debug)]
@@ -109,10 +108,10 @@ where
     }
     /// Add an account to the whitelist.
     #[modifiers(only_role(WHITELIST))]
-    default fn add_to_whitelist_many(&mut self, list: Vec<AccountId> ) -> Result<(), Error> {
+    default fn add_to_whitelist_many(&mut self, list: Vec<AccountId>) -> Result<(), Error> {
         for user in list {
             self.add_to_whitelist(user, true)?;
-        } 
+        }
         Ok(())
     }
 

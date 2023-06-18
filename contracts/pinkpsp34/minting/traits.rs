@@ -29,7 +29,7 @@ pub trait PinkMint {
     /// Set max amount of tokens to be minted per account.
     #[ink(message)]
     fn set_limit_per_account(&mut self, limit: u32) -> Result<(), Error>;
-    
+
     /// Get max amount of tokens to be minted per account.
     #[ink(message)]
     fn limit_per_account(&self) -> u32;
@@ -40,7 +40,7 @@ pub trait PinkMint {
 
     /// Add list of accounts to the whitelist.
     #[ink(message)]
-    fn add_to_whitelist_many(&mut self, list: Vec<AccountId> ) -> Result<(), Error>;
+    fn add_to_whitelist_many(&mut self, list: Vec<AccountId>) -> Result<(), Error>;
 
     /// Use or not use whitelist.
     #[ink(message)]
