@@ -1,4 +1,4 @@
-import { PinkValues, SupplyResult, TransferredBalanceEvent, UIEvent } from "../types";
+import { PinkValues, TransferredBalanceEvent, UIEvent } from "../types";
 import { FormikHelpers } from "formik";
 import { usePinkContract } from ".";
 import { useWallet } from "useink";
@@ -6,10 +6,12 @@ import { pinkMeta } from "../const";
 import { NFTStorage } from "nft.storage";
 import { decodeError } from "useink/core";
 import { pickResultOk } from "useink/utils";
+import { usePinkPsp34Contract } from "./usePinkPsp34Contract";
 
 
 export const useMintHandler = () => {
-  const { getSupply, pinkMint, pinkRobotContract } = usePinkContract();
+  const { pinkMint, pinkRobotContract } = usePinkContract();
+  const { totalSupply } = usePinkPsp34Contract();
   const { account } = useWallet();
 
   return async (
@@ -19,8 +21,8 @@ export const useMintHandler = () => {
 
     const getTokenId = async (values: PinkValues) => {
       // get tokenId from the contract's total_supply
-      const s = await getSupply?.send([values.contractType], { defaultCaller: true });
-      let supply = pickResultOk<SupplyResult>(s);
+      const s = await totalSupply?.send([], { defaultCaller: true });
+      let supply = pickResultOk(s);
       console.log("Next tokenId premint", Number(supply) + 1);
       values.tokenId[values!.contractType] = Number(supply) + 1;
     };

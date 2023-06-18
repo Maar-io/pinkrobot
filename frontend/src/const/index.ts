@@ -23,8 +23,8 @@ export const networks: Array<NetworkInfo> = [
   {
     name: "Shibuya",
     endpoint: "wss://rpc.shibuya.astar.network",
-    pinkContractAddress: "ZQgRzVGamwEvpkU1LzkT4b7EdtHq6PtH7GmEfyTv1HzQJvv",
-    pinkPsp34ContractAddress: "Z9F7LFQSKAgJbfxeidKgttcPALiNzsSiG5iZEmohY36iGzY",
+    pinkContractAddress: "aAv4Tr2W2BysJCUhmr7gpEg6rro1rPfyPKA84bsi26EUQLg",
+    pinkPsp34ContractAddress: "Z9rpHXMVPUtQK7SNmYUQPTiDyamqftqUazLZChqu1FagcKo",
     marketplaceTokenUrl: 'https://marketplace-astar-testnet.paras.id/token/astar/Z9F7LFQSKAgJbfxeidKgttcPALiNzsSiG5iZEmohY36iGzY'
   },
   {

@@ -1,6 +1,6 @@
 import { DryRunResult } from "./DryRunResult";
 import { Form, Field, ErrorMessage, useFormikContext } from "formik";
-import { PinkValues, ContractType, SupplyResult } from "../types";
+import { PinkValues, ContractType } from "../types";
 import { ChangeEvent, useState, useEffect } from "react";
 import { NewUserGuide } from "./NewUserGuide";
 import { useBalance, useWallet } from "useink";
@@ -12,6 +12,7 @@ import { usePinkContract } from "../hooks";
 import { pickResultOk } from "useink/utils";
 import { PINK_PREFIX } from "../const";
 import { ArtistSelector } from "./ArtistSelector";
+import { usePinkPsp34Contract } from "../hooks/usePinkPsp34Contract";
 
 
 export const GenerateForm = ({ setIsBusy, handleError }: { setIsBusy: Function, handleError: Function }) => {
@@ -21,7 +22,8 @@ export const GenerateForm = ({ setIsBusy, handleError }: { setIsBusy: Function, 
   const [waitingHuggingFace, setWaitingHuggingFace] = useState(false);
   const [isGenerated, setIsGenerated] = useState(false);
   const balance = useBalance(account);
-  const { getPrice, getSupply } = usePinkContract();
+  const { getPrice,  } = usePinkContract();
+  const { totalSupply } = usePinkPsp34Contract();
   const hasFunds =
     !balance?.freeBalance.isEmpty && !balance?.freeBalance.isZero();
   values.contractType = ContractType.PinkPsp34;
@@ -33,10 +35,11 @@ export const GenerateForm = ({ setIsBusy, handleError }: { setIsBusy: Function, 
 
   const getTokenId = async (values: PinkValues) => {
     // get tokenId from the contract's total_supply
-    const s = await getSupply?.send([values.contractType], { defaultCaller: true });
-    let supply = pickResultOk(s);
-    console.log("Next tokenId probing", Number(supply) + 1);
-    values.tokenId[values!.contractType] = Number(supply) + 1;
+    const s = await totalSupply?.send([], { defaultCaller: true });
+    if(s?.ok && s.value.decoded){
+      console.log("Next tokenId probing", Number(s.value.decoded) + 1);
+      values.tokenId[values!.contractType] = Number(s.value.decoded) + 1;
+    }
   };
   
   const fetchPrice = async () => {
