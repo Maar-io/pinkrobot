@@ -22,9 +22,11 @@ export const useMintHandler = () => {
     const getTokenId = async (values: PinkValues) => {
       // get tokenId from the contract's total_supply
       const s = await totalSupply?.send([], { defaultCaller: true });
-      let supply = pickResultOk(s);
-      console.log("Next tokenId premint", Number(supply) + 1);
-      values.tokenId[values!.contractType] = Number(supply) + 1;
+      if (s?.ok && s.value.decoded) {
+        values.tokenId[values!.contractType] = Number(s.value.decoded) + 1;
+        console.log("Next tokenId premint", values.tokenId[values!.contractType]);
+
+      }
     };
 
     const uploadImage = async (values: PinkValues) => {

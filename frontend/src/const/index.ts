@@ -187,6 +187,7 @@ export const initialPinkValues: PinkValues = {
   imageData: [new Uint8Array(), new Uint8Array()],
   displayImage: [default_pink_robot, default_upload_image],
   tokenId: [0, 0],
+  limitMint: 0,
   networkId: NetworkId.Shibuya,
   price: BN_ZERO,
   total: BN_ZERO,

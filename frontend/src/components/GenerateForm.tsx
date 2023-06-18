@@ -22,26 +22,36 @@ export const GenerateForm = ({ setIsBusy, handleError }: { setIsBusy: Function, 
   const [waitingHuggingFace, setWaitingHuggingFace] = useState(false);
   const [isGenerated, setIsGenerated] = useState(false);
   const balance = useBalance(account);
-  const { getPrice,  } = usePinkContract();
-  const { totalSupply } = usePinkPsp34Contract();
+  const { getPrice, } = usePinkContract();
+  const { totalSupply, limitPerAccount } = usePinkPsp34Contract();
   const hasFunds =
     !balance?.freeBalance.isEmpty && !balance?.freeBalance.isZero();
   values.contractType = ContractType.PinkPsp34;
-  
+
   useEffect(() => {
     fetchPrice();
     getTokenId(values);
+    getLimitPerAccount(values);
   }, [account, values.contractType, values]);
 
   const getTokenId = async (values: PinkValues) => {
     // get tokenId from the contract's total_supply
     const s = await totalSupply?.send([], { defaultCaller: true });
-    if(s?.ok && s.value.decoded){
-      console.log("Next tokenId probing", Number(s.value.decoded) + 1);
+    if (s?.ok && s.value.decoded) {
       values.tokenId[values!.contractType] = Number(s.value.decoded) + 1;
+      console.log("Next tokenId probing", values.tokenId[values!.contractType]);
     }
   };
-  
+
+  const getLimitPerAccount = async (values: PinkValues) => {
+    // get tokenId from the contract's total_supply
+    const s = await limitPerAccount?.send([], { defaultCaller: true });
+    if (s?.ok && s.value.decoded) {
+      values.limitMint = Number(s.value.decoded);
+      console.log("mint limited to ", values.limitMint);
+    }
+  };
+
   const fetchPrice = async () => {
     const price = await getPrice?.send([], { defaultCaller: true });
     console.log('fetched price', price?.ok && price.value.decoded);
@@ -108,7 +118,7 @@ export const GenerateForm = ({ setIsBusy, handleError }: { setIsBusy: Function, 
   };
 
   return (
-    <Form style={{marginBottom: 'auto'}}>
+    <Form style={{ marginBottom: 'auto' }}>
       <img
         src={values.displayImage[values.contractType]}
         className="pink-example rounded-lg"
