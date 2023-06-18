@@ -126,36 +126,6 @@ mod pinkrobot {
             self.contracts_map.get(&contract_index)
         }
 
-        /// Set max_supply in nft contract
-        #[ink(message)]
-        pub fn set_max_supply(
-            &mut self,
-            contract_index: u8,
-            max_supply: Option<u64>,
-        ) -> Result<()> {
-            ensure!(self.env().caller() == self.owner, Error::NotOwner);
-
-            let contract = self
-                .contracts_map
-                .get(&contract_index)
-                .ok_or(Error::FailedToGetContract)?;
-
-            let _supply_result = build_call::<DefaultEnvironment>()
-                .call(contract)
-                .gas_limit(5000000000)
-                .exec_input(
-                    ExecutionInput::new(Selector::new(ink::selector_bytes!(
-                        "PinkMint::set_max_supply"
-                    )))
-                    .push_arg(max_supply),
-                )
-                .returns::<()>()
-                .try_invoke()
-                .map_err(|_| Error::FailedToCallContract)?;
-
-            Ok(())
-        }
-
         /// Returns the current owner of the contract
         #[ink(message)]
         pub fn owner(&self) -> AccountId {
@@ -421,24 +391,6 @@ mod pinkrobot {
                 .await
                 .return_value();
             assert_eq!(token_balance, 1);
-
-            // Owner sets max supply
-            // let max_supply_message = build_message::<PinkrobotRef>(pinkrobot_account_id.clone())
-            //     .call(|pinkrobot| pinkrobot.set_max_supply(CONTRACT_INDEX, Some(99)));
-            // client
-            //     .call(&ink_e2e::alice(), max_supply_message, 0, None)
-            //     .await
-            //     .expect("calling `set_max_supply` failed");
-
-            // Verify new max_supply on PSP contract
-            // let max_supply_psp_message =
-            //     build_message::<PinkPsp34Ref>(pinkpsp34_account_id.clone())
-            //         .call(|p| p.max_supply());
-            // let max_supply = client
-            //     .call_dry_run(&ink_e2e::bob(), &max_supply_psp_message, 0, None)
-            //     .await
-            //     .return_value();
-            // assert_eq!(max_supply, Some(99));
 
             Ok(())
         }
