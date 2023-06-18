@@ -1,7 +1,10 @@
 use crate::internal::{Error, Internal, PinkError};
 use crate::traits::PinkMint;
 
-use ink::{prelude::string::String as PreludeString, storage::Mapping};
+use ink::{
+    prelude::{string::String as PreludeString, vec::Vec},
+    storage::Mapping,
+};
 use openbrush::{
     contracts::{
         access_control::{self, only_role, RoleType, DEFAULT_ADMIN_ROLE},
