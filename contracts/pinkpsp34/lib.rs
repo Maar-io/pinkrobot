@@ -376,30 +376,47 @@ pub mod pinkpsp34 {
                 Err(AccessControlError::MissingRole.into())
             );
 
-            // Alice adds Bob to whitelist
+            // Alice is ADMIN and she enables whitelist
             set_sender(accounts.alice);
             assert!(pink34.enable_whitelist(true).is_ok());
             assert_eq!(pink34.is_whitelist_enabled(), true);
+
+            // Add Charlie to have WHITELIST role
+            assert!(pink34.grant_role(WHITELIST, accounts.charlie).is_ok());
+
+            // Charlie adds Bob to whitelist
+            set_sender(accounts.charlie);
             assert_eq!(pink34.add_to_whitelist(accounts.bob, true), Ok(()));
             assert_eq!(pink34.is_whitelisted(accounts.bob), true);
             assert_eq!(pink34.whitelist_count(), 1);
 
-            // Alice mints for Bob works
+            // Alice mints for Bob works. Bob is on whitelist
+            set_sender(accounts.alice);
             assert_eq!(pink34.set_limit_per_account(1), Ok(()));
             assert_eq!(pink34.mint(accounts.bob, token_uri), Ok(Id::U64(1)));
 
-            // Alice mint for Charlie fails
+            // Alice mint for Django fails. Django is not on whitelist.
             assert_eq!(
-                pink34.mint(accounts.charlie, String::from(TOKEN_URI)),
+                pink34.mint(accounts.django, String::from(TOKEN_URI)),
                 Err(Error::Pink(PinkError::NotWhitelisted))
             );
 
-            // Alice removes Bob from whitelist
+            // Charlie removes Bob from whitelist
+            set_sender(accounts.charlie);
             assert_eq!(pink34.add_to_whitelist(accounts.bob, false), Ok(()));
             assert_eq!(pink34.is_whitelisted(accounts.bob), false);
             assert_eq!(pink34.whitelist_count(), 0);
 
-            // Alice mints for Bob fails
+            // Charlie adds list of accounts to whitelist
+            set_sender(accounts.charlie);
+            assert_eq!(
+                pink34.add_to_whitelist_many(vec![accounts.eve, accounts.frank]),
+                Ok(())
+            );
+            assert_eq!(pink34.whitelist_count(), 2);
+
+            // Alice mints for Bob fails. Bob is removed from whitelist.
+            set_sender(accounts.alice);
             assert_eq!(
                 pink34.mint(accounts.bob, String::from(TOKEN_URI)),
                 Err(Error::Pink(PinkError::NotWhitelisted))
@@ -412,7 +429,6 @@ pub mod pinkpsp34 {
                 pink34.mint(accounts.bob, String::from(TOKEN_URI)),
                 Ok(Id::U64(2))
             );
-            assert_eq!(pink34.whitelist_count(), 0);
         }
 
         #[ink::test]

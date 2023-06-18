@@ -38,6 +38,10 @@ pub trait PinkMint {
     #[ink(message)]
     fn add_to_whitelist(&mut self, user: AccountId, enabled: bool) -> Result<(), Error>;
 
+    /// Add list of accounts to the whitelist.
+    #[ink(message)]
+    fn add_to_whitelist_many(&mut self, list: Vec<AccountId> ) -> Result<(), Error>;
+
     /// Use or not use whitelist.
     #[ink(message)]
     fn enable_whitelist(&mut self, enabled: bool) -> Result<(), Error>;

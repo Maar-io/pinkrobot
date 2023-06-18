@@ -13,6 +13,8 @@ use openbrush::{
 
 pub const ADMIN: RoleType = DEFAULT_ADMIN_ROLE;
 pub const MINTER: RoleType = 1;
+pub const WHITELIST: RoleType = 2;
+
 
 pub const STORAGE_MINTING_KEY: u32 = openbrush::storage_unique_key!(MintingData);
 
@@ -94,7 +96,7 @@ where
     }
 
     /// Add an account to the whitelist.
-    #[modifiers(only_role(ADMIN))]
+    #[modifiers(only_role(WHITELIST))]
     default fn add_to_whitelist(&mut self, user: AccountId, enabled: bool) -> Result<(), Error> {
         if !enabled && self.data::<MintingData>().whitelist.contains(&user) {
             self.data::<MintingData>().whitelist_count -= 1;
@@ -103,6 +105,14 @@ where
             self.data::<MintingData>().whitelist_count += 1;
             self.data::<MintingData>().whitelist.insert(user, &enabled);
         }
+        Ok(())
+    }
+    /// Add an account to the whitelist.
+    #[modifiers(only_role(WHITELIST))]
+    default fn add_to_whitelist_many(&mut self, list: Vec<AccountId> ) -> Result<(), Error> {
+        for user in list {
+            self.add_to_whitelist(user, true)?;
+        } 
         Ok(())
     }
 
