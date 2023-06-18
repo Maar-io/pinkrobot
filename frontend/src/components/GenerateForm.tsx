@@ -23,8 +23,10 @@ export const GenerateForm = ({ setIsBusy, handleError }: { setIsBusy: Function, 
   const [isGenerated, setIsGenerated] = useState(false);
   const balance = useBalance(account);
   const { getPrice, } = usePinkContract();
-  const { totalSupply, limitPerAccount, balanceOf } = usePinkPsp34Contract();
+  const { totalSupply, limitPerAccount, balanceOf, isWhitelistEnabled, isWhitelisted } = usePinkPsp34Contract();
   const [limit, setLimit] = useState(false);
+  const [whitelistEnabled, setWhitelistEnabled] = useState<boolean>(false);
+  const [whitelisted, setWhitelisted] = useState<boolean>(false);
   const [tokenBalance, setTokenBalance] = useState<number>(0);
   const hasFunds =
     !balance?.freeBalance.isEmpty && !balance?.freeBalance.isZero();
@@ -34,7 +36,9 @@ export const GenerateForm = ({ setIsBusy, handleError }: { setIsBusy: Function, 
     fetchPrice();
     getTokenId(values);
     getLimitPerAccount(values);
-    getHolderBalance(values);
+    getHolderBalance();
+    getIsWhitelistEnabled();
+    getIsWhitelisted();
   }, [account, values.contractType, values]);
 
   const getTokenId = async (values: PinkValues) => {
@@ -46,8 +50,7 @@ export const GenerateForm = ({ setIsBusy, handleError }: { setIsBusy: Function, 
     }
   };
 
-  const getHolderBalance = async (values: PinkValues) => {
-    // get tokenId from the contract's total_supply
+  const getHolderBalance = async () => {
     const s = await balanceOf?.send([account?.address], { defaultCaller: true });
     if (s?.ok && s.value.decoded) {
       setTokenBalance(Number(s.value.decoded));
@@ -56,17 +59,32 @@ export const GenerateForm = ({ setIsBusy, handleError }: { setIsBusy: Function, 
   };
 
   const getLimitPerAccount = async (values: PinkValues) => {
-    // get tokenId from the contract's total_supply
     const s = await limitPerAccount?.send([], { defaultCaller: true });
     if (s?.ok && s.value.decoded) {
       values.limitMint = Number(s.value.decoded);
       if (tokenBalance >= values.limitMint) {
-        setLimit(false);
-      }
-      else {
         setLimit(true);
       }
+      else {
+        setLimit(false);
+      }
       console.log("mint limited to ", values.limitMint);
+    }
+  };
+
+  const getIsWhitelistEnabled = async () => {
+    const s = await isWhitelistEnabled?.send([], { defaultCaller: true });
+    if (s?.ok && s.value.decoded) {
+      setWhitelistEnabled(Boolean(s.value.decoded));
+      console.log("getIsWhitelistEnabled", s.value.decoded);
+    }
+  };
+
+  const getIsWhitelisted = async () => {
+    const s = await isWhitelisted?.send([account?.address], { defaultCaller: true });
+    if (s?.ok && s.value.decoded) {
+      setWhitelisted(Boolean(s.value.decoded));
+      console.log("is account whitelisted", s.value.decoded);
     }
   };
 
@@ -177,7 +195,8 @@ export const GenerateForm = ({ setIsBusy, handleError }: { setIsBusy: Function, 
               isSubmitting ||
               !isValid ||
               !accounts ||
-              !hasFunds
+              !hasFunds ||
+              limit
             }
           >
             Imagine New
@@ -203,16 +222,20 @@ export const GenerateForm = ({ setIsBusy, handleError }: { setIsBusy: Function, 
       </div>
 
       <div className="group">
-        {isGenerated && isValid && values.prompt && !isSubmitting && (
+        {isGenerated && isValid && values.prompt && !isSubmitting && !limit && (
           <DryRunResult values={values} isValid={isValid} />
         )}
+        {limit && (
+          <div className="text-xs text-left mb-2 text-red-500">
+            You have reached the limit of {values.limitMint} pink robots per account.
+          </div>
+        )}
+        {whitelistEnabled && !whitelisted && !limit &&(
+          <div className="text-xs text-left mb-2 text-red-500">
+            Your account is not whitelisted.
+          </div>
+        )}
       </div>
-
-      {/* {isValid && estimation?.error && !isEstimating && (
-        <div className="text-xs text-left mb-2 text-red-500">
-          {estimation.error.message}
-        </div>
-      )} */}
 
       <div className="group">
         <NewUserGuide

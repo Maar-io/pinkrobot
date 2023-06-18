@@ -11,6 +11,8 @@ interface PinkPsp34ContractState {
   totalSupply?: Call<SupplyResult>;
   balanceOf?: Call<SupplyResult>;
   limitPerAccount?: Call<SupplyResult>;
+  isWhitelistEnabled?: Call<SupplyResult>;
+  isWhitelisted?: Call<SupplyResult>;
 }
 
 export const PinkPsp34ContractContext = createContext<PinkPsp34ContractState>(
@@ -24,10 +26,12 @@ export function PinkPsp34ContractProvider({ children }: PropsWithChildren) {
   const totalSupply = useCall<SupplyResult>(pinkPsp34Contract, 'psp34::totalSupply');
   const balanceOf = useCall<SupplyResult>(pinkPsp34Contract, 'psp34::balanceOf');
   const limitPerAccount = useCall<SupplyResult>(pinkPsp34Contract, 'pinkMint::limitPerAccount');
+  const isWhitelistEnabled = useCall<SupplyResult>(pinkPsp34Contract, 'pinkMint::isWhitelistEnabled');
+  const isWhitelisted = useCall<SupplyResult>(pinkPsp34Contract, 'pinkMint::isWhitelisted');
 
   return (
     <PinkPsp34ContractContext.Provider
-      value={{ pinkPsp34Contract, totalBalance, tokenUri, totalSupply, limitPerAccount, balanceOf }}
+      value={{ pinkPsp34Contract, totalBalance, tokenUri, totalSupply, limitPerAccount, balanceOf, isWhitelistEnabled, isWhitelisted }}
     >
       {children}
     </PinkPsp34ContractContext.Provider>
