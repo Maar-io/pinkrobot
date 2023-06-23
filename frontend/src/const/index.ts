@@ -25,14 +25,16 @@ export const networks: Array<NetworkInfo> = [
     endpoint: "wss://rpc.shibuya.astar.network",
     pinkContractAddress: "b8rxouhDFMy7qogMHjcAhBmEGtCJ8HgnWo8YnC3o33bPW94",
     pinkPsp34ContractAddress: "aU8xXzMoNM6szsFcPVxtWK1JMgPy8euf1AuunpUsg4zZpJ5",
-    marketplaceTokenUrl: 'https://marketplace-astar-testnet.paras.id/token/astar/aU8xXzMoNM6szsFcPVxtWK1JMgPy8euf1AuunpUsg4zZpJ5'
+    marketplaceTokenUrl: 'https://marketplace-astar-testnet.paras.id/token/astar/aU8xXzMoNM6szsFcPVxtWK1JMgPy8euf1AuunpUsg4zZpJ5',
+    tokenUnit: "SBY",
   },
   {
     name: "Astar",
     endpoint: "wss://rpc.astar.network",
     pinkContractAddress: "ZohEUuLZWgreMDqTNpjGM3HSBJttAjfxETdPDFRSSguxGKo",
     pinkPsp34ContractAddress: "XoywUxTTtNKPRrRN7V5KXCqz2QLMFeK7DxhpSniqZHps5Xq",
-    marketplaceTokenUrl: 'https://marketplace.paras.id/token/astar/0'
+    marketplaceTokenUrl: 'https://astar.paras.id/',
+    tokenUnit: "ASTR",
   }
 ];
 
@@ -190,6 +192,7 @@ export const initialPinkValues: PinkValues = {
   networkId: NetworkId.Astar,
   price: BN_ZERO,
   total: BN_ZERO,
+  tokenUnit: networks[NetworkId.Astar].tokenUnit,
 };
 
 export const contractAddress = networks[initialPinkValues.networkId].pinkContractAddress;

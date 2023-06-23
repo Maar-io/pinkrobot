@@ -13,16 +13,18 @@ interface FeesProps {
   storage: any;
   gas: any;
   price: string;
+  unit: string;
 }
 
-function Fees({ storage, gas, price }: FeesProps) {
+function Fees({ storage, gas, price, unit }: FeesProps) {
   const priceBN = new BN(price);
   const cost = gas
     .add(priceBN)
     .add(storage);
+  formatBalance.setDefaults({ unit });
   return (
-    <div className="text-xs text-right mb-2 text-gray-200">      
-    {/* <p>storage: {storage}</p>
+    <div className="text-xs text-right mb-2 text-gray-200">
+      {/* <p>storage: {storage}</p>
       <p>gas: {gas}</p>
       <p>price: {price}</p> */}
       <p>price + gas: {formatBalance(cost.toString(), { decimals: 18, withSi: true })}</p>
@@ -60,7 +62,9 @@ export function DryRunResult({ values, isValid }: Props) {
     <>
       <Fees storage={txInfo ? txInfo.storageDeposit.asCharge : '--'}
         gas={txInfo ? txInfo.partialFee : '--'}
-        price={values.price} />
+        price={values.price}
+        unit={values.tokenUnit}
+      />
     </>
   );
 }

@@ -9,14 +9,14 @@ import {
   UIProvider,
 } from "./contexts";
 import { InkConfig, UseInkProvider } from "useink";
-import { astar } from "useink/chains";
+import { Astar } from "useink/chains";
 import { NotificationsProvider } from "useink/notifications";
 import { Notifications } from "./components/Notifications";
 
 const config: InkConfig = {
   config: {
     dappName: "Pink Robot - AI generator and minter",
-    chains: [astar],
+    chains: [Astar],
     caller: {
       default: "5EyR7vEk7DtvEWeefGcXXMV6hKwB8Ex5uvjHufm466mbjJkR",
     },
@@ -45,5 +45,4 @@ root.render(
     </Router>
   </React.StrictMode>
 );
-import { Astar } from "useink/chains";
 
