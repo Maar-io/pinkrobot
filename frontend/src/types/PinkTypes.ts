@@ -14,6 +14,7 @@ export interface PinkValues {
   price: any;
   limitMint: any;
   total: any;
+  tokenUnit: string;
 }
 
 export interface NameText {
@@ -43,6 +44,7 @@ export interface NetworkInfo {
   pinkContractAddress: string;
   pinkPsp34ContractAddress: string;
   marketplaceTokenUrl: string;
+  tokenUnit: string;
 }
 export interface Meta {
   name: string;

@@ -19,20 +19,24 @@ export const endpoint = "wss://rpc.shibuya.astar.network";
 
 export const BN_ZERO = new BN(0);
 
+export const MINTING_ALLOWED = false;
+
 export const networks: Array<NetworkInfo> = [
   {
     name: "Shibuya",
     endpoint: "wss://rpc.shibuya.astar.network",
     pinkContractAddress: "b8rxouhDFMy7qogMHjcAhBmEGtCJ8HgnWo8YnC3o33bPW94",
     pinkPsp34ContractAddress: "aU8xXzMoNM6szsFcPVxtWK1JMgPy8euf1AuunpUsg4zZpJ5",
-    marketplaceTokenUrl: 'https://marketplace-astar-testnet.paras.id/token/astar/aU8xXzMoNM6szsFcPVxtWK1JMgPy8euf1AuunpUsg4zZpJ5'
+    marketplaceTokenUrl: 'https://marketplace-astar-testnet.paras.id/token/astar/aU8xXzMoNM6szsFcPVxtWK1JMgPy8euf1AuunpUsg4zZpJ5',
+    tokenUnit: "SBY",
   },
   {
     name: "Astar",
     endpoint: "wss://rpc.astar.network",
-    pinkContractAddress: "0",
-    pinkPsp34ContractAddress: "0",
-    marketplaceTokenUrl: 'https://marketplace.paras.id/token/astar/0'
+    pinkContractAddress: "ZohEUuLZWgreMDqTNpjGM3HSBJttAjfxETdPDFRSSguxGKo",
+    pinkPsp34ContractAddress: "XoywUxTTtNKPRrRN7V5KXCqz2QLMFeK7DxhpSniqZHps5Xq",
+    marketplaceTokenUrl: 'https://astar.paras.id/',
+    tokenUnit: "ASTR",
   }
 ];
 
@@ -187,9 +191,10 @@ export const initialPinkValues: PinkValues = {
   displayImage: [default_pink_robot, default_upload_image],
   tokenId: [0, 0],
   limitMint: 0,
-  networkId: NetworkId.Shibuya,
+  networkId: NetworkId.Astar,
   price: BN_ZERO,
   total: BN_ZERO,
+  tokenUnit: networks[NetworkId.Astar].tokenUnit,
 };
 
 export const contractAddress = networks[initialPinkValues.networkId].pinkContractAddress;

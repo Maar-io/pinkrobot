@@ -15,7 +15,7 @@ export const NewUserGuide = ({
           <p>
             Make sure you have a{" "}
             <a
-              href="https://polkadot.js.org/extension/"
+              href="https://chrome.google.com/webstore/detail/subwallet-polkadot-wallet/onhogfjeacnfoofkfgppdlbmlmnplgbn"
               target="_blank"
               rel="noopener noreferrer"
             >

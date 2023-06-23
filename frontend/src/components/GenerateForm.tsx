@@ -10,9 +10,10 @@ import { ModelSelector } from "./ModelSelector";
 import { StyleSelector } from "./StyleSelector";
 import { usePinkContract } from "../hooks";
 import { pickResultOk } from "useink/utils";
-import { PINK_PREFIX } from "../const";
+import { PINK_PREFIX, MINTING_ALLOWED } from "../const";
 import { ArtistSelector } from "./ArtistSelector";
 import { usePinkPsp34Contract } from "../hooks/usePinkPsp34Contract";
+import { TopInfo } from "./TopInfo";
 
 
 export const GenerateForm = ({ setIsBusy, handleError }: { setIsBusy: Function, handleError: Function }) => {
@@ -155,6 +156,7 @@ export const GenerateForm = ({ setIsBusy, handleError }: { setIsBusy: Function, 
 
   return (
     <Form style={{ marginBottom: 'auto' }}>
+      { !MINTING_ALLOWED && <TopInfo />}
       <img
         src={values.displayImage[values.contractType]}
         className="pink-example rounded-lg"
@@ -191,6 +193,7 @@ export const GenerateForm = ({ setIsBusy, handleError }: { setIsBusy: Function, 
             type="button"
             onClick={fetchImage}
             disabled={
+              !MINTING_ALLOWED ||
               waitingHuggingFace ||
               isSubmitting ||
               !isValid ||
@@ -206,6 +209,7 @@ export const GenerateForm = ({ setIsBusy, handleError }: { setIsBusy: Function, 
           <button
             type="submit"
             disabled={
+              !MINTING_ALLOWED ||
               !isGenerated ||
               waitingHuggingFace ||
               isSubmitting ||
