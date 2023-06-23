@@ -3,6 +3,7 @@ import { useUI } from "../hooks";
 import { AccountsDropdown } from "./AccountsDropdown";
 import { useWallet } from "useink";
 import { connectedNetwork } from "../const";
+import classNames from "classnames";
 
 export const Header = () => {
   const { account, accounts } = useWallet();
@@ -21,7 +22,14 @@ export const Header = () => {
           }
           </div>
           {!account ? (
-            <Button onClick={() => setShowConnectWallet(true)}>
+            <Button 
+            className={classNames(
+              "relative w-full cursor-default rounded-lg bg-pink-100 py-2 pl-3 pr-10 text-left shadow-md",
+              "focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white", 
+              "focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300",
+              "sm:text-sm hover:cursor-pointer"
+            )}
+            onClick={() => setShowConnectWallet(true)}>
               Connect Wallet
             </Button>
           ) : (

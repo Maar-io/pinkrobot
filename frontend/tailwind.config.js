@@ -24,6 +24,7 @@ module.exports = {
           transparent2: "rgba(191, 139, 250, 0.3)",
         },
         pink: {
+          100: "#FF0198",
           300: "#E65EA2",
           800: "#80345A",
           900: "#401A2D",

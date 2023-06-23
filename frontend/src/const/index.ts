@@ -19,6 +19,8 @@ export const endpoint = "wss://rpc.shibuya.astar.network";
 
 export const BN_ZERO = new BN(0);
 
+export const MINTING_ALLOWED = false;
+
 export const networks: Array<NetworkInfo> = [
   {
     name: "Shibuya",
