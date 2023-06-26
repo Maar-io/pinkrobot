@@ -22,6 +22,14 @@ export const BN_ZERO = new BN(0);
 export const MINTING_ALLOWED = true;
 export const BLACK_HOLE_IMAGE_MAX_SIZE = 6000;
 export const BLACK_HOLE_IMAGE_URL = 'assets/blackhole.jpg';
+export const story =
+    `In a distant galaxy, at the very edge of time and space, a remarkable planet thrives with sentient robots on the brink of a perilous destiny—the impending Cosmic Convergence. This cosmic event threatens to unleash cataclysmic forces, casting a shadow over their existence.
+
+    In their desperate bid for survival, the robots have constructed a portal, a gateway to the sanctuary of the Astar Networks. But they cannot traverse this path alone. They need your unwavering guidance and assistance.
+    
+    Our mission is to shepherd these resilient beings through the portal during the momentous Minting Event, ensuring their escape from the planet's impending doom. However, the portal has a limited capacity, allowing only 10,000 PinkRobots to find solace within the sheltered realm of the Astar Network.
+    
+    With each successful passage through the portal, these extraordinary robots undergo a breathtaking metamorphosis, emerging as enchanting and unique beings—the PinkRobots.`;
 
 export const networks: Array<NetworkInfo> = [
   {
