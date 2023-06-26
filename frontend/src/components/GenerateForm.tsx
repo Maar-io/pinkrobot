@@ -129,7 +129,7 @@ export const GenerateForm = ({ setIsBusy, handleError }: { setIsBusy: Function, 
           "Content-Type": "application/json",
         },
         data: JSON.stringify({
-          inputs: prompt,
+          inputs: prompt + ' ' + Math.round(Math.random() * 100),
           options: { wait_for_model: true },
         }),
         responseType: "arraybuffer",
