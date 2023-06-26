@@ -9,7 +9,6 @@ import { Buffer } from "buffer";
 import { ModelSelector } from "./ModelSelector";
 import { StyleSelector } from "./StyleSelector";
 import { usePinkContract } from "../hooks";
-import { pickResultOk } from "useink/utils";
 import {
   PINK_PREFIX,
   MINTING_ALLOWED,
@@ -171,7 +170,7 @@ export const GenerateForm = ({
         setBlackHoleImage(values);
       }
 
-      setIsGenerated(isGenerated);
+      setIsGenerated(isValidImage);
     } catch (error: any) {
       setIsGenerated(false);
       //handleError(error.toString());
