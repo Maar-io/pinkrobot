@@ -24,7 +24,7 @@ export const StyleSelector = ({ values }: { values: PinkValues }) => {
     const newStyle: NameText = aiStyles[e.target.value.toLowerCase()];
     setStyle(newStyle.name);
     values.aiStyle = newStyle;
-    console.log("modelChanged", newStyle);
+    console.log("style Changed", newStyle);
   };
 
   return (
@@ -77,9 +77,9 @@ export const StyleSelector = ({ values }: { values: PinkValues }) => {
             label={aiStyles.ink.name}
           />
           <FormControlLabel
-            value={aiStyles.disney.name}
+            value={aiStyles.linocut.name}
             control={<CustomRadio />}
-            label={aiStyles.disney.name}
+            label={aiStyles.linocut.name}
           />
           <FormControlLabel
             value={aiStyles.ghibli.name}
@@ -97,9 +97,9 @@ export const StyleSelector = ({ values }: { values: PinkValues }) => {
             label={aiStyles.best.name}
           />
           <FormControlLabel
-            value={aiStyles.deviant.name}
+            value={aiStyles.whimsical.name}
             control={<CustomRadio />}
-            label={aiStyles.deviant.name}
+            label={aiStyles.whimsical.name}
           />
           <FormControlLabel
             value={aiStyles.watercolor.name}

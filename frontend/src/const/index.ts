@@ -101,9 +101,9 @@ export const aiStyles: NameTextMap = {
     name: "Paper",
     text: "made with messy paper collage and paper-cuts, ",
   },
-  deviant: {
-    name: "Deviant",
-    text: "in Deviant website style, ",
+  whimsical: {
+    name: "Whimsical",
+    text: "in whimsical style, ",
   },
   best: {
     name: "Best",
@@ -121,9 +121,9 @@ export const aiStyles: NameTextMap = {
     name: "Watercolor",
     text: "in watercolor style with splashes, ",
   },
-  disney: {
-    name: "Disney",
-    text: "in Disney studio style, ",
+  linocut: {
+    name: "Linocut",
+    text: "in Linocut or woodcut style, ",
   },
   ghibli: {
     name: "Ghibli",
