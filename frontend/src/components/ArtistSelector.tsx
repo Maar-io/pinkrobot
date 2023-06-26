@@ -3,7 +3,7 @@ import { PinkValues, NameText } from "../types";
 import { artistStyles } from "../const";
 
 export const ArtistSelector = ({ values }: { values: PinkValues }) => {
-  const [artist, setArtist] = useState<string>(values.artist.name);
+  const [artist, setArtist] = useState<string>('');
 
   const artistChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newArtist: NameText = artistStyles[e.target.value.toLowerCase()];

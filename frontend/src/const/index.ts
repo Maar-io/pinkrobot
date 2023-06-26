@@ -37,7 +37,7 @@ export const networks: Array<NetworkInfo> = [
     endpoint: "wss://rpc.astar.network",
     pinkContractAddress: "ZohEUuLZWgreMDqTNpjGM3HSBJttAjfxETdPDFRSSguxGKo",
     pinkPsp34ContractAddress: "XoywUxTTtNKPRrRN7V5KXCqz2QLMFeK7DxhpSniqZHps5Xq",
-    marketplaceTokenUrl: 'https://astar.paras.id/',
+    marketplaceTokenUrl: 'https://astar.paras.id/collection/XoywUxTTtNKPRrRN7V5KXCqz2QLMFeK7DxhpSniqZHps5Xq',
     tokenUnit: "ASTR",
   }
 ];

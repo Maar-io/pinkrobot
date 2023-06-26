@@ -22,7 +22,7 @@ export const ModelSelector = ({ values }: { values: PinkValues }) => {
         style={{ display: "block" }}
         title="Select an AI model. All models are Open Source. The best resolution is with the Stable Diffusion v2.1 model and that is 768 × 768px. Other models will generate 512 × 512px image."
       >
-        <option value="" disabled selected>
+        <option value="" disabled>
           Select AI model
         </option>
         <option value={aiModels.stablediffusion.name}>
