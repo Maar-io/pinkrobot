@@ -20,6 +20,8 @@ export const endpoint = "wss://rpc.shibuya.astar.network";
 export const BN_ZERO = new BN(0);
 
 export const MINTING_ALLOWED = true;
+export const BLACK_HOLE_IMAGE_MAX_SIZE = 6000;
+export const BLACK_HOLE_IMAGE_URL = 'assets/blackhole.jpg';
 
 export const networks: Array<NetworkInfo> = [
   {

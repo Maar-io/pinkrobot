@@ -10,21 +10,37 @@ import { ModelSelector } from "./ModelSelector";
 import { StyleSelector } from "./StyleSelector";
 import { usePinkContract } from "../hooks";
 import { pickResultOk } from "useink/utils";
-import { PINK_PREFIX, MINTING_ALLOWED } from "../const";
+import {
+  PINK_PREFIX,
+  MINTING_ALLOWED,
+  BLACK_HOLE_IMAGE_MAX_SIZE,
+  BLACK_HOLE_IMAGE_URL,
+} from "../const";
 import { ArtistSelector } from "./ArtistSelector";
 import { usePinkPsp34Contract } from "../hooks/usePinkPsp34Contract";
 import { TopInfo } from "./TopInfo";
 
-
-export const GenerateForm = ({ setIsBusy, handleError }: { setIsBusy: Function, handleError: Function }) => {
+export const GenerateForm = ({
+  setIsBusy,
+  handleError,
+}: {
+  setIsBusy: Function;
+  handleError: Function;
+}) => {
   const { isSubmitting, isValid, values, setFieldTouched, handleChange } =
     useFormikContext<PinkValues>();
   const { account, accounts } = useWallet();
   const [waitingHuggingFace, setWaitingHuggingFace] = useState(false);
   const [isGenerated, setIsGenerated] = useState(false);
   const balance = useBalance(account);
-  const { getPrice, } = usePinkContract();
-  const { totalSupply, limitPerAccount, balanceOf, isWhitelistEnabled, isWhitelisted } = usePinkPsp34Contract();
+  const { getPrice } = usePinkContract();
+  const {
+    totalSupply,
+    limitPerAccount,
+    balanceOf,
+    isWhitelistEnabled,
+    isWhitelisted,
+  } = usePinkPsp34Contract();
   const [limit, setLimit] = useState(false);
   const [whitelistEnabled, setWhitelistEnabled] = useState<boolean>(false);
   const [whitelisted, setWhitelisted] = useState<boolean>(false);
@@ -52,7 +68,9 @@ export const GenerateForm = ({ setIsBusy, handleError }: { setIsBusy: Function, 
   };
 
   const getHolderBalance = async () => {
-    const s = await balanceOf?.send([account?.address], { defaultCaller: true });
+    const s = await balanceOf?.send([account?.address], {
+      defaultCaller: true,
+    });
     if (s?.ok && s.value.decoded) {
       setTokenBalance(Number(s.value.decoded));
       console.log("User balance", Number(s.value.decoded));
@@ -65,8 +83,7 @@ export const GenerateForm = ({ setIsBusy, handleError }: { setIsBusy: Function, 
       values.limitMint = Number(s.value.decoded);
       if (tokenBalance >= values.limitMint) {
         setLimit(true);
-      }
-      else {
+      } else {
         setLimit(false);
       }
       console.log("mint limited to ", values.limitMint);
@@ -82,7 +99,9 @@ export const GenerateForm = ({ setIsBusy, handleError }: { setIsBusy: Function, 
   };
 
   const getIsWhitelisted = async () => {
-    const s = await isWhitelisted?.send([account?.address], { defaultCaller: true });
+    const s = await isWhitelisted?.send([account?.address], {
+      defaultCaller: true,
+    });
     if (s?.ok && s.value.decoded) {
       setWhitelisted(Boolean(s.value.decoded));
       console.log("is account whitelisted", s.value.decoded);
@@ -91,21 +110,23 @@ export const GenerateForm = ({ setIsBusy, handleError }: { setIsBusy: Function, 
 
   const fetchPrice = async () => {
     const price = await getPrice?.send([], { defaultCaller: true });
-    console.log('fetched price', price?.ok && price.value.decoded);
+    console.log("fetched price", price?.ok && price.value.decoded);
     if (price?.ok && price.value.decoded) {
-      let priceNoQuotes = price.value.decoded.toString().replace(/,/g, '');
+      let priceNoQuotes = price.value.decoded.toString().replace(/,/g, "");
       values.price = priceNoQuotes;
     }
   };
 
   const composePrompt = () => {
     const prompt =
-      PINK_PREFIX +
-      values.aiStyle.text +
-      values.artist.text +
-      values.prompt;
-    return prompt
-  }
+      PINK_PREFIX + values.aiStyle.text + values.artist.text + values.prompt;
+    return prompt;
+  };
+
+  const setBlackHoleImage = (values: PinkValues): void => {
+    values.displayImage[values.contractType] = BLACK_HOLE_IMAGE_URL;
+    values.imageData[values.contractType] = new Uint8Array();
+  };
 
   const fetchImage = async () => {
     console.log("Create image using model:", values.aiModel);
@@ -129,24 +150,32 @@ export const GenerateForm = ({ setIsBusy, handleError }: { setIsBusy: Function, 
           "Content-Type": "application/json",
         },
         data: JSON.stringify({
-          inputs: prompt + ' ' + Math.round(Math.random() * 100),
+          inputs: prompt + " " + Math.round(Math.random() * 100),
           options: { wait_for_model: true },
         }),
         responseType: "arraybuffer",
-        timeout: 30000
+        timeout: 30000,
       });
 
       const contentType = response.headers["content-type"];
       console.log("------- response.data", response.data);
-      // const base64ImageData = Buffer.from(response.data, 'binary').toString('base64');
-      const base64data = Buffer.from(response.data).toString("base64");
-      const aiImage = `data:${contentType};base64,` + base64data;
-      values.displayImage[values.contractType] = aiImage;
-      console.log("aiImage", aiImage ? "generated" : "empty");
-      setIsGenerated(true);
-      values.imageData[values.contractType] = response.data;
+      const isValidImage =
+        response.data.maxByteLength > BLACK_HOLE_IMAGE_MAX_SIZE;
+      if (isValidImage) {
+        const base64data = Buffer.from(response.data).toString("base64");
+        const aiImage = `data:${contentType};base64,` + base64data;
+        values.displayImage[values.contractType] = aiImage;
+        console.log("aiImage", aiImage ? "generated" : "empty");
+        values.imageData[values.contractType] = response.data;
+      } else {
+        setBlackHoleImage(values);
+      }
+
+      setIsGenerated(isGenerated);
     } catch (error: any) {
-      handleError(error.toString());
+      setIsGenerated(false);
+      //handleError(error.toString());
+      setBlackHoleImage(values);
       console.error(error);
     } finally {
       setWaitingHuggingFace(false);
@@ -155,8 +184,8 @@ export const GenerateForm = ({ setIsBusy, handleError }: { setIsBusy: Function, 
   };
 
   return (
-    <Form style={{ marginBottom: 'auto' }}>
-      { !MINTING_ALLOWED && <TopInfo />}
+    <Form style={{ marginBottom: "auto" }}>
+      {!MINTING_ALLOWED && <TopInfo />}
       <img
         src={values.displayImage[values.contractType]}
         className="pink-example rounded-lg"
@@ -231,10 +260,11 @@ export const GenerateForm = ({ setIsBusy, handleError }: { setIsBusy: Function, 
         )}
         {limit && (
           <div className="text-xs text-left mb-2 text-red-500">
-            You have reached the limit of {values.limitMint} pink robots per account.
+            You have reached the limit of {values.limitMint} pink robots per
+            account.
           </div>
         )}
-        {whitelistEnabled && !whitelisted && !limit &&(
+        {whitelistEnabled && !whitelisted && !limit && (
           <div className="text-xs text-left mb-2 text-red-500">
             Your account is not whitelisted.
           </div>
@@ -251,5 +281,3 @@ export const GenerateForm = ({ setIsBusy, handleError }: { setIsBusy: Function, 
     </Form>
   );
 };
-
-
