@@ -26,17 +26,29 @@ export const Header = () => {
         <div className="wallet-wrapper">
           <div className="social-networks">
             <a href="https://twitter.com/pinkrobotnft" target="_blank">
-              <img src="./assets/twitter.svg" alt="Twitter" className="social-networks-img"/>
+              <img
+                src="./assets/twitter.svg"
+                alt="Twitter"
+                className="social-networks-img"
+              />
             </a>
             <a href="https://t.me/+A4snZOwizFFjNzA0" target="_blank">
-            <img src="./assets/telegram.svg" alt="Twitter" className="social-networks-img" />
+              <img
+                src="./assets/telegram.svg"
+                alt="Twitter"
+                className="social-networks-img"
+              />
             </a>
           </div>
           <div className="pink-network-logo">
             {connectedNetwork === "Shibuya" ? (
-              <img src="assets/shibuya.svg" alt="Shibuya" />
+              <a href="https://discord.gg/astarnetwork" target="_blank">
+                <img src="assets/shibuya.svg" alt="Shibuya" />
+              </a>
             ) : (
-              <img src="assets/astar.svg" alt="Astar" />
+              <a href="https://discord.gg/astarnetwork" target="_blank">
+                <img src="assets/astar.svg" alt="Astar" />
+              </a>
             )}
           </div>
           {!account ? (
