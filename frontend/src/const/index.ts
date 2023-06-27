@@ -162,7 +162,7 @@ export const aiModels = {
   },
   anything: {
     name: "Anything",
-    text: "https://api-inference.huggingface.co/models/Linaqruf/anything-v3.0",
+    text: "https://api-inference.huggingface.co/models/stablediffusionapi/anything-v5",
   },
   openjourney: {
     name: "OpenJourney",
