@@ -47,6 +47,7 @@ export const GenerateForm = ({
   const hasFunds =
     !balance?.freeBalance.isEmpty && !balance?.freeBalance.isZero();
   values.contractType = ContractType.PinkPsp34;
+  const { pinkMintDryRun } = usePinkContract();
 
   useEffect(() => {
     fetchPrice();
@@ -244,7 +245,8 @@ export const GenerateForm = ({
               !isValid ||
               !accounts ||
               !hasFunds ||
-              limit
+              limit ||
+              !pinkMintDryRun?.result
             }
             name="submit"
           >
