@@ -274,3 +274,21 @@ h1 {
 .buttons-container {
   @apply flex justify-around
 }
+
+.social-networks {
+  display: flex;
+  margin-right: 16px;
+
+}
+
+.social-networks-img {
+  width: 28px;
+  margin-left: 8px;
+  transition: transform 0.5s;
+  -webkit-transition: transform 0.5s;
+
+  &:hover {
+    transform: scale(1.1);
+    -webkit-transform: scale(1.1);
+  }
+}

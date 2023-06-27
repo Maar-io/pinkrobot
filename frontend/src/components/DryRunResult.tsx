@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import { PinkValues } from "../types";
 import { usePinkContract } from "../hooks";
 import { pickTxInfo, formatBalance } from "useink/utils";
-import { useWallet } from "useink";
+import { useBalance, useWallet } from "useink";
 import BN from "bn.js";
 interface Props {
   values: PinkValues;
@@ -18,16 +18,17 @@ interface FeesProps {
 
 function Fees({ storage, gas, price, unit }: FeesProps) {
   const priceBN = new BN(price);
-  const cost = gas
-    .add(priceBN)
-    .add(storage);
+  const cost = gas.add(priceBN).add(storage);
   formatBalance.setDefaults({ unit });
   return (
     <div className="text-xs text-right mb-2 text-gray-200">
       {/* <p>storage: {storage}</p>
       <p>gas: {gas}</p>
       <p>price: {price}</p> */}
-      <p>price + gas: {formatBalance(cost.toString(), { decimals: 18, withSi: true })}</p>
+      <p>
+        price + gas:{" "}
+        {formatBalance(cost.toString(), { decimals: 18, withSi: true })}
+      </p>
     </div>
   );
 }
@@ -35,11 +36,15 @@ function Fees({ storage, gas, price, unit }: FeesProps) {
 export function DryRunResult({ values, isValid }: Props) {
   const { pinkMintDryRun } = usePinkContract();
   const { account } = useWallet();
+  const balance = useBalance(account);
   const timeoutId = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     async function getOutcome() {
-      pinkMintDryRun?.send([values.contractType, values.ipfs], { value: values.price, defaultCaller: true });
+      pinkMintDryRun?.send([values.contractType, values.ipfs], {
+        value: values.price,
+        defaultCaller: true,
+      });
     }
 
     function debouncedDryRun() {
@@ -55,16 +60,33 @@ export function DryRunResult({ values, isValid }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pinkMintDryRun?.send, account?.address, values.ipfs]);
 
-  if (!pinkMintDryRun?.result) return null;
-  const txInfo = pickTxInfo(pinkMintDryRun?.result);
+  formatBalance.setDefaults({ unit: values.tokenUnit });
+  const freeBalance = balance?.freeBalance;
+  let txInfo;
+  // if (!pinkMintDryRun?.result) return null;
+  if (pinkMintDryRun?.result) {
+    txInfo = pickTxInfo(pinkMintDryRun?.result);
+  }
 
   return (
     <>
-      <Fees storage={txInfo ? txInfo.storageDeposit.asCharge : '--'}
-        gas={txInfo ? txInfo.partialFee : '--'}
-        price={values.price}
-        unit={values.tokenUnit}
-      />
+      {txInfo && (
+        <Fees
+          storage={txInfo ? txInfo.storageDeposit.asCharge : "--"}
+          gas={txInfo ? txInfo.partialFee : "--"}
+          price={values.price}
+          unit={values.tokenUnit}
+        />
+      )}
+      {freeBalance && (
+        <div className="text-xs text-right mb-2 text-gray-200">
+          your free balance:{" "}
+          {formatBalance(freeBalance?.toString(), {
+            decimals: 18,
+            withSi: true,
+          })}
+        </div>
+      )}
     </>
   );
 }

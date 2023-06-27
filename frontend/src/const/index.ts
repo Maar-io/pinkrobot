@@ -19,7 +19,17 @@ export const endpoint = "wss://rpc.shibuya.astar.network";
 
 export const BN_ZERO = new BN(0);
 
-export const MINTING_ALLOWED = false;
+export const MINTING_ALLOWED = true;
+export const BLACK_HOLE_IMAGE_MAX_SIZE = 6000;
+export const BLACK_HOLE_IMAGE_URL = 'assets/blackhole.jpg';
+export const story =
+    `In a distant galaxy, at the very edge of time and space, a remarkable planet thrives with sentient robots on the brink of a perilous destiny—the impending Cosmic Convergence. This cosmic event threatens to unleash cataclysmic forces, casting a shadow over their existence.
+
+    In their desperate bid for survival, the robots have constructed a portal, a gateway to the sanctuary of the Astar Networks. But they cannot traverse this path alone. They need your unwavering guidance and assistance.
+    
+    Our mission is to shepherd these resilient beings through the portal during the momentous Minting Event, ensuring their escape from the planet's impending doom. However, the portal has a limited capacity, allowing only 10,000 PinkRobots to find solace within the sheltered realm of the Astar Network.
+    
+    With each successful passage through the portal, these extraordinary robots undergo a breathtaking metamorphosis, emerging as enchanting and unique beings—the PinkRobots.`;
 
 export const networks: Array<NetworkInfo> = [
   {
@@ -35,7 +45,7 @@ export const networks: Array<NetworkInfo> = [
     endpoint: "wss://rpc.astar.network",
     pinkContractAddress: "ZohEUuLZWgreMDqTNpjGM3HSBJttAjfxETdPDFRSSguxGKo",
     pinkPsp34ContractAddress: "XoywUxTTtNKPRrRN7V5KXCqz2QLMFeK7DxhpSniqZHps5Xq",
-    marketplaceTokenUrl: 'https://astar.paras.id/',
+    marketplaceTokenUrl: 'https://astar.paras.id/token/astar/XoywUxTTtNKPRrRN7V5KXCqz2QLMFeK7DxhpSniqZHps5Xq',
     tokenUnit: "ASTR",
   }
 ];
@@ -91,9 +101,9 @@ export const aiStyles: NameTextMap = {
     name: "Paper",
     text: "made with messy paper collage and paper-cuts, ",
   },
-  deviant: {
-    name: "Deviant",
-    text: "in Deviant website style, ",
+  whimsical: {
+    name: "Whimsical",
+    text: "in whimsical style, ",
   },
   best: {
     name: "Best",
@@ -111,9 +121,9 @@ export const aiStyles: NameTextMap = {
     name: "Watercolor",
     text: "in watercolor style with splashes, ",
   },
-  disney: {
-    name: "Disney",
-    text: "in Disney studio style, ",
+  linocut: {
+    name: "Linocut",
+    text: "in Linocut or woodcut style, ",
   },
   ghibli: {
     name: "Ghibli",
