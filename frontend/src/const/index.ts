@@ -158,7 +158,7 @@ export const artistStyles: NameTextMap = {
 export const aiModels = {
   stablediffusion: {
     name: "StableDiffusion",
-    text: "https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-2-1",
+    text: "https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-2-1-base",
   },
   anything: {
     name: "Anything",
