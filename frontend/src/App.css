@@ -20,8 +20,9 @@ body {
 
 }
 .form-panel {
-  @apply flex flex-col items-center justify-center bg-gray-900 p-6 shadow-md shadow-xl;
+  @apply flex flex-col items-center bg-gray-900 p-6 shadow-md shadow-xl;
   border-radius: 20px;
+  max-height: 1106px;
 }
 
 .pink-example {

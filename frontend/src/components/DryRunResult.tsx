@@ -61,7 +61,7 @@ export function DryRunResult({ values, isValid }: Props) {
   }, [pinkMintDryRun?.send, account?.address, values.ipfs]);
 
   formatBalance.setDefaults({ unit: values.tokenUnit });
-  const freeBalance = balance?.freeBalance;
+  const freeBalance = balance?.freeBalance.sub(balance.frozenFee);
   let txInfo;
   // if (!pinkMintDryRun?.result) return null;
   if (pinkMintDryRun?.result) {
@@ -80,7 +80,7 @@ export function DryRunResult({ values, isValid }: Props) {
       )}
       {freeBalance && (
         <div className="text-xs text-right mb-2 text-gray-200">
-          your free balance:{" "}
+          your transferable balance:{" "}
           {formatBalance(freeBalance?.toString(), {
             decimals: 18,
             withSi: true,
