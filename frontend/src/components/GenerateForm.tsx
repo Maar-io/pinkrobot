@@ -73,7 +73,7 @@ export const GenerateForm = ({
     });
     if (s?.ok && s.value.decoded) {
       setTokenBalance(Number(s.value.decoded));
-      console.log("User balance", Number(s.value.decoded));
+      console.log("Token balance", Number(s.value.decoded));
     }
   };
 
