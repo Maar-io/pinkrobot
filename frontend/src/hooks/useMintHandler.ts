@@ -23,7 +23,8 @@ export const useMintHandler = () => {
       // get tokenId from the contract's total_supply
       const s = await totalSupply?.send([], { defaultCaller: true });
       if (s?.ok && s.value.decoded) {
-        values.tokenId[values!.contractType] = Number(s.value.decoded) + 1;
+        const cnt = s.value.decoded.toString().replace(/,/g, "");
+        values.tokenId[values!.contractType] = Number(cnt) + 1;
         console.log("Next tokenId premint", values.tokenId[values!.contractType]);
 
       }
