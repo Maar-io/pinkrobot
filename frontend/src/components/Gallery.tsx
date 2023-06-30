@@ -42,10 +42,13 @@ export const Gallery: React.FC<Props> = ({}) => {
   ): Promise<(string | unknown)[]> => {
     const metadataUrls = await Promise.all(
       tokens.map(async (token) => {
-        const result = await tokenUri?.send([token], {
-          defaultCaller: true,
-        });
-        return getProxiedUri(pickResultOk<string, string>(result));
+        if (token?.U64) {
+          const token_str = token.U64.toString().replace(/,/g, "");
+          const result = await tokenUri?.send([token_str], {
+            defaultCaller: true,
+          });
+          return getProxiedUri(pickResultOk<string, string>(result));
+        }
       })
     );
 
