@@ -161,7 +161,7 @@ export const GenerateForm = ({
       const contentType = response.headers["content-type"];
       console.log("------- response.data", response.data);
       const isValidImage =
-        response.data.maxByteLength > BLACK_HOLE_IMAGE_MAX_SIZE;
+        response.data.byteLength > BLACK_HOLE_IMAGE_MAX_SIZE;
       if (isValidImage) {
         const base64data = Buffer.from(response.data).toString("base64");
         const aiImage = `data:${contentType};base64,` + base64data;
