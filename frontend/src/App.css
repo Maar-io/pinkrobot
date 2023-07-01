@@ -52,7 +52,7 @@ body {
 }
 
 .accounts-dropdown {
-  @apply w-48;
+  @apply w-36;
 }
 
 .tweet {
