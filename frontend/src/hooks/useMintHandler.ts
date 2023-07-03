@@ -16,7 +16,8 @@ export const useMintHandler = () => {
 
   return async (
     values: PinkValues,
-    { setSubmitting, setStatus }: FormikHelpers<PinkValues>
+    { setSubmitting, setStatus }: FormikHelpers<PinkValues>,
+    notBusyAnymore: () => void
   ) => {
 
     const getTokenId = async (values: PinkValues) => {
@@ -86,6 +87,7 @@ export const useMintHandler = () => {
       if (error) {
         console.error(JSON.stringify(error));
         setSubmitting(false);
+        notBusyAnymore();
       }
       console.log("Mint Tx", result?.status.toHuman());
 

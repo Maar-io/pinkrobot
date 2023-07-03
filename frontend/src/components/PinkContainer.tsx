@@ -39,7 +39,7 @@ export const PinkContainer = () => {
 
           try {
             setBusyMessage(`Minting your NFT on ${connectedNetwork}...`);
-            await submitFn(values, helpers);
+            await submitFn(values, helpers, notBusyAnymore);
           } catch (err: any) {
             setError(err.toString());
             notBusyAnymore();
