@@ -71,27 +71,35 @@ export const getSigner = (uri: string): KeyringPair => {
 export const queryUser = async (
   api: ApiPromise,
   contract: ContractPromise,
-  address: string,
-  tokenId: number,
   signer: KeyringPair,
+  tokenId: number,
 ) => {
-  console.log(`Querying contract ${address}`);
+  console.log(`Querying contract ${signer.address}`);
   const gasLimit = getGasLimit(contract.api);
-  const id = api.registry.createType('u64', tokenId);
+  const query = contract.query['psp34::ownerOf'];
 
-  const txResult = await contract.query['psp34::ownerOf'](
+  const txResult = await query(
     signer.address,
     {
       gasLimit,
       storageDepositLimit: null,
-    }
+    },
+    { U64: tokenId }
   )
   if (txResult.result.isErr) {
     throw getErrorMessage(txResult.result.asErr);
   } else if (txResult.result.toString().includes('Revert')) {
     throw 'Reverted';
   }
-  console.log(`Call: ownerOf, result: ${JSON.stringify(txResult.result.toHuman())}`);
+
+  const owner = JSON.parse(
+    api.registry
+      .createTypeUnsafe(query.meta.returnType.type, [txResult.result.asOk.data])
+      .toString()
+  ).ok;
+  console.log(`Call: ownerOf, result: ${owner}`);
+
+  return owner;
 }
 
 export const queryTotalSupply = async (
@@ -102,8 +110,9 @@ export const queryTotalSupply = async (
   console.log(`Querying contract ${contract.address}`);
   console.log(`Signer address ${signer.address}`);
   const gasLimit = getGasLimit(contract.api);
+  const query = contract.query['psp34::totalSupply'];
 
-  const { gasRequired, storageDeposit, result } = await contract.query['psp34::totalSupply'](
+  const { result } = await query(
     signer.address,
     {
       gasLimit,
@@ -112,7 +121,12 @@ export const queryTotalSupply = async (
   )
   console.log("result", result.toHuman())
   console.log(`Call: totalSupply, result: ${JSON.stringify(result.toHuman())}`);
-  return result?.asOk.data.toString();
+  
+  if (result.isOk) {
+    return BigInt(JSON.parse(api.registry.createTypeUnsafe(query.meta.returnType.type, [result.asOk.data]).toString()).ok);
+  } else {
+    throw getErrorMessage(result.asErr);
+  }
 }
 
 export const executeCallWithValue = async (

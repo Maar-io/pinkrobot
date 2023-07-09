@@ -16,9 +16,9 @@ export const fetch = async(): Promise<void> => {
   const supplyBn = BigInt(supplyStr);
   console.log(`Total supplyBn: ${supplyBn}`);
 
-  for (let i = 1; i < 3; i++) {
+  for (let i = 1; i <= supplyBn; i++) {
     console.log(`Fetch user ${i}`);
-    // await queryUser(api, contract, signer, i);
+    const owner =  await queryUser(api, contract, signer, i);
   }
 
   process.exit(0);
