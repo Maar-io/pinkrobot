@@ -126,7 +126,6 @@ export const GenerateForm = ({
 
   const composePrompt = () => {
     const cleanPrompt = cleanHuman(PROMPT_DEEMPHASIS, values.prompt.toLowerCase());
-    console.log("cleanPrompt", cleanPrompt);
     const prompt =
       PINK_PREFIX + values.aiStyle.text + values.artist.text + cleanPrompt
     return prompt;
