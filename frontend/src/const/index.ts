@@ -138,6 +138,7 @@ export const aiStyles: NameTextMap = {
 
 export const artistStyles: NameTextMap = {
   none: { name: "None", text: "" },
+  hundertwasser: { name: "Hundertwasser", text: "like painting by Friedensreich Hundertwasser, " },
   kusama: { name: "Kusama", text: "like painting by Yayoi Kusama, " },
   amano: { name: "Amano", text: "like painting by Yoshitaka Amano, " },
   takashi: { name: "Takashi", text: "like painting by Takashi Murakami, " },
