@@ -153,6 +153,9 @@ export const GenerateForm = ({
         data: JSON.stringify({
           inputs: prompt + " " + Math.round(Math.random() * 100),
           options: { wait_for_model: true },
+          parameters: {
+            negative_prompt: 'girl, woman, doll, boy, guy, man, girls, boys, legs, hair, people, human',
+          }
         }),
         responseType: "arraybuffer",
         timeout: 30000,
