@@ -11,6 +11,8 @@ import { StyleSelector } from "./StyleSelector";
 import { usePinkContract } from "../hooks";
 import {
   PINK_PREFIX,
+  NEGATIVE_PROMPT,
+  PROMPT_DEEMPHASIS,
   MINTING_ALLOWED,
   BLACK_HOLE_IMAGE_MAX_SIZE,
   BLACK_HOLE_IMAGE_URL,
@@ -118,9 +120,14 @@ export const GenerateForm = ({
     }
   };
 
+  const cleanHuman = (words: string[], str: string) => {
+    return words.reduce((result, word) => result.replace(word, ''), str)
+  }
+
   const composePrompt = () => {
+    const cleanPrompt = cleanHuman(PROMPT_DEEMPHASIS, values.prompt.toLowerCase());
     const prompt =
-      PINK_PREFIX + values.aiStyle.text + values.artist.text + values.prompt;
+      PINK_PREFIX + values.aiStyle.text + values.artist.text + cleanPrompt
     return prompt;
   };
 
@@ -153,6 +160,9 @@ export const GenerateForm = ({
         data: JSON.stringify({
           inputs: prompt + " " + Math.round(Math.random() * 100),
           options: { wait_for_model: true },
+          parameters: {
+            negative_prompt: NEGATIVE_PROMPT,
+          }
         }),
         responseType: "arraybuffer",
         timeout: 30000,

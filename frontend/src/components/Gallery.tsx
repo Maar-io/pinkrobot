@@ -24,7 +24,7 @@ export const Gallery: React.FC<Props> = ({}) => {
     });
     const ownedTokens = pickDecoded<Id[]>(result);
 
-    return ownedTokens;
+    return ownedTokens?.reverse();
   };
 
   const getProxiedUri = (ipfsUri: string | undefined): string | undefined => {

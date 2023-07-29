@@ -26,6 +26,7 @@ export const ArtistSelector = ({ values }: { values: PinkValues }) => {
           Select an Artist style
         </option>
         <option value={artistStyles.none.name}>No Artist selected</option>
+        <option value={artistStyles.hundertwasser.name}>Friedensreich Hundertwasser</option>
         <option value={artistStyles.kusama.name}>Yayoi Kusama</option>
         <option value={artistStyles.amano.name}>Yoshitaka Amano</option>
         <option value={artistStyles.takashi.name}>Takashi Murakami</option>
