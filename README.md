@@ -11,9 +11,9 @@ The NFTs are visible at the Paras marketplace. The cost of minting is 1 ASTR pet
 ## Contract Deployment
 The pink-robot contracts are deployed on [Astar Networks](https://astar.network/) at the following addresses:
 ```
----
+XoywUxTTtNKPRrRN7V5KXCqz2QLMFeK7DxhpSniqZHps5Xq
 ```
-Its metadata can be [found here](./frontend/src/metadata.json).
+Its metadata can be [found here](./frontend/pinkpsp34.json).
 
 ## 🤔 Why?
 
