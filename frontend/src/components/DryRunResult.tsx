@@ -61,7 +61,8 @@ export function DryRunResult({ values, isValid }: Props) {
   }, [pinkMintDryRun?.send, account?.address, values.ipfs]);
 
   formatBalance.setDefaults({ unit: values.tokenUnit });
-  const freeBalance = balance?.freeBalance.sub(balance.frozenFee);
+  // const freeBalance = balance?.freeBalance.sub(balance.frozenFee);
+  const freeBalance = undefined; // TOTO quick fix for removed frozenFee after the latest runtime update
   let txInfo;
   // if (!pinkMintDryRun?.result) return null;
   if (pinkMintDryRun?.result) {
