@@ -8,3 +8,15 @@ yarn.lock
 
 # Mac turds
 .DS_Store
+scripts/.env.local
+scripts/node_modules/
+scripts/yarn.lock
+scripts/package-lock.json
+scripts/.env
+scripts/.env.production
+scripts/.env.development
+scripts/.env.test
+
+scripts/addresses.csv
+scripts/yarn-error.log
+
